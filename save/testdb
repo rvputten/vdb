@@ -10,6 +10,24 @@
           "DbString": "es-en"
         }
       }
+    },
+    {
+      "row_id": 1,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "disfrutar"
+        }
+      }
+    },
+    {
+      "row_id": 1,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to enjoy"
+        }
+      }
     }
   ]
 }

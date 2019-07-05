@@ -1,7 +1,7 @@
 set -o pipefail
 while read q; do
     echo
-    files=(spa-eng/spa-eng.txt ~/git/Spanish_Dictionary/Matt_dict)
+    files=(resources/es-en.txt)
     (
 	cat ${files[@]} | grep -iw $q | sort -u && echo "-------"
 	cat ${files[@]} | grep -i $q | sort -u

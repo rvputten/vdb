@@ -1,11 +1,10 @@
 //use chrono::{DateTime, Duration, Utc};
-use chrono::{NaiveDateTime, ParseError};
+use chrono::NaiveDateTime;
 use std::error::Error;
 use std::fs::File;
 use std::io::Read;
 use std::io::Write;
 use std::path::Path;
-use std::{error, fmt};
 
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
 pub enum Data {
@@ -18,7 +17,7 @@ pub enum Data {
 pub struct RowId(usize);
 
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
-pub struct Pair {
+pub struct Entry {
     name: String,
     value: Data,
 }
@@ -26,7 +25,7 @@ pub struct Pair {
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
 pub struct Row {
     row_id: RowId,
-    entry: Pair,
+    entry: Entry,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
@@ -72,15 +71,14 @@ impl Db {
         let r = NaiveDateTime::parse_from_str(v, fmt)?;
         Ok(Data::DbDateTime(r))
     }
-    pub fn add(&mut self, name: &str, value: Data) -> RowId {
+    pub fn add(&mut self, entries: Vec<Entry>) -> RowId {
         let id = self.next();
-        self.rows.push(Row {
-            row_id: id.clone(),
-            entry: Pair {
-                name: String::from(name),
-                value,
-            },
-        });
+        for e in entries {
+            self.rows.push(Row {
+                row_id: id.clone(),
+                entry: e,
+            });
+        }
         id
     }
 
@@ -94,37 +92,53 @@ impl Db {
 }
 
 mod test {
-    use super::{Data, Db, RowId};
+    use super::{Data, Db, Entry, RowId};
     use chrono::NaiveDateTime;
 
-    fn new_db_with_entry(name: &str) -> Db {
+    fn new_db_with_entries(name: &str) -> Db {
         let mut db = Db::new(name);
-        let value = Db::db_string("es-en");
-        let id = db.add("set", value.clone());
+        let entries: Vec<Entry> = vec![
+            Entry {
+                name: String::from("set"),
+                value: Db::db_string("es-en"),
+            },
+            Entry {
+                name: String::from("name"),
+                value: Db::db_string("disfrutar"),
+            },
+            Entry {
+                name: String::from("value"),
+                value: Db::db_string("to enjoy"),
+            },
+        ];
+        let _id = db.add(entries);
         db
     }
 
-    fn check_single_entry(db: &Db) {
-        let value = Db::db_string("es-en");
-        assert_eq!(db.rows.len(), 1);
+    fn check_single_entries(db: &Db) {
+        assert_eq!(db.rows.len(), 3);
         assert_eq!(db.rows[0].row_id, RowId(1));
         assert_eq!(db.rows[0].entry.name, "set");
-        assert_eq!(db.rows[0].entry.value, value);
+        assert_eq!(db.rows[0].entry.value, Db::db_string("es-en"));
+
+        assert_eq!(db.rows[2].row_id, RowId(1));
+        assert_eq!(db.rows[2].entry.name, "value");
+        assert_eq!(db.rows[2].entry.value, Db::db_string("to enjoy"));
     }
 
     #[test]
     fn load_and_save() {
         let name = "testdb";
-        let db = new_db_with_entry(name);
-        db.save();
+        let db = new_db_with_entries(name);
+        let _result = db.save();
         let db = Db::load(name).unwrap();
-        check_single_entry(&db);
+        check_single_entries(&db);
     }
 
     #[test]
     fn add() {
-        let db = new_db_with_entry("testdb");
-        check_single_entry(&db);
+        let db = new_db_with_entries("testdb");
+        check_single_entries(&db);
     }
 
     #[test]

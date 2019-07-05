@@ -2,6 +2,10 @@ Vocabulary Trainer
 ==================
 Motivation: Have fun
 
+Source for vocabulary
+=====================
+https://github.com/mananoreboton/en-es-en-Dic.git
+
 Ideas
 =====
 flat file to store vocabulary
