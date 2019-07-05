@@ -1,0 +1,11 @@
+[package]
+name = "voca"
+version = "0.1.0"
+authors = ["Willem <willem@example.com>"]
+edition = "2018"
+
+[dependencies]
+serde_derive = "*"
+serde = "*"
+serde_json = "*"
+chrono = { version = "0.4", features = ["serde"] }

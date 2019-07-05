@@ -1,0 +1,15 @@
+{
+  "full_filename": "save/testdb",
+  "row_max": 1,
+  "rows": [
+    {
+      "row_id": 1,
+      "entry": {
+        "name": "set",
+        "value": {
+          "DbString": "es-en"
+        }
+      }
+    }
+  ]
+}

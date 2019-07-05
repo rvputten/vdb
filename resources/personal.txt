@@ -1,0 +1,3 @@
+acuerdo|agreement
+investidura|investment
+advertir|warn|notice
