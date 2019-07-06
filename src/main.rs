@@ -68,27 +68,28 @@ fn load(dbname: &str, filename: &str) -> Db {
 }
 
 fn find(db: &Db, name: &str) -> Vec<String> {
-    let row_id = db
+    let mut values: Vec<String> = vec![];
+
+    for row_id in db
         .rows
         .iter()
         .filter(|row| row.entry.name == "name")
         .filter(|row| Db::db_string(name) == row.entry.value)
         .map(|row| row.row_id)
-        .next();
-
-    let values = db
-        .rows
-        .iter()
-        .filter(|row| Some(row.row_id) == row_id)
-        .filter(|row| row.entry.name == "value")
-        .map(|row| row.entry.value.clone())
-        .filter_map(|value| match value {
-            Data::DbString(s) => Some(s),
-            _ => None,
-        })
-        .collect::<Vec<String>>();
-
-    println!("row_id for {} is {:?}. Result: {:?}", name, row_id, values);
+    {
+        let mut matches = db
+            .rows
+            .iter()
+            .filter(|row| row.row_id == row_id)
+            .filter(|row| row.entry.name == "value")
+            .map(|row| row.entry.value.clone())
+            .filter_map(|value| match value {
+                Data::DbString(s) => Some(s),
+                _ => None,
+            })
+            .collect::<Vec<String>>();
+        values.append(&mut matches);
+    }
     values
 }
 
