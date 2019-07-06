@@ -71,11 +71,12 @@ impl Db {
         let r = NaiveDateTime::parse_from_str(v, fmt)?;
         Ok(Data::DbDateTime(r))
     }
+
     pub fn add(&mut self, entries: Vec<Entry>) -> RowId {
         let id = self.next();
         for e in entries {
             self.rows.push(Row {
-                row_id: id.clone(),
+                row_id: id,
                 entry: e,
             });
         }
@@ -84,7 +85,7 @@ impl Db {
 
     fn next(&mut self) -> RowId {
         self.row_max.0 += 1;
-        self.row_max.clone()
+        self.row_max
     }
     fn build_filename(name: &str) -> String {
         format!("save/{}", name)

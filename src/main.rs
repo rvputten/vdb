@@ -7,8 +7,9 @@ extern crate serde_json;
 mod db;
 
 use db::Data::DbString;
-use db::{Db, Entry};
+use db::{Data, Db, Entry};
 use std::fs::File;
+use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
 
@@ -30,10 +31,8 @@ pub fn read_file_to_vec(filename: &str) -> Vec<String> {
     v
 }
 
-fn main() {
-    let dbname = "default";
-    let filename = "resources/es-en.txt";
-    let db = if let Ok(db) = Db::load(dbname) {
+fn load(dbname: &str, filename: &str) -> Db {
+    if let Ok(db) = Db::load(dbname) {
         println!("Using existing db.");
         db
     } else {
@@ -65,25 +64,43 @@ fn main() {
             }
         }
         db
-    };
+    }
+}
 
-    let coche_row_id = db
+fn find(db: &Db, name: &str) -> Vec<String> {
+    let row_id = db
         .rows
         .iter()
         .filter(|row| row.entry.name == "name")
-        .filter(|row| DbString(String::from("coche")) == row.entry.value)
+        .filter(|row| Db::db_string(name) == row.entry.value)
         .map(|row| row.row_id)
         .next();
-    println!("'coche row_id': {:?}", coche_row_id);
 
-    for value in db
+    let values = db
         .rows
         .iter()
-        .filter(|row| Some(row.row_id) == coche_row_id)
+        .filter(|row| Some(row.row_id) == row_id)
         .filter(|row| row.entry.name == "value")
         .map(|row| row.entry.value.clone())
-    {
-        println!("'coche value': {:?}", value);
+        .filter_map(|value| match value {
+            Data::DbString(s) => Some(s),
+            _ => None,
+        })
+        .collect::<Vec<String>>();
+
+    println!("row_id for {} is {:?}. Result: {:?}", name, row_id, values);
+    values
+}
+
+fn main() {
+    let dbname = "default";
+    let filename = "resources/es-en.txt";
+    let db = load(dbname, filename);
+
+    let mut input = String::new();
+    while let Ok(_bytes_read) = io::stdin().read_line(&mut input) {
+        println!("{:?}", find(&db, &input.trim()));
+        input.clear();
     }
 
     println!("Saving database {}.", dbname);
@@ -94,6 +111,17 @@ fn main() {
 }
 
 mod main {
+    use super::*;
+    use db::Data;
     #[test]
-    fn fun() {}
+    fn load_and_filter() {
+        let dbname = "test-sample";
+        let filename = "resources/es-en-sample.txt";
+        let db = load(dbname, filename);
+
+        let values = find(&db, "coche");
+
+        assert_eq!(values.len(), 1);
+        assert_eq!(values[0], "car");
+    }
 }
