@@ -13,6 +13,25 @@ pub enum Data {
     DbDateTime(NaiveDateTime),
 }
 
+impl Data {
+    fn starts_with(&self, data: &Data) -> bool {
+        if let Data::DbString(left) = self {
+            if let Data::DbString(right) = data {
+                return left.starts_with(right);
+            }
+        }
+        false
+    }
+    fn contains(&self, data: &Data) -> bool {
+        if let Data::DbString(left) = self {
+            if let Data::DbString(right) = data {
+                return left.contains(right);
+            }
+        }
+        false
+    }
+}
+
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug, Copy)]
 pub struct RowId(usize);
 
@@ -20,6 +39,19 @@ pub struct RowId(usize);
 pub struct Entry {
     pub name: String,
     pub value: Data,
+}
+
+#[derive(PartialEq, Debug)]
+pub enum PredicateType {
+    Equal,
+    StartsWith,
+    Contains,
+}
+
+#[derive(Debug)]
+pub struct Predicate {
+    predicate_type: PredicateType,
+    entry: Entry,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
@@ -112,8 +144,8 @@ impl Db {
         }
     }
 
-    // The current implementation has run time of O(n2), so a predicate with high selectivity must
-    // be in position 0 (i. e. not "set")
+    // The current implementation has run time of O(n2), so predicates[0] must have high selectivity.
+    // For predicates[1..], low selectivity is ok.
     pub fn select(&self, predicates: &[Entry], columns: Vec<String>) -> Vec<Vec<Entry>> {
         let mut result: Vec<Vec<Entry>> = vec![];
         let row_ids = self.select_row_ids(predicates);
@@ -145,14 +177,89 @@ impl Db {
         self.row_max.0 += 1;
         self.row_max
     }
+
     fn build_filename(name: &str) -> String {
         format!("save/{}", name)
+    }
+
+    fn compare(predicate: &Predicate, entry: &Entry) -> bool {
+        let result = match &predicate.predicate_type {
+            PredicateType::Equal => {
+                predicate.entry.name == entry.name && predicate.entry.value == entry.value
+            }
+            PredicateType::StartsWith => {
+                entry.name == predicate.entry.name
+                    && entry.value.starts_with(&predicate.entry.value)
+            }
+            PredicateType::Contains => {
+                entry.name == predicate.entry.name && entry.value.contains(&predicate.entry.value)
+            }
+            _ => panic!("Not implemented"),
+        };
+        result
     }
 }
 
 mod test {
-    use super::{Data, Db, Entry, RowId};
+    use super::{Data, Db, Entry, Predicate, PredicateType, RowId};
     use chrono::NaiveDateTime;
+
+    #[test]
+    fn starts_with_contains() {
+        let s1 = Db::db_string("hello");
+        let s2 = Db::db_string("hello world");
+        let s3 = Db::db_string("o wor");
+        assert!(s2.starts_with(&s1));
+        assert_eq!(s1.starts_with(&s2), false);
+        assert!(s2.contains(&s3));
+        assert_eq!(s3.contains(&s2), false);
+    }
+
+    #[test]
+    fn compare() {
+        let p1 = Predicate {
+            predicate_type: PredicateType::Equal,
+            entry: Entry {
+                name: String::from("set"),
+                value: Db::db_string("es-en"),
+            },
+        };
+
+        let p2 = Predicate {
+            predicate_type: PredicateType::StartsWith,
+            entry: Entry {
+                name: String::from("set"),
+                value: Db::db_string("es"),
+            },
+        };
+
+        let p3 = Predicate {
+            predicate_type: PredicateType::Contains,
+            entry: Entry {
+                name: String::from("set"),
+                value: Db::db_string("s-e"),
+            },
+        };
+
+        let e1 = Entry {
+            name: String::from("set"),
+            value: Db::db_string("es-en"),
+        };
+
+        let e2 = Entry {
+            name: String::from("set"),
+            value: Db::db_string("en-es"),
+        };
+
+        assert!(Db::compare(&p1, &e1));
+        assert_eq!(Db::compare(&p1, &e2), false);
+
+        assert!(Db::compare(&p2, &e1));
+        assert_eq!(Db::compare(&p2, &e2), false);
+
+        assert!(Db::compare(&p3, &e1));
+        assert_eq!(Db::compare(&p3, &e2), false);
+    }
 
     fn new_db_with_entries(name: &str) -> Db {
         let mut db = Db::new(name);
