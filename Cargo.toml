@@ -1,7 +1,7 @@
 [package]
 name = "voca"
 version = "0.1.0"
-authors = ["Willem <willem@example.com>"]
+authors = ["Willem <willem@hyrican>"]
 edition = "2018"
 
 [dependencies]

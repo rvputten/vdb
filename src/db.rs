@@ -83,6 +83,64 @@ impl Db {
         id
     }
 
+    fn select_row_ids(&self, predicates: &[Entry]) -> Vec<RowId> {
+        if predicates.is_empty() {
+            self.rows
+                .iter()
+                .map(|row| row.row_id)
+                .collect::<Vec<RowId>>()
+        } else {
+            let predicate0 = &predicates[0];
+            let mut row_ids = self
+                .rows
+                .iter()
+                .filter(|row| {
+                    row.entry.name == predicate0.name && row.entry.value == predicate0.value
+                })
+                .map(|row| row.row_id)
+                .collect::<Vec<RowId>>();
+
+            for predicate in &predicates[1..] {
+                let new_row_ids = row_ids
+                    .iter()
+                    .filter(|&row_id| self.has(*row_id, predicate))
+                    .cloned()
+                    .collect::<Vec<RowId>>();
+                row_ids = new_row_ids;
+            }
+            row_ids
+        }
+    }
+
+    // The current implementation has run time of O(n2), so a predicate with high selectivity must
+    // be in position 0 (i. e. not "set")
+    pub fn select(&self, predicates: &[Entry], columns: Vec<String>) -> Vec<Vec<Entry>> {
+        let mut result: Vec<Vec<Entry>> = vec![];
+        let row_ids = self.select_row_ids(predicates);
+        for row_id in &row_ids {
+            result.push(
+                self.rows
+                    .iter()
+                    .filter(|row| row.row_id == *row_id && columns.contains(&(&row.entry.name)))
+                    .map(|row| row.entry.clone())
+                    .collect::<Vec<Entry>>(),
+            );
+        }
+        result
+    }
+
+    fn has(&self, row_id: RowId, predicate: &Entry) -> bool {
+        if let Some(_has) = self.rows.iter().find(|&row| {
+            row.row_id == row_id
+                && row.entry.name == predicate.name
+                && row.entry.value == predicate.value
+        }) {
+            true
+        } else {
+            false
+        }
+    }
+
     fn next(&mut self) -> RowId {
         self.row_max.0 += 1;
         self.row_max
@@ -98,7 +156,7 @@ mod test {
 
     fn new_db_with_entries(name: &str) -> Db {
         let mut db = Db::new(name);
-        let entries: Vec<Entry> = vec![
+        let _id = db.add(vec![
             Entry {
                 name: String::from("set"),
                 value: Db::db_string("es-en"),
@@ -111,20 +169,138 @@ mod test {
                 name: String::from("value"),
                 value: Db::db_string("to enjoy"),
             },
-        ];
-        let _id = db.add(entries);
+        ]);
+        let _id = db.add(vec![
+            Entry {
+                name: String::from("set"),
+                value: Db::db_string("es-en"),
+            },
+            Entry {
+                name: String::from("name"),
+                value: Db::db_string("coche"),
+            },
+            Entry {
+                name: String::from("value"),
+                value: Db::db_string("car"),
+            },
+        ]);
         db
     }
 
     fn check_single_entries(db: &Db) {
-        assert_eq!(db.rows.len(), 3);
+        assert_eq!(db.rows.len(), 6);
         assert_eq!(db.rows[0].row_id, RowId(1));
         assert_eq!(db.rows[0].entry.name, "set");
         assert_eq!(db.rows[0].entry.value, Db::db_string("es-en"));
 
-        assert_eq!(db.rows[2].row_id, RowId(1));
-        assert_eq!(db.rows[2].entry.name, "value");
-        assert_eq!(db.rows[2].entry.value, Db::db_string("to enjoy"));
+        assert_eq!(db.rows[5].row_id, RowId(2));
+        assert_eq!(db.rows[5].entry.name, "value");
+        assert_eq!(db.rows[5].entry.value, Db::db_string("car"));
+    }
+
+    #[test]
+    fn has() {
+        let name = "testdb";
+        let db = new_db_with_entries(name);
+        assert!(db.has(
+            RowId(1),
+            &Entry {
+                name: String::from("set"),
+                value: Db::db_string("es-en")
+            }
+        ));
+        assert_eq!(
+            db.has(
+                RowId(1),
+                &Entry {
+                    name: String::from("set"),
+                    value: Db::db_string("does not exist")
+                }
+            ),
+            false
+        );
+    }
+
+    #[test]
+    fn select_row_ids() {
+        let name = "testdb";
+        let db = new_db_with_entries(name);
+
+        let predicates1 = vec![Entry {
+            name: String::from("set"),
+            value: Db::db_string("es-en"),
+        }];
+
+        let predicates2 = vec![
+            Entry {
+                name: String::from("set"),
+                value: Db::db_string("es-en"),
+            },
+            Entry {
+                name: String::from("name"),
+                value: Db::db_string("disfrutar"),
+            },
+        ];
+
+        let row_ids = db.select_row_ids(&predicates1);
+        assert_eq!(row_ids, vec![RowId(1), RowId(2)]);
+
+        let row_ids = db.select_row_ids(&predicates2);
+        assert_eq!(row_ids, vec![RowId(1)]);
+    }
+
+    #[test]
+    fn select() {
+        let name = "testdb";
+        let db = new_db_with_entries(name);
+
+        let predicates = vec![Entry {
+            name: String::from("set"),
+            value: Db::db_string("es-en"),
+        }];
+
+        let result1 = vec![
+            vec![Entry {
+                name: String::from("name"),
+                value: Db::db_string("disfrutar"),
+            }],
+            vec![Entry {
+                name: String::from("name"),
+                value: Db::db_string("coche"),
+            }],
+        ];
+
+        let result2 = vec![
+            vec![
+                Entry {
+                    name: String::from("name"),
+                    value: Db::db_string("disfrutar"),
+                },
+                Entry {
+                    name: String::from("value"),
+                    value: Db::db_string("to enjoy"),
+                },
+            ],
+            vec![
+                Entry {
+                    name: String::from("name"),
+                    value: Db::db_string("coche"),
+                },
+                Entry {
+                    name: String::from("value"),
+                    value: Db::db_string("car"),
+                },
+            ],
+        ];
+
+        let result = db.select(&predicates, vec![String::from("name")]);
+        assert_eq!(result, result1);
+
+        let result = db.select(
+            &predicates,
+            vec![String::from("name"), String::from("value")],
+        );
+        assert_eq!(result, result2);
     }
 
     #[test]

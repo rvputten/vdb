@@ -1,6 +1,6 @@
 {
   "full_filename": "save/testdb",
-  "row_max": 1,
+  "row_max": 2,
   "rows": [
     {
       "row_id": 1,
@@ -26,6 +26,33 @@
         "name": "value",
         "value": {
           "DbString": "to enjoy"
+        }
+      }
+    },
+    {
+      "row_id": 2,
+      "entry": {
+        "name": "set",
+        "value": {
+          "DbString": "es-en"
+        }
+      }
+    },
+    {
+      "row_id": 2,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "coche"
+        }
+      }
+    },
+    {
+      "row_id": 2,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "car"
         }
       }
     }
