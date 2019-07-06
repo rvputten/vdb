@@ -13,26 +13,26 @@ pub enum Data {
     DbDateTime(NaiveDateTime),
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Clone, Debug, Copy)]
 pub struct RowId(usize);
 
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
 pub struct Entry {
-    name: String,
-    value: Data,
+    pub name: String,
+    pub value: Data,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
 pub struct Row {
-    row_id: RowId,
-    entry: Entry,
+    pub row_id: RowId,
+    pub entry: Entry,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
 pub struct Db {
     full_filename: String,
     row_max: RowId,
-    rows: Vec<Row>,
+    pub rows: Vec<Row>,
 }
 
 impl Db {
