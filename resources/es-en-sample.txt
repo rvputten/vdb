@@ -33,3 +33,4 @@ cocina|kitchen
 cocina|stove, oven, kiln
 cocinado|cooked
 cocinar|To cook
+lavacoches|carwash

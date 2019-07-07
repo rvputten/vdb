@@ -41,6 +41,29 @@ pub struct Entry {
     pub value: Data,
 }
 
+impl Entry {
+    pub fn new_string(name: &str, value: &str) -> Entry {
+        Entry {
+            name: String::from(name),
+            value: Db::db_string(value),
+        }
+    }
+
+    fn compare(&self, predicate: &Predicate) -> bool {
+        match &predicate.predicate_type {
+            PredicateType::Equal => {
+                predicate.entry.name == self.name && predicate.entry.value == self.value
+            }
+            PredicateType::StartsWith => {
+                self.name == predicate.entry.name && self.value.starts_with(&predicate.entry.value)
+            }
+            PredicateType::Contains => {
+                self.name == predicate.entry.name && self.value.contains(&predicate.entry.value)
+            }
+        }
+    }
+}
+
 #[derive(PartialEq, Debug)]
 pub enum PredicateType {
     Equal,
@@ -50,8 +73,39 @@ pub enum PredicateType {
 
 #[derive(Debug)]
 pub struct Predicate {
-    predicate_type: PredicateType,
-    entry: Entry,
+    pub predicate_type: PredicateType,
+    pub entry: Entry,
+}
+impl Predicate {
+    pub fn new_equal_string(name: &str, value: &str) -> Predicate {
+        Predicate {
+            predicate_type: PredicateType::Equal,
+            entry: Entry {
+                name: String::from(name),
+                value: Db::db_string(value),
+            },
+        }
+    }
+    #[cfg(test)]
+    pub fn new_starts_with(name: &str, value: &str) -> Predicate {
+        Predicate {
+            predicate_type: PredicateType::StartsWith,
+            entry: Entry {
+                name: String::from(name),
+                value: Db::db_string(value),
+            },
+        }
+    }
+    #[cfg(test)]
+    pub fn new_contains(name: &str, value: &str) -> Predicate {
+        Predicate {
+            predicate_type: PredicateType::Contains,
+            entry: Entry {
+                name: String::from(name),
+                value: Db::db_string(value),
+            },
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
@@ -95,9 +149,11 @@ impl Db {
     pub fn db_string(v: &str) -> Data {
         Data::DbString(String::from(v))
     }
+    #[cfg(test)]
     pub fn db_int(v: i32) -> Data {
         Data::DbInt(v)
     }
+    #[cfg(test)]
     pub fn db_datetime(v: &str) -> Result<Data, Box<Error>> {
         let fmt = "%Y-%m-%d %H:%M:%S";
         let r = NaiveDateTime::parse_from_str(v, fmt)?;
@@ -115,7 +171,7 @@ impl Db {
         id
     }
 
-    fn select_row_ids(&self, predicates: &[Entry]) -> Vec<RowId> {
+    fn select_row_ids(&self, predicates: &[Predicate]) -> Vec<RowId> {
         if predicates.is_empty() {
             self.rows
                 .iter()
@@ -126,16 +182,14 @@ impl Db {
             let mut row_ids = self
                 .rows
                 .iter()
-                .filter(|row| {
-                    row.entry.name == predicate0.name && row.entry.value == predicate0.value
-                })
+                .filter(|row| row.entry.compare(predicate0))
                 .map(|row| row.row_id)
                 .collect::<Vec<RowId>>();
 
             for predicate in &predicates[1..] {
                 let new_row_ids = row_ids
                     .iter()
-                    .filter(|&row_id| self.has(*row_id, predicate))
+                    .filter(|&row_id| self.match_row(*row_id, predicate))
                     .cloned()
                     .collect::<Vec<RowId>>();
                 row_ids = new_row_ids;
@@ -146,7 +200,7 @@ impl Db {
 
     // The current implementation has run time of O(n2), so predicates[0] must have high selectivity.
     // For predicates[1..], low selectivity is ok.
-    pub fn select(&self, predicates: &[Entry], columns: Vec<String>) -> Vec<Vec<Entry>> {
+    pub fn select(&self, predicates: &[Predicate], columns: Vec<String>) -> Vec<Vec<Entry>> {
         let mut result: Vec<Vec<Entry>> = vec![];
         let row_ids = self.select_row_ids(predicates);
         for row_id in &row_ids {
@@ -161,12 +215,25 @@ impl Db {
         result
     }
 
+    #[cfg(test)]
     fn has(&self, row_id: RowId, predicate: &Entry) -> bool {
         if let Some(_has) = self.rows.iter().find(|&row| {
             row.row_id == row_id
                 && row.entry.name == predicate.name
                 && row.entry.value == predicate.value
         }) {
+            true
+        } else {
+            false
+        }
+    }
+
+    fn match_row(&self, row_id: RowId, predicate: &Predicate) -> bool {
+        if let Some(_has) = self
+            .rows
+            .iter()
+            .find(|&row| row.row_id == row_id && row.entry.compare(predicate))
+        {
             true
         } else {
             false
@@ -181,28 +248,47 @@ impl Db {
     fn build_filename(name: &str) -> String {
         format!("save/{}", name)
     }
-
-    fn compare(predicate: &Predicate, entry: &Entry) -> bool {
-        let result = match &predicate.predicate_type {
-            PredicateType::Equal => {
-                predicate.entry.name == entry.name && predicate.entry.value == entry.value
-            }
-            PredicateType::StartsWith => {
-                entry.name == predicate.entry.name
-                    && entry.value.starts_with(&predicate.entry.value)
-            }
-            PredicateType::Contains => {
-                entry.name == predicate.entry.name && entry.value.contains(&predicate.entry.value)
-            }
-            _ => panic!("Not implemented"),
-        };
+    #[cfg(test)]
+    fn debug_rows(&self, row_ids: &[RowId]) -> Vec<Vec<Entry>> {
+        let mut result: Vec<Vec<Entry>> = vec![];
+        for row_id in row_ids {
+            result.push(
+                self.rows
+                    .iter()
+                    .filter(|row| row.row_id == *row_id)
+                    .map(|row| row.entry.clone())
+                    .collect::<Vec<Entry>>(),
+            );
+        }
         result
     }
 }
 
 mod test {
-    use super::{Data, Db, Entry, Predicate, PredicateType, RowId};
+    #[cfg(test)]
+    use super::{Data, Db, Entry, Predicate, RowId};
+    #[cfg(test)]
     use chrono::NaiveDateTime;
+
+    #[test]
+    fn match_row() {
+        let db = new_db_with_entries("testdb");
+
+        let p1 = Predicate::new_equal_string("name", "coche");
+        let p2 = Predicate::new_starts_with("name", "co");
+        let p3 = Predicate::new_contains("name", "och");
+
+        println!("{:?}", db.debug_rows(&vec![RowId(2)]));
+        println!("{:?}", db.debug_rows(&vec![RowId(1)]));
+
+        assert_eq!(db.match_row(RowId(2), &p1), true);
+        assert_eq!(db.match_row(RowId(2), &p2), true);
+        assert_eq!(db.match_row(RowId(2), &p3), true);
+
+        assert_eq!(db.match_row(RowId(1), &p1), false);
+        assert_eq!(db.match_row(RowId(1), &p2), false);
+        assert_eq!(db.match_row(RowId(1), &p3), false);
+    }
 
     #[test]
     fn starts_with_contains() {
@@ -217,29 +303,9 @@ mod test {
 
     #[test]
     fn compare() {
-        let p1 = Predicate {
-            predicate_type: PredicateType::Equal,
-            entry: Entry {
-                name: String::from("set"),
-                value: Db::db_string("es-en"),
-            },
-        };
-
-        let p2 = Predicate {
-            predicate_type: PredicateType::StartsWith,
-            entry: Entry {
-                name: String::from("set"),
-                value: Db::db_string("es"),
-            },
-        };
-
-        let p3 = Predicate {
-            predicate_type: PredicateType::Contains,
-            entry: Entry {
-                name: String::from("set"),
-                value: Db::db_string("s-e"),
-            },
-        };
+        let p1 = Predicate::new_equal_string("set", "es-en");
+        let p2 = Predicate::new_starts_with("set", "es");
+        let p3 = Predicate::new_contains("set", "s-e");
 
         let e1 = Entry {
             name: String::from("set"),
@@ -251,16 +317,17 @@ mod test {
             value: Db::db_string("en-es"),
         };
 
-        assert!(Db::compare(&p1, &e1));
-        assert_eq!(Db::compare(&p1, &e2), false);
+        assert!(e1.compare(&p1));
+        assert_eq!(e2.compare(&p1), false);
 
-        assert!(Db::compare(&p2, &e1));
-        assert_eq!(Db::compare(&p2, &e2), false);
+        assert!(e1.compare(&p2));
+        assert_eq!(e2.compare(&p2), false);
 
-        assert!(Db::compare(&p3, &e1));
-        assert_eq!(Db::compare(&p3, &e2), false);
+        assert!(e1.compare(&p3));
+        assert_eq!(e2.compare(&p3), false);
     }
 
+    #[cfg(test)]
     fn new_db_with_entries(name: &str) -> Db {
         let mut db = Db::new(name);
         let _id = db.add(vec![
@@ -294,6 +361,7 @@ mod test {
         db
     }
 
+    #[cfg(test)]
     fn check_single_entries(db: &Db) {
         assert_eq!(db.rows.len(), 6);
         assert_eq!(db.rows[0].row_id, RowId(1));
@@ -333,20 +401,10 @@ mod test {
         let name = "testdb";
         let db = new_db_with_entries(name);
 
-        let predicates1 = vec![Entry {
-            name: String::from("set"),
-            value: Db::db_string("es-en"),
-        }];
-
+        let predicates1 = vec![Predicate::new_equal_string("set", "es-en")];
         let predicates2 = vec![
-            Entry {
-                name: String::from("set"),
-                value: Db::db_string("es-en"),
-            },
-            Entry {
-                name: String::from("name"),
-                value: Db::db_string("disfrutar"),
-            },
+            Predicate::new_equal_string("set", "es-en"),
+            Predicate::new_equal_string("name", "disfrutar"),
         ];
 
         let row_ids = db.select_row_ids(&predicates1);
@@ -361,10 +419,7 @@ mod test {
         let name = "testdb";
         let db = new_db_with_entries(name);
 
-        let predicates = vec![Entry {
-            name: String::from("set"),
-            value: Db::db_string("es-en"),
-        }];
+        let predicates = vec![Predicate::new_equal_string("set", "es-en")];
 
         let result1 = vec![
             vec![Entry {

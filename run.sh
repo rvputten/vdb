@@ -34,14 +34,14 @@ function run_cargo {
     local cmd=$1; shift
     rqline $cmd
 
-#    out="`cargo $cmd $* --color=always 2>&1`"
-#    local r=$?
-#    echo "$out" | head -$((lines-5))
-#    return $r
-
-    AMETHYST_LOG_LEVEL_FILTER=WARN cargo $cmd $* --color=always
+    out="`cargo $cmd $* --color=always 2>&1`"
     local r=$?
+    echo "$out" | head -$((lines-5))
     return $r
+
+#    cargo $cmd $* --color=always
+#    local r=$?
+#    return $r
 }
 
 rqline
