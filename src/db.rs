@@ -33,7 +33,7 @@ impl Data {
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug, Copy)]
-pub struct RowId(usize);
+pub struct RowId(pub usize);
 
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
 pub struct Entry {
@@ -171,7 +171,7 @@ impl Db {
         id
     }
 
-    fn select_row_ids(&self, predicates: &[Predicate]) -> Vec<RowId> {
+    pub fn select_row_ids(&self, predicates: &[Predicate]) -> Vec<RowId> {
         if predicates.is_empty() {
             self.rows
                 .iter()
@@ -201,9 +201,13 @@ impl Db {
     // The current implementation has run time of O(n2), so predicates[0] must have high selectivity.
     // For predicates[1..], low selectivity is ok.
     pub fn select(&self, predicates: &[Predicate], columns: Vec<String>) -> Vec<Vec<Entry>> {
-        let mut result: Vec<Vec<Entry>> = vec![];
         let row_ids = self.select_row_ids(predicates);
-        for row_id in &row_ids {
+        self.columns_from_row_ids(&row_ids, columns)
+    }
+
+    pub fn columns_from_row_ids(&self, row_ids: &[RowId], columns: Vec<String>) -> Vec<Vec<Entry>> {
+        let mut result: Vec<Vec<Entry>> = vec![];
+        for row_id in row_ids {
             result.push(
                 self.rows
                     .iter()

@@ -4,7 +4,9 @@ function run_cargo {
     cargo $*
 }
 alias b="run_cargo build"
+alias br="run_cargo build --release"
 alias r="run_cargo run"
+alias rr="run_cargo run --release"
 alias t="run_cargo test"
 alias gp="run_cargo test && git commit . -m inc && git push"
 

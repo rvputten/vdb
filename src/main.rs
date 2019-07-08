@@ -6,7 +6,7 @@ extern crate serde_json;
 
 mod db;
 
-use db::{Data, Db, Entry, Predicate, PredicateType};
+use db::{Data, Db, Entry, Predicate, PredicateType, RowId};
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
@@ -31,15 +31,18 @@ pub fn read_file_to_vec(filename: &str) -> Vec<String> {
     v
 }
 
-fn load(dbname: &str, filename: &str) -> Db {
-    if let Ok(db) = Db::load(dbname) {
-        println!("Using existing db.");
+fn load(db_vocabulary_name: &str, db_personal_name: &str, vocabulary_filename: &str) -> (Db, Db) {
+    let db_vocabulary = if let Ok(db) = Db::load(db_vocabulary_name) {
+        println!("Using existing db for vocabulary.");
         db
     } else {
-        let mut db = Db::new(dbname);
-        println!("Creating new db and loading from {}.", filename);
+        let mut db = Db::new(db_vocabulary_name);
+        println!(
+            "Creating new db for vocabulary and loading from {}.",
+            vocabulary_filename
+        );
 
-        let lines = read_file_to_vec(filename);
+        let lines = read_file_to_vec(vocabulary_filename);
         for line in &lines {
             let mut split = line.split('|');
             if let Some(e) = split.next() {
@@ -64,11 +67,26 @@ fn load(dbname: &str, filename: &str) -> Db {
             }
         }
         db
-    }
+    };
+    let db_personal = if let Ok(db) = Db::load(db_personal_name) {
+        println!("Using existing db for personal dictionary.");
+        db
+    } else {
+        let mut db = Db::new(db_personal_name);
+        println!("Creating new db for personal dictionary.");
+        db
+    };
+    let db_personal = Db::new(db_personal_name);
+    (db_vocabulary, db_personal)
 }
 
 fn find(db: &Db, name: &str, predicate_type: PredicateType) -> Vec<(String, String)> {
-    // "set" needs to be at the end or search is very slow
+    let row_ids = find_row_ids(db, name, predicate_type);
+    find_row_ids_to_columns(db, &row_ids)
+}
+
+fn find_row_ids(db: &Db, name: &str, predicate_type: PredicateType) -> Vec<RowId> {
+    // "set" needs to be at the end or search is very slow (needs high selectivity)
     let predicates = vec![
         Predicate {
             predicate_type,
@@ -77,10 +95,12 @@ fn find(db: &Db, name: &str, predicate_type: PredicateType) -> Vec<(String, Stri
         Predicate::new_equal_string("set", "es-en"),
     ];
 
-    let result = db.select(
-        &predicates,
-        vec![String::from("name"), String::from("value")],
-    );
+    db.select_row_ids(&predicates)
+}
+
+fn find_row_ids_to_columns(db: &Db, row_ids: &[RowId]) -> Vec<(String, String)> {
+    let columns = vec![String::from("name"), String::from("value")];
+    let result = db.columns_from_row_ids(row_ids, columns);
     result
         .iter()
         .map(|entry| (entry[0].value.clone(), entry[1].value.clone()))
@@ -91,45 +111,77 @@ fn find(db: &Db, name: &str, predicate_type: PredicateType) -> Vec<(String, Stri
         .collect::<Vec<(String, String)>>()
 }
 
-fn present(result: Vec<(String, String)>) {
-    if result.is_empty() {
-        println!("No results.");
-    } else {
-        for line in &result {
-            println!("{}: {}", line.0, line.1);
-        }
+fn present(db: &Db, row_ids: &[RowId]) {
+    for line in &find_row_ids_to_columns(db, row_ids) {
+        println!("{}: {}", line.0, line.1);
     }
 }
 
-fn main() {
-    let dbname = "default";
-    let filename = "resources/es-en.txt";
-    let db = load(dbname, filename);
+fn minus(left: &[RowId], right: &[RowId]) -> Vec<RowId> {
+    left.iter()
+        .filter_map(|&x| if right.contains(&x) { None } else { Some(x) })
+        .collect::<Vec<RowId>>()
+}
 
+fn main() {
+    let db_vocabulary_name = "vocabulary";
+    let db_personal_name = "personal";
+    let filename = "resources/es-en.txt";
+
+    let (db_vocabulary, db_personal) = load(db_vocabulary_name, db_personal_name, filename);
+
+    main_loop(&db_vocabulary);
+
+    save(
+        &db_vocabulary,
+        &db_personal,
+        db_vocabulary_name,
+        db_personal_name,
+    );
+}
+
+fn main_loop(db_vocabulary: &Db) {
     let mut input = String::new();
     print!("Enter search term: ");
     io::stdout().flush().unwrap();
     while let Ok(_bytes_read) = io::stdin().read_line(&mut input) {
+        let trimmed = input.trim();
+        if trimmed == "" {
+            break;
+        }
+
         println!("Searching...");
 
-        let result = find(&db, &input.trim(), PredicateType::Contains);
-        if result.is_empty() {
-            println!("\nSearch result empty.");
-        } else {
-            println!("\nFull matches:");
-            present(result);
+        let rows_equal = find_row_ids(&db_vocabulary, &trimmed, PredicateType::Equal);
+        let number_matches_equal = rows_equal.len();
+
+        let rows_starts_with_full =
+            find_row_ids(&db_vocabulary, &trimmed, PredicateType::StartsWith);
+        let rows_starts_with = minus(&rows_starts_with_full, &rows_equal);
+        let number_matches_starts_with = rows_starts_with_full.len();
+
+        if number_matches_starts_with < 30 {
+            let rows_contains_full =
+                find_row_ids(&db_vocabulary, &trimmed, PredicateType::Contains);
+            let number_matches_contains = rows_contains_full.len();
+
+            if number_matches_contains == 0 {
+                println!("\nSearch result empty.");
+            } else {
+                let rows_contains = minus(&rows_contains_full, &rows_starts_with_full);
+                println!("\nFull matches:");
+                present(&db_vocabulary, &rows_contains);
+            }
         }
 
-        let result = find(&db, &input.trim(), PredicateType::StartsWith);
-        if !result.is_empty() {
+        if number_matches_starts_with > 0 {
             println!("\nStarting with:");
-            present(result);
+            present(&db_vocabulary, &rows_starts_with);
         }
 
-        let result = find(&db, &input.trim(), PredicateType::Equal);
-        if !result.is_empty() {
+        if number_matches_equal > 0 {
             println!("\nEquals:");
-            present(result);
+            present(&db_vocabulary, &rows_equal);
         }
 
         println!("----------------------------");
@@ -139,22 +191,37 @@ fn main() {
         print!("Enter search term: ");
         io::stdout().flush().unwrap();
     }
-
-    println!("Saving database {}.", dbname);
-    if let Ok(_result) = db.save() {
+}
+fn save(db_vocabulary: &Db, db_personal: &Db, db_vocabulary_name: &str, db_personal_name: &str) {
+    println!("Saving database {}.", db_vocabulary_name);
+    if let Ok(_result) = db_vocabulary.save() {
     } else {
-        println!("Error saving database {}!", dbname);
+        println!("Error saving database {}!", db_vocabulary_name);
+    }
+    println!("Saving database {}.", db_personal_name);
+    if let Ok(_result) = db_personal.save() {
+    } else {
+        println!("Error saving database {}!", db_personal_name);
     }
 }
 
 mod main {
     #[cfg(test)]
     use super::*;
+
+    #[test]
+    fn minus2() {
+        let rows1 = vec![RowId(1), RowId(2), RowId(4), RowId(8), RowId(6)];
+        let rows2 = vec![RowId(2), RowId(4)];
+        let result = vec![RowId(1), RowId(8), RowId(6)];
+        assert_eq!(minus(&rows1, &rows2), result);
+    }
+
     #[test]
     fn load_and_filter() {
         let dbname = "test-sample";
         let filename = "resources/es-en-sample.txt";
-        let db = load(dbname, filename);
+        let (db, _) = load(dbname, "dummy", filename);
 
         let values = find(&db, "coche", PredicateType::Equal);
         assert_eq!(values.len(), 1);
