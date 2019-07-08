@@ -6,15 +6,15 @@ extern crate serde_json;
 
 mod db;
 
-use db::{Data, Db, Entry, Predicate, PredicateType, RowId};
+pub use db::{Data, Db, Entry, Predicate, PredicateType, RowId};
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Write;
 
-// Read lines of a file into a vec
-// Ignores lines beginning with '#'
+/// Read lines of a file into a Vec<String>.
+/// Ignores lines beginning with '#'.
 pub fn read_file_to_vec(filename: &str) -> Vec<String> {
     let f = File::open(filename).unwrap();
     let file = BufReader::new(&f);
@@ -83,7 +83,7 @@ fn load(db_vocabulary_name: &str, db_personal_name: &str, vocabulary_filename: &
 fn find(db: &mut Db, name: &str, predicate_type: PredicateType) -> Vec<(usize, String, String)> {
     let row_ids = find_row_ids(db, name, predicate_type, None);
     add_numbers(db, &row_ids, 0);
-    find_row_ids_to_columns(db, &row_ids)
+    find_row_ids_to_entries(db, &row_ids)
 }
 
 fn find_row_ids(
@@ -104,13 +104,13 @@ fn find_row_ids(
     db.select_row_ids(&predicates, max_results)
 }
 
-fn find_row_ids_to_columns(db: &Db, row_ids: &[RowId]) -> Vec<(usize, String, String)> {
-    let columns = vec![
+fn find_row_ids_to_entries(db: &Db, row_ids: &[RowId]) -> Vec<(usize, String, String)> {
+    let entries = vec![
         String::from("search_index"),
         String::from("name"),
         String::from("value"),
     ];
-    let result = db.columns_from_row_ids(row_ids, columns);
+    let result = db.entries_from_row_ids(row_ids, entries);
     result
         .iter()
         .map(|entries| {
@@ -134,7 +134,7 @@ fn find_row_ids_to_columns(db: &Db, row_ids: &[RowId]) -> Vec<(usize, String, St
 }
 
 fn present(db: &Db, row_ids: &[RowId], max_message: bool) {
-    for line in &find_row_ids_to_columns(db, row_ids) {
+    for line in &find_row_ids_to_entries(db, row_ids) {
         println!("{}) {}: {}", line.0, line.1, line.2);
     }
     if max_message {
@@ -181,7 +181,7 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
         } else if trimmed == "p" {
             display_personal_db(db_personal, 100);
         } else {
-            db_vocabulary.delete_column_all("search_index");
+            db_vocabulary.delete_entry_all("search_index");
             find_and_display(db_vocabulary, trimmed, max_results);
             display_personal_db(db_personal, 7);
         }
@@ -200,8 +200,8 @@ fn display_personal_db(db_personal: &mut Db, max_rows: usize) {
     let row_ids = db_personal.last_n_rows(max_rows);
     for row_id in row_ids {
         if let (Some(name), Some(value)) = (
-            db_personal.get_column(row_id, "name"),
-            db_personal.get_column(row_id, "value"),
+            db_personal.get_entry(row_id, "name"),
+            db_personal.get_entry(row_id, "value"),
         ) {
             match (&name.value, &value.value) {
                 (Data::DbString(name), Data::DbString(value)) => {
@@ -218,8 +218,8 @@ fn add_to_personal_db(db_vocabulary: &mut Db, db_personal: &mut Db, number: usiz
     let predicates = vec![Predicate::new_equal_int("search_index", number as i32)];
     let row_ids = db_vocabulary.select_row_ids(&predicates, Some(1));
     if !row_ids.is_empty() {
-        let name = db_vocabulary.get_column(row_ids[0], "name");
-        let value = db_vocabulary.get_column(row_ids[0], "value");
+        let name = db_vocabulary.get_entry(row_ids[0], "name");
+        let value = db_vocabulary.get_entry(row_ids[0], "value");
         match (name, value) {
             (Some(name), Some(value)) => db_personal.add(vec![
                 Entry {
@@ -292,7 +292,7 @@ fn add_numbers(db: &mut Db, row_ids: &[RowId], offset: usize) {
     let reverse_numbers = (0..count).map(|n| count - n + offset);
     for (row_id, index) in row_ids.iter().zip(reverse_numbers) {
         let row_id: RowId = *row_id;
-        db.add_column(
+        db.add_entry(
             row_id,
             Entry {
                 name: String::from("search_index"),

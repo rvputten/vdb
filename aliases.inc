@@ -3,6 +3,7 @@ function run_cargo {
     echo "$a$a$a$a$a" | cut -b-${COLUMNS:-79}
     cargo $*
 }
+alias d="cargo doc --open --document-private-items"
 alias b="run_cargo build"
 alias br="run_cargo build --release"
 alias r="run_cargo run"

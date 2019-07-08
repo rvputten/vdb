@@ -14,21 +14,22 @@ pub enum Data {
 }
 
 impl Data {
+    /// Tests if the data starts with the given string
     fn starts_with(&self, data: &Data) -> bool {
-        if let Data::DbString(left) = self {
-            if let Data::DbString(right) = data {
-                return left.starts_with(right);
-            }
+        if let (Data::DbString(left), Data::DbString(right)) = (self, data) {
+            left.starts_with(right)
+        } else {
+            false
         }
-        false
     }
+
+    /// Tests if the data contains the given string
     fn contains(&self, data: &Data) -> bool {
-        if let Data::DbString(left) = self {
-            if let Data::DbString(right) = data {
-                return left.contains(right);
-            }
+        if let (Data::DbString(left), Data::DbString(right)) = (self, data) {
+            left.contains(right)
+        } else {
+            false
         }
-        false
     }
 }
 
@@ -42,6 +43,7 @@ pub struct Entry {
 }
 
 impl Entry {
+    /// Shortcut for creating a new `Entry` with a `DbString`
     pub fn new_string(name: &str, value: &str) -> Entry {
         Entry {
             name: String::from(name),
@@ -49,7 +51,7 @@ impl Entry {
         }
     }
 
-    fn compare(&self, predicate: &Predicate) -> bool {
+    pub fn compare(&self, predicate: &Predicate) -> bool {
         match &predicate.predicate_type {
             PredicateType::Equal => {
                 predicate.entry.name == self.name && predicate.entry.value == self.value
@@ -63,6 +65,7 @@ impl Entry {
         }
     }
 
+    /// Return `Entry` in a given list that matches `name`
     pub fn get_by_name(entries: &[Entry], name: &str) -> Option<Entry> {
         for entry in entries {
             if entry.name == name {
@@ -70,7 +73,6 @@ impl Entry {
             }
         }
         None
-        //entries.iter().find(|entry| entry.name == name).clone()
     }
 }
 
@@ -86,7 +88,9 @@ pub struct Predicate {
     pub predicate_type: PredicateType,
     pub entry: Entry,
 }
+
 impl Predicate {
+    /// Shortcut for creating a new `Predicate` that tests for equality with a `DbInt`
     pub fn new_equal_int(name: &str, value: i32) -> Predicate {
         Predicate {
             predicate_type: PredicateType::Equal,
@@ -97,6 +101,8 @@ impl Predicate {
         }
     }
 
+    /// Shortcut for creating a new `Predicate` that searches database for `DbString`s equal to
+    /// `value`
     pub fn new_equal_string(name: &str, value: &str) -> Predicate {
         Predicate {
             predicate_type: PredicateType::Equal,
@@ -107,6 +113,8 @@ impl Predicate {
         }
     }
 
+    /// Shortcut for creating a new `Predicate` that searches database for `DbString`s starting
+    /// with `value`
     #[cfg(test)]
     pub fn new_starts_with(name: &str, value: &str) -> Predicate {
         Predicate {
@@ -117,6 +125,8 @@ impl Predicate {
             },
         }
     }
+    /// Shortcut for creating a new `Predicate` that searches database for `DbString`s that contain
+    /// `value`
     #[cfg(test)]
     pub fn new_contains(name: &str, value: &str) -> Predicate {
         Predicate {
@@ -143,6 +153,7 @@ pub struct Db {
 }
 
 impl Db {
+    /// Create new database in memory. The file is not created until `save()` is called.
     pub fn new(filename: &str) -> Db {
         Db {
             full_filename: Db::build_filename(filename),
@@ -150,6 +161,10 @@ impl Db {
             rows: vec![],
         }
     }
+
+    /// Load a database file from the filesystem under the subdirectory `save/`.
+    /// # Errors
+    /// May return errors from external modules while opening the file or parsing the contents.
     pub fn load(filename: &str) -> Result<Db, Box<Error>> {
         let full_filename = Db::build_filename(filename);
         let mut file = File::open(full_filename)?;
@@ -159,6 +174,8 @@ impl Db {
         Ok(result)
     }
 
+    /// Save database under the subdirectory `save/` with the same name it was `open`ed or `create`d
+    /// with. The subdirectory `save/` must exist.
     pub fn save(&self) -> Result<(), Box<Error>> {
         let path = Path::new(&self.full_filename);
         let mut file = File::create(&path)?;
@@ -170,9 +187,12 @@ impl Db {
     pub fn db_string(v: &str) -> Data {
         Data::DbString(String::from(v))
     }
+
     pub fn db_int(v: i32) -> Data {
         Data::DbInt(v)
     }
+
+    /// Parse `&str` into a `DbDateTime`. The format string is `%Y-%m-%d %H:%M:%S`.
     #[cfg(test)]
     pub fn db_datetime(v: &str) -> Result<Data, Box<Error>> {
         let fmt = "%Y-%m-%d %H:%M:%S";
@@ -180,6 +200,7 @@ impl Db {
         Ok(Data::DbDateTime(r))
     }
 
+    /// Add a row with multiple entries.
     pub fn add(&mut self, entries: Vec<Entry>) -> RowId {
         let id = self.next();
         for e in entries {
@@ -191,21 +212,23 @@ impl Db {
         id
     }
 
-    // Add or update
-    pub fn add_column(&mut self, row_id: RowId, entry: Entry) {
-        // check if column exists
-        if let Some(ref mut db_entry) = self.get_column_mut(row_id, &entry.name) {
+    /// Add a single entry to an existing row. An existing entry with the same name is overwritten.
+    pub fn add_entry(&mut self, row_id: RowId, entry: Entry) {
+        // check if entry exists
+        if let Some(ref mut db_entry) = self.get_entry_mut(row_id, &entry.name) {
             db_entry.value = entry.value;
         } else {
             self.rows.push(Row { row_id, entry });
         }
     }
 
-    pub fn delete_column_all(&mut self, name: &str) {
+    /// Delete all entries with this name in the whole database.
+    pub fn delete_entry_all(&mut self, name: &str) {
         self.rows.retain(|x| x.entry.name != name);
     }
 
-    pub fn get_column(&self, row_id: RowId, name: &str) -> Option<&Entry> {
+    /// Return reference to a entry in a given row.
+    pub fn get_entry(&self, row_id: RowId, name: &str) -> Option<&Entry> {
         for row in &self.rows {
             if row.row_id == row_id && row.entry.name == name {
                 return Some(&row.entry);
@@ -214,7 +237,8 @@ impl Db {
         None
     }
 
-    fn get_column_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry> {
+    /// Return mutable reference to an entry in a given row.
+    fn get_entry_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry> {
         for row in &mut self.rows {
             if row.row_id == row_id && row.entry.name == name {
                 return Some(&mut row.entry);
@@ -223,6 +247,21 @@ impl Db {
         None
     }
 
+    /// Returns all rows if no predicates are given.
+    /// The first predicate is evaluated first and should have high selectivity, i. e. evaluate to a
+    /// small number of rows, to improve runtime.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// // Like SQL "select name, value from testdb where name='coche' limit 15"
+    /// let mut db = new_db_with_entries("testdb");
+    /// let predicates = vec![Predicate::new_equal_string("name", "coche")];
+    /// let entries = vec![String::from("name"), String::from("value")];
+    /// let row_ids = db.select_row_ids(predicates, Some(15));
+    /// println!("{:?}", db.entries_from_row_ids(&row_ids, entries)
+    /// ```
+    /// See also select()
     pub fn select_row_ids(
         &self,
         predicates: &[Predicate],
@@ -281,32 +320,34 @@ impl Db {
         }
     }
 
-    pub fn last_n_rows(&self, n: usize) -> Vec<RowId> {
-        let min_row = if self.row_max.0 > n {
-            self.row_max.0 - n + 1
+    /// Returns the most recently added `top_n` row_ids in the database.
+    pub fn last_n_rows(&self, top_n: usize) -> Vec<RowId> {
+        let min_row = if self.row_max.0 > top_n {
+            self.row_max.0 - top_n + 1
         } else {
             1
         };
         (min_row..=self.row_max.0)
             .map(RowId)
+            .filter_map(|row_id| self.rows.iter().find(|row| row.row_id == row_id))
+            .map(|row| row.row_id)
             .collect::<Vec<RowId>>()
     }
 
-    // The current implementation has run time of O(n2), so predicates[0] must have high selectivity.
-    // For predicates[1..], low selectivity is ok.
     #[cfg(test)]
-    pub fn select(&self, predicates: &[Predicate], columns: Vec<String>) -> Vec<Vec<Entry>> {
+    pub fn select(&self, predicates: &[Predicate], entries: Vec<String>) -> Vec<Vec<Entry>> {
         let row_ids = self.select_row_ids(predicates, None);
-        self.columns_from_row_ids(&row_ids, columns)
+        self.entries_from_row_ids(&row_ids, entries)
     }
 
-    pub fn columns_from_row_ids(&self, row_ids: &[RowId], columns: Vec<String>) -> Vec<Vec<Entry>> {
+    /// Returns entries for given row_ids. The order of the entries in each row is not guaranteed.
+    pub fn entries_from_row_ids(&self, row_ids: &[RowId], entries: Vec<String>) -> Vec<Vec<Entry>> {
         let mut result: Vec<Vec<Entry>> = vec![];
         for row_id in row_ids {
             result.push(
                 self.rows
                     .iter()
-                    .filter(|row| row.row_id == *row_id && columns.contains(&(&row.entry.name)))
+                    .filter(|row| row.row_id == *row_id && entries.contains(&(&row.entry.name)))
                     .map(|row| row.entry.clone())
                     .collect::<Vec<Entry>>(),
             );
@@ -327,6 +368,7 @@ impl Db {
         }
     }
 
+    /// Check if a predicate is true for a given row_id.
     fn match_row(&self, row_id: RowId, predicate: &Predicate) -> bool {
         if let Some(_has) = self
             .rows
@@ -347,6 +389,7 @@ impl Db {
     fn build_filename(name: &str) -> String {
         format!("save/{}", name)
     }
+
     #[cfg(test)]
     fn debug_rows(&self, row_ids: &[RowId]) -> Vec<Vec<Entry>> {
         let mut result: Vec<Vec<Entry>> = vec![];
@@ -591,12 +634,12 @@ mod test {
         assert_eq!(Data::DbDateTime(dt), Db::db_datetime(t).unwrap());
     }
 
-    //fn get_column_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry>
+    //fn get_entry_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry>
     #[test]
-    fn get_column_mut() {
+    fn get_entry_mut() {
         let mut db = new_db_with_entries("testdb");
 
-        if let Some(ref mut entry) = db.get_column_mut(RowId(2), "name") {
+        if let Some(ref mut entry) = db.get_entry_mut(RowId(2), "name") {
             entry.name = String::from("replaced_name");
             println!("{:?}", entry);
         }
@@ -607,70 +650,70 @@ mod test {
         assert_eq!(db.rows[4].entry.name, "replaced_name");
     }
 
-    // pub fn add_column(&mut self, row_id: RowId, entry: Entry)
+    // pub fn add_entry(&mut self, row_id: RowId, entry: Entry)
     #[test]
-    fn add_column_add() {
+    fn add_entry_add() {
         let mut db = new_db_with_entries("testdb");
 
         println!("{:?}", db.debug_rows(&vec![RowId(2)]));
-        db.add_column(
+        db.add_entry(
             RowId(2),
             Entry {
-                name: String::from("new column"),
-                value: Db::db_string("new column content"),
+                name: String::from("new entry"),
+                value: Db::db_string("new entry content"),
             },
         );
         println!("{:?}", db.debug_rows(&vec![RowId(2)]));
         for (i, row) in db.rows.iter().enumerate() {
             println!("{} {:?}", i, row);
         }
-        assert_eq!(db.rows[6].entry.name, "new column");
-        assert_eq!(db.rows[6].entry.value, Db::db_string("new column content"));
+        assert_eq!(db.rows[6].entry.name, "new entry");
+        assert_eq!(db.rows[6].entry.value, Db::db_string("new entry content"));
     }
 
-    // pub fn add_column(&mut self, row_id: RowId, entry: Entry)
+    // pub fn add_entry(&mut self, row_id: RowId, entry: Entry)
     #[test]
-    fn add_column_update() {
+    fn add_entry_update() {
         let mut db = new_db_with_entries("testdb");
 
         println!("{:?}", db.debug_rows(&vec![RowId(2)]));
-        db.add_column(
+        db.add_entry(
             RowId(2),
             Entry {
-                name: String::from("new column"),
-                value: Db::db_string("new column content"),
+                name: String::from("new entry"),
+                value: Db::db_string("new entry content"),
             },
         );
-        db.add_column(
+        db.add_entry(
             RowId(2),
             Entry {
-                name: String::from("new column"),
-                value: Db::db_string("new column content updated"),
+                name: String::from("new entry"),
+                value: Db::db_string("new entry content updated"),
             },
         );
         println!("{:?}", db.debug_rows(&vec![RowId(2)]));
         for (i, row) in db.rows.iter().enumerate() {
             println!("{} {:?}", i, row);
         }
-        assert_eq!(db.rows[6].entry.name, "new column");
+        assert_eq!(db.rows[6].entry.name, "new entry");
         assert_eq!(
             db.rows[6].entry.value,
-            Db::db_string("new column content updated")
+            Db::db_string("new entry content updated")
         );
     }
 
-    // Delete all columns in all rows with the given name
-    // pub fn delete_column_all(&mut self, name: &str)
+    // Delete all entries in all rows with the given name
+    // pub fn delete_entry_all(&mut self, name: &str)
     #[test]
-    fn delete_column_all() {
+    fn delete_entry_all() {
         let mut db = new_db_with_entries("testdb");
 
         let mut add_row = |n| {
             println!("{:?}", db.debug_rows(&vec![RowId(n)]));
-            db.add_column(
+            db.add_entry(
                 RowId(n),
                 Entry {
-                    name: String::from("new column"),
+                    name: String::from("new entry"),
                     value: Db::db_string(&format!("new col for row {}", n)),
                 },
             );
@@ -681,10 +724,10 @@ mod test {
         for (i, row) in db.rows.iter().enumerate() {
             println!("{} {:?}", i, row);
         }
-        assert_eq!(db.rows[6].entry.name, "new column");
+        assert_eq!(db.rows[6].entry.name, "new entry");
 
-        println!("Deleting columns...");
-        db.delete_column_all("new column");
+        println!("Deleting entries...");
+        db.delete_entry_all("new entry");
         for (i, row) in db.rows.iter().enumerate() {
             println!("{} {:?}", i, row);
         }

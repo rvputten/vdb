@@ -3,8 +3,8 @@ Complete tests
 None.
     Entry::get_by_name()
     main::add_numbers()
-    Db::add_column()
-    Db::add_or_modify_column()
+    Db::add_entry()
+    Db::add_or_modify_entry()
 
 Ideas
 =====

@@ -1,6 +1,6 @@
 {
   "full_filename": "save/personal",
-  "row_max": 29,
+  "row_max": 30,
   "rows": [
     {
       "row_id": 1,
@@ -521,6 +521,24 @@
         "name": "value",
         "value": {
           "DbString": "to count; to tally"
+        }
+      }
+    },
+    {
+      "row_id": 30,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "fecha"
+        }
+      }
+    },
+    {
+      "row_id": 30,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "date (time)"
         }
       }
     }
