@@ -171,8 +171,39 @@ impl Db {
         id
     }
 
-    pub fn select_row_ids(&self, predicates: &[Predicate]) -> Vec<RowId> {
-        if predicates.is_empty() {
+    pub fn select_row_ids(
+        &self,
+        predicates: &[Predicate],
+        max_results: Option<usize>,
+    ) -> Vec<RowId> {
+        if let Some(max_results) = max_results {
+            if predicates.is_empty() {
+                self.rows
+                    .iter()
+                    .take(max_results)
+                    .map(|row| row.row_id)
+                    .collect::<Vec<RowId>>()
+            } else {
+                let predicate0 = &predicates[0];
+                let mut row_ids = self
+                    .rows
+                    .iter()
+                    .filter(|row| row.entry.compare(predicate0))
+                    .map(|row| row.row_id)
+                    .collect::<Vec<RowId>>();
+
+                for predicate in &predicates[1..] {
+                    let new_row_ids = row_ids
+                        .iter()
+                        .filter(|&row_id| self.match_row(*row_id, predicate))
+                        .take(max_results)
+                        .cloned()
+                        .collect::<Vec<RowId>>();
+                    row_ids = new_row_ids;
+                }
+                row_ids
+            }
+        } else if predicates.is_empty() {
             self.rows
                 .iter()
                 .map(|row| row.row_id)
@@ -200,8 +231,9 @@ impl Db {
 
     // The current implementation has run time of O(n2), so predicates[0] must have high selectivity.
     // For predicates[1..], low selectivity is ok.
+    #[cfg(test)]
     pub fn select(&self, predicates: &[Predicate], columns: Vec<String>) -> Vec<Vec<Entry>> {
-        let row_ids = self.select_row_ids(predicates);
+        let row_ids = self.select_row_ids(predicates, None);
         self.columns_from_row_ids(&row_ids, columns)
     }
 
@@ -411,10 +443,10 @@ mod test {
             Predicate::new_equal_string("name", "disfrutar"),
         ];
 
-        let row_ids = db.select_row_ids(&predicates1);
+        let row_ids = db.select_row_ids(&predicates1, None);
         assert_eq!(row_ids, vec![RowId(1), RowId(2)]);
 
-        let row_ids = db.select_row_ids(&predicates2);
+        let row_ids = db.select_row_ids(&predicates2, None);
         assert_eq!(row_ids, vec![RowId(1)]);
     }
 

@@ -80,12 +80,18 @@ fn load(db_vocabulary_name: &str, db_personal_name: &str, vocabulary_filename: &
     (db_vocabulary, db_personal)
 }
 
+#[cfg(test)]
 fn find(db: &Db, name: &str, predicate_type: PredicateType) -> Vec<(String, String)> {
-    let row_ids = find_row_ids(db, name, predicate_type);
+    let row_ids = find_row_ids(db, name, predicate_type, None);
     find_row_ids_to_columns(db, &row_ids)
 }
 
-fn find_row_ids(db: &Db, name: &str, predicate_type: PredicateType) -> Vec<RowId> {
+fn find_row_ids(
+    db: &Db,
+    name: &str,
+    predicate_type: PredicateType,
+    max_results: Option<usize>,
+) -> Vec<RowId> {
     // "set" needs to be at the end or search is very slow (needs high selectivity)
     let predicates = vec![
         Predicate {
@@ -95,7 +101,7 @@ fn find_row_ids(db: &Db, name: &str, predicate_type: PredicateType) -> Vec<RowId
         Predicate::new_equal_string("set", "es-en"),
     ];
 
-    db.select_row_ids(&predicates)
+    db.select_row_ids(&predicates, max_results)
 }
 
 fn find_row_ids_to_columns(db: &Db, row_ids: &[RowId]) -> Vec<(String, String)> {
@@ -111,9 +117,13 @@ fn find_row_ids_to_columns(db: &Db, row_ids: &[RowId]) -> Vec<(String, String)> 
         .collect::<Vec<(String, String)>>()
 }
 
-fn present(db: &Db, row_ids: &[RowId]) {
+fn present(db: &Db, row_ids: &[RowId], max_message: bool) {
     for line in &find_row_ids_to_columns(db, row_ids) {
         println!("{}: {}", line.0, line.1);
+    }
+    if max_message {
+        println!();
+        println!("Limited number of rows shown.");
     }
 }
 
@@ -132,16 +142,13 @@ fn main() {
 
     main_loop(&db_vocabulary);
 
-    save(
-        &db_vocabulary,
-        &db_personal,
-        db_vocabulary_name,
-        db_personal_name,
-    );
+    save(&db_personal, db_personal_name);
 }
 
 fn main_loop(db_vocabulary: &Db) {
     let mut input = String::new();
+    let max_results: usize = 100;
+
     print!("Enter search term: ");
     io::stdout().flush().unwrap();
     while let Ok(_bytes_read) = io::stdin().read_line(&mut input) {
@@ -150,19 +157,30 @@ fn main_loop(db_vocabulary: &Db) {
             break;
         }
 
-        println!("Searching...");
-
-        let rows_equal = find_row_ids(&db_vocabulary, &trimmed, PredicateType::Equal);
+        let rows_equal = find_row_ids(
+            &db_vocabulary,
+            &trimmed,
+            PredicateType::Equal,
+            Some(max_results),
+        );
         let number_matches_equal = rows_equal.len();
 
-        let rows_starts_with_full =
-            find_row_ids(&db_vocabulary, &trimmed, PredicateType::StartsWith);
+        let rows_starts_with_full = find_row_ids(
+            &db_vocabulary,
+            &trimmed,
+            PredicateType::StartsWith,
+            Some(max_results),
+        );
         let rows_starts_with = minus(&rows_starts_with_full, &rows_equal);
         let number_matches_starts_with = rows_starts_with_full.len();
 
-        if number_matches_starts_with < 30 {
-            let rows_contains_full =
-                find_row_ids(&db_vocabulary, &trimmed, PredicateType::Contains);
+        if number_matches_starts_with < max_results {
+            let rows_contains_full = find_row_ids(
+                &db_vocabulary,
+                &trimmed,
+                PredicateType::Contains,
+                Some(max_results),
+            );
             let number_matches_contains = rows_contains_full.len();
 
             if number_matches_contains == 0 {
@@ -170,18 +188,30 @@ fn main_loop(db_vocabulary: &Db) {
             } else {
                 let rows_contains = minus(&rows_contains_full, &rows_starts_with_full);
                 println!("\nFull matches:");
-                present(&db_vocabulary, &rows_contains);
+                present(
+                    &db_vocabulary,
+                    &rows_contains,
+                    number_matches_contains == max_results,
+                );
             }
         }
 
         if number_matches_starts_with > 0 {
             println!("\nStarting with:");
-            present(&db_vocabulary, &rows_starts_with);
+            present(
+                &db_vocabulary,
+                &rows_starts_with,
+                number_matches_starts_with == max_results,
+            );
         }
 
         if number_matches_equal > 0 {
             println!("\nEquals:");
-            present(&db_vocabulary, &rows_equal);
+            present(
+                &db_vocabulary,
+                &rows_equal,
+                number_matches_equal == max_results,
+            );
         }
 
         println!("----------------------------");
@@ -192,16 +222,11 @@ fn main_loop(db_vocabulary: &Db) {
         io::stdout().flush().unwrap();
     }
 }
-fn save(db_vocabulary: &Db, db_personal: &Db, db_vocabulary_name: &str, db_personal_name: &str) {
-    println!("Saving database {}.", db_vocabulary_name);
-    if let Ok(_result) = db_vocabulary.save() {
+fn save(db: &Db, db_name: &str) {
+    println!("Saving database {}.", db_name);
+    if let Ok(_result) = db.save() {
     } else {
-        println!("Error saving database {}!", db_vocabulary_name);
-    }
-    println!("Saving database {}.", db_personal_name);
-    if let Ok(_result) = db_personal.save() {
-    } else {
-        println!("Error saving database {}!", db_personal_name);
+        println!("Error saving database {}!", db_name);
     }
 }
 
