@@ -1,5 +1,528 @@
 {
   "full_filename": "save/personal",
-  "row_max": 0,
-  "rows": []
+  "row_max": 29,
+  "rows": [
+    {
+      "row_id": 1,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "coche"
+        }
+      }
+    },
+    {
+      "row_id": 1,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "car"
+        }
+      }
+    },
+    {
+      "row_id": 2,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "nube"
+        }
+      }
+    },
+    {
+      "row_id": 2,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "A cloud"
+        }
+      }
+    },
+    {
+      "row_id": 3,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "evidenciar"
+        }
+      }
+    },
+    {
+      "row_id": 3,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to demonstrate"
+        }
+      }
+    },
+    {
+      "row_id": 4,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "exigencia"
+        }
+      }
+    },
+    {
+      "row_id": 4,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "requirement"
+        }
+      }
+    },
+    {
+      "row_id": 5,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cerrar"
+        }
+      }
+    },
+    {
+      "row_id": 5,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to shut"
+        }
+      }
+    },
+    {
+      "row_id": 6,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cerrar"
+        }
+      }
+    },
+    {
+      "row_id": 6,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to close"
+        }
+      }
+    },
+    {
+      "row_id": 7,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "pedir"
+        }
+      }
+    },
+    {
+      "row_id": 7,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to request someone else to do something"
+        }
+      }
+    },
+    {
+      "row_id": 8,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "apoyarse"
+        }
+      }
+    },
+    {
+      "row_id": 8,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to lean on, to rely on"
+        }
+      }
+    },
+    {
+      "row_id": 9,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "apoyar"
+        }
+      }
+    },
+    {
+      "row_id": 9,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to support"
+        }
+      }
+    },
+    {
+      "row_id": 10,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "advertir"
+        }
+      }
+    },
+    {
+      "row_id": 10,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to warn"
+        }
+      }
+    },
+    {
+      "row_id": 11,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "rechazar"
+        }
+      }
+    },
+    {
+      "row_id": 11,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to reject, to turn down"
+        }
+      }
+    },
+    {
+      "row_id": 12,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "sumar"
+        }
+      }
+    },
+    {
+      "row_id": 12,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to add"
+        }
+      }
+    },
+    {
+      "row_id": 13,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "acuerdo"
+        }
+      }
+    },
+    {
+      "row_id": 13,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "agreement"
+        }
+      }
+    },
+    {
+      "row_id": 14,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "plantear"
+        }
+      }
+    },
+    {
+      "row_id": 14,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to suggest"
+        }
+      }
+    },
+    {
+      "row_id": 15,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "fila"
+        }
+      }
+    },
+    {
+      "row_id": 15,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "line, row, rank, file"
+        }
+      }
+    },
+    {
+      "row_id": 16,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "tornar"
+        }
+      }
+    },
+    {
+      "row_id": 16,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to return"
+        }
+      }
+    },
+    {
+      "row_id": 17,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "tornar"
+        }
+      }
+    },
+    {
+      "row_id": 17,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to do again"
+        }
+      }
+    },
+    {
+      "row_id": 18,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "caseta"
+        }
+      }
+    },
+    {
+      "row_id": 18,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "hut"
+        }
+      }
+    },
+    {
+      "row_id": 19,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "pasar"
+        }
+      }
+    },
+    {
+      "row_id": 19,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to trespass (enter on someone's property without permission)"
+        }
+      }
+    },
+    {
+      "row_id": 20,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "pasar"
+        }
+      }
+    },
+    {
+      "row_id": 20,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to pass"
+        }
+      }
+    },
+    {
+      "row_id": 21,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "pasar"
+        }
+      }
+    },
+    {
+      "row_id": 21,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to go too far, to exaggerate"
+        }
+      }
+    },
+    {
+      "row_id": 22,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "sentir"
+        }
+      }
+    },
+    {
+      "row_id": 22,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to feel"
+        }
+      }
+    },
+    {
+      "row_id": 23,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "agredir"
+        }
+      }
+    },
+    {
+      "row_id": 23,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to assault, attack"
+        }
+      }
+    },
+    {
+      "row_id": 24,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "adolescente"
+        }
+      }
+    },
+    {
+      "row_id": 24,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "teenager"
+        }
+      }
+    },
+    {
+      "row_id": 25,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "asegurado"
+        }
+      }
+    },
+    {
+      "row_id": 25,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "made certain"
+        }
+      }
+    },
+    {
+      "row_id": 26,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "asegurar"
+        }
+      }
+    },
+    {
+      "row_id": 26,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to maintain"
+        }
+      }
+    },
+    {
+      "row_id": 27,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "irse"
+        }
+      }
+    },
+    {
+      "row_id": 27,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to go away, to leave, to depart"
+        }
+      }
+    },
+    {
+      "row_id": 28,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ser"
+        }
+      }
+    },
+    {
+      "row_id": 28,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to be (essentially or identified as)"
+        }
+      }
+    },
+    {
+      "row_id": 29,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "contar"
+        }
+      }
+    },
+    {
+      "row_id": 29,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to count; to tally"
+        }
+      }
+    }
+  ]
 }

@@ -62,6 +62,16 @@ impl Entry {
             }
         }
     }
+
+    pub fn get_by_name(entries: &[Entry], name: &str) -> Option<Entry> {
+        for entry in entries {
+            if entry.name == name {
+                return Some(entry.clone());
+            }
+        }
+        None
+        //entries.iter().find(|entry| entry.name == name).clone()
+    }
 }
 
 #[derive(PartialEq, Debug)]
@@ -77,6 +87,16 @@ pub struct Predicate {
     pub entry: Entry,
 }
 impl Predicate {
+    pub fn new_equal_int(name: &str, value: i32) -> Predicate {
+        Predicate {
+            predicate_type: PredicateType::Equal,
+            entry: Entry {
+                name: String::from(name),
+                value: Db::db_int(value),
+            },
+        }
+    }
+
     pub fn new_equal_string(name: &str, value: &str) -> Predicate {
         Predicate {
             predicate_type: PredicateType::Equal,
@@ -86,6 +106,7 @@ impl Predicate {
             },
         }
     }
+
     #[cfg(test)]
     pub fn new_starts_with(name: &str, value: &str) -> Predicate {
         Predicate {
@@ -149,7 +170,6 @@ impl Db {
     pub fn db_string(v: &str) -> Data {
         Data::DbString(String::from(v))
     }
-    #[cfg(test)]
     pub fn db_int(v: i32) -> Data {
         Data::DbInt(v)
     }
@@ -169,6 +189,38 @@ impl Db {
             });
         }
         id
+    }
+
+    // Add or update
+    pub fn add_column(&mut self, row_id: RowId, entry: Entry) {
+        // check if column exists
+        if let Some(ref mut db_entry) = self.get_column_mut(row_id, &entry.name) {
+            db_entry.value = entry.value;
+        } else {
+            self.rows.push(Row { row_id, entry });
+        }
+    }
+
+    pub fn delete_column_all(&mut self, name: &str) {
+        self.rows.retain(|x| x.entry.name != name);
+    }
+
+    pub fn get_column(&self, row_id: RowId, name: &str) -> Option<&Entry> {
+        for row in &self.rows {
+            if row.row_id == row_id && row.entry.name == name {
+                return Some(&row.entry);
+            }
+        }
+        None
+    }
+
+    fn get_column_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry> {
+        for row in &mut self.rows {
+            if row.row_id == row_id && row.entry.name == name {
+                return Some(&mut row.entry);
+            }
+        }
+        None
     }
 
     pub fn select_row_ids(
@@ -227,6 +279,17 @@ impl Db {
             }
             row_ids
         }
+    }
+
+    pub fn last_n_rows(&self, n: usize) -> Vec<RowId> {
+        let min_row = if self.row_max.0 > n {
+            self.row_max.0 - n + 1
+        } else {
+            1
+        };
+        (min_row..=self.row_max.0)
+            .map(RowId)
+            .collect::<Vec<RowId>>()
     }
 
     // The current implementation has run time of O(n2), so predicates[0] must have high selectivity.
@@ -526,5 +589,107 @@ mod test {
         let t = "2013-11-22 12:00:00";
         let dt = NaiveDateTime::parse_from_str(t, fmt).unwrap();
         assert_eq!(Data::DbDateTime(dt), Db::db_datetime(t).unwrap());
+    }
+
+    //fn get_column_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry>
+    #[test]
+    fn get_column_mut() {
+        let mut db = new_db_with_entries("testdb");
+
+        if let Some(ref mut entry) = db.get_column_mut(RowId(2), "name") {
+            entry.name = String::from("replaced_name");
+            println!("{:?}", entry);
+        }
+        println!("{:?}", db.debug_rows(&vec![RowId(2)]));
+        for (i, row) in db.rows.iter().enumerate() {
+            println!("{} {:?}", i, row);
+        }
+        assert_eq!(db.rows[4].entry.name, "replaced_name");
+    }
+
+    // pub fn add_column(&mut self, row_id: RowId, entry: Entry)
+    #[test]
+    fn add_column_add() {
+        let mut db = new_db_with_entries("testdb");
+
+        println!("{:?}", db.debug_rows(&vec![RowId(2)]));
+        db.add_column(
+            RowId(2),
+            Entry {
+                name: String::from("new column"),
+                value: Db::db_string("new column content"),
+            },
+        );
+        println!("{:?}", db.debug_rows(&vec![RowId(2)]));
+        for (i, row) in db.rows.iter().enumerate() {
+            println!("{} {:?}", i, row);
+        }
+        assert_eq!(db.rows[6].entry.name, "new column");
+        assert_eq!(db.rows[6].entry.value, Db::db_string("new column content"));
+    }
+
+    // pub fn add_column(&mut self, row_id: RowId, entry: Entry)
+    #[test]
+    fn add_column_update() {
+        let mut db = new_db_with_entries("testdb");
+
+        println!("{:?}", db.debug_rows(&vec![RowId(2)]));
+        db.add_column(
+            RowId(2),
+            Entry {
+                name: String::from("new column"),
+                value: Db::db_string("new column content"),
+            },
+        );
+        db.add_column(
+            RowId(2),
+            Entry {
+                name: String::from("new column"),
+                value: Db::db_string("new column content updated"),
+            },
+        );
+        println!("{:?}", db.debug_rows(&vec![RowId(2)]));
+        for (i, row) in db.rows.iter().enumerate() {
+            println!("{} {:?}", i, row);
+        }
+        assert_eq!(db.rows[6].entry.name, "new column");
+        assert_eq!(
+            db.rows[6].entry.value,
+            Db::db_string("new column content updated")
+        );
+    }
+
+    // Delete all columns in all rows with the given name
+    // pub fn delete_column_all(&mut self, name: &str)
+    #[test]
+    fn delete_column_all() {
+        let mut db = new_db_with_entries("testdb");
+
+        let mut add_row = |n| {
+            println!("{:?}", db.debug_rows(&vec![RowId(n)]));
+            db.add_column(
+                RowId(n),
+                Entry {
+                    name: String::from("new column"),
+                    value: Db::db_string(&format!("new col for row {}", n)),
+                },
+            );
+        };
+        add_row(1);
+        add_row(2);
+        add_row(3);
+        for (i, row) in db.rows.iter().enumerate() {
+            println!("{} {:?}", i, row);
+        }
+        assert_eq!(db.rows[6].entry.name, "new column");
+
+        println!("Deleting columns...");
+        db.delete_column_all("new column");
+        for (i, row) in db.rows.iter().enumerate() {
+            println!("{} {:?}", i, row);
+        }
+        assert_eq!(db.rows.len(), 6);
+        assert_eq!(db.rows[0].entry.name, "set");
+        assert_eq!(db.rows[4].entry.name, "name");
     }
 }
