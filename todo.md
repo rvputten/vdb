@@ -8,6 +8,7 @@ None.
 
 Ideas
 =====
+when limiting search results, count multiple translations
 replace "name" and "value" with "word" and "translation" in main.rs where appropriate
 search English results if no Spanish results are found (or are very few)
 make naming of searches more consistent

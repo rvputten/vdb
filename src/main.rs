@@ -173,8 +173,14 @@ fn find_row_ids_to_entries(db: &Db, row_ids: &[RowId]) -> Vec<(usize, String, Ve
 }
 
 fn present(db: &Db, row_ids: &[RowId], max_message: bool) {
-    for line in &find_row_ids_to_entries(db, row_ids) {
-        println!("{}) {}: {}", line.0, line.1, line.2.join("; "));
+    for (index, word, translations) in &find_row_ids_to_entries(db, row_ids) {
+        let index = format!("{})", index);
+        println!("{} {}: {}", index, word, translations[0]);
+
+        let spaces = " ".repeat(index.len());
+        for translation in translations.iter().skip(1) {
+            println!("{} {}: {}", spaces, word, translation);
+        }
     }
     if max_message {
         println!();
@@ -205,7 +211,7 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
     let mut input = String::new();
     let max_results: usize = 100;
 
-    display_personal_db(db_personal, 100, true);
+    display_personal_db(db_personal, 100, true, false);
 
     print!("Enter search term: ");
     io::stdout().flush().unwrap();
@@ -218,11 +224,11 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
         if let Ok(number) = trimmed.parse::<usize>() {
             add_to_personal_db(db_vocabulary, db_personal, number);
         } else if trimmed == "p" {
-            display_personal_db(db_personal, 100, true);
+            display_personal_db(db_personal, 100, true, false);
         } else {
             db_vocabulary.delete_entry_all("search_index");
             find_and_display(db_vocabulary, trimmed, max_results);
-            display_personal_db(db_personal, 7, false);
+            display_personal_db(db_personal, 9, false, true);
         }
 
         input.clear();
@@ -236,7 +242,7 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
     }
 }
 
-fn display_personal_db(db_personal: &mut Db, max_rows: usize, sort: bool) {
+fn display_personal_db(db_personal: &mut Db, max_rows: usize, sort: bool, compact: bool) {
     println!();
     println!("Personal dictionary:");
 
@@ -247,8 +253,30 @@ fn display_personal_db(db_personal: &mut Db, max_rows: usize, sort: bool) {
             |(_index_a, name_a, _value_a), (_index_b, name_b, _value_b)| name_a.cmp(name_b),
         );
     }
-    for (_index, name, value) in results {
-        println!("{}: {}", name, value.join("; "));
+
+    if compact {
+        for (_index, word, translations) in results {
+            println!("{}: {}", word, translations.join("; "));
+        }
+    } else {
+        let row_count = results
+            .iter()
+            .map(|(_, _, translation)| translation.len())
+            .sum::<usize>();
+        let start_row = if row_count > max_rows {
+            row_count - max_rows
+        } else {
+            0
+        };
+        let mut i: usize = 0;
+        for (_index, word, translations) in results {
+            for translation in translations {
+                i += 1;
+                if i > start_row {
+                    println!("{}: {}", word, translation);
+                }
+            }
+        }
     }
     println!();
 }
@@ -329,6 +357,7 @@ fn add_numbers(db: &mut Db, row_ids: &[RowId], offset: usize) {
 fn save(db: &Db, db_name: &str) {
     println!("Saving database {}.", db_name);
     if let Ok(_result) = db.save() {
+        println!("{} records saved.", db.rows.len());
     } else {
         println!("Error saving database {}!", db_name);
     }
@@ -351,8 +380,6 @@ mod main {
         let dbname = "test-sample";
         let filename = "resources/es-en-sample.txt";
         let (mut db, _) = load(dbname, "dummy", filename, true);
-
-        let row_ids = db.select_row_ids(&[], None);
 
         let values = find(&mut db, "coche", PredicateType::Equal);
         assert_eq!(values.len(), 1);

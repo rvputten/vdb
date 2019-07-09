@@ -1,6 +1,6 @@
 {
   "full_filename": "save/personal",
-  "row_max": 64,
+  "row_max": 114,
   "rows": [
     {
       "row_id": 1,
@@ -1313,6 +1313,1500 @@
         "name": "value",
         "value": {
           "DbString": "to spread, to stretch out"
+        }
+      }
+    },
+    {
+      "row_id": 65,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "fiesta"
+        }
+      }
+    },
+    {
+      "row_id": 65,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "feast"
+        }
+      }
+    },
+    {
+      "row_id": 65,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "party"
+        }
+      }
+    },
+    {
+      "row_id": 66,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "vela"
+        }
+      }
+    },
+    {
+      "row_id": 66,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "candle"
+        }
+      }
+    },
+    {
+      "row_id": 66,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "sail"
+        }
+      }
+    },
+    {
+      "row_id": 66,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "sailing"
+        }
+      }
+    },
+    {
+      "row_id": 66,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "wakefulness, sleeplessness"
+        }
+      }
+    },
+    {
+      "row_id": 67,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "reconocer"
+        }
+      }
+    },
+    {
+      "row_id": 67,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "To acknowledge"
+        }
+      }
+    },
+    {
+      "row_id": 67,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "To recognize"
+        }
+      }
+    },
+    {
+      "row_id": 68,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "socorrer"
+        }
+      }
+    },
+    {
+      "row_id": 68,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to assist, to help, to succor, to aid"
+        }
+      }
+    },
+    {
+      "row_id": 68,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to pay on account"
+        }
+      }
+    },
+    {
+      "row_id": 69,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "salvar"
+        }
+      }
+    },
+    {
+      "row_id": 69,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to rescue"
+        }
+      }
+    },
+    {
+      "row_id": 69,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to save"
+        }
+      }
+    },
+    {
+      "row_id": 70,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "actuación"
+        }
+      }
+    },
+    {
+      "row_id": 70,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "act; acting"
+        }
+      }
+    },
+    {
+      "row_id": 70,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "performance"
+        }
+      }
+    },
+    {
+      "row_id": 71,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "acertar"
+        }
+      }
+    },
+    {
+      "row_id": 71,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to be right"
+        }
+      }
+    },
+    {
+      "row_id": 71,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to hit upon"
+        }
+      }
+    },
+    {
+      "row_id": 72,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "oleaje"
+        }
+      }
+    },
+    {
+      "row_id": 72,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "surf"
+        }
+      }
+    },
+    {
+      "row_id": 73,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "poniente"
+        }
+      }
+    },
+    {
+      "row_id": 73,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "setting (sun or star)"
+        }
+      }
+    },
+    {
+      "row_id": 73,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "west, western"
+        }
+      }
+    },
+    {
+      "row_id": 73,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "west"
+        }
+      }
+    },
+    {
+      "row_id": 74,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "dejar"
+        }
+      }
+    },
+    {
+      "row_id": 74,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to allow oneself to be"
+        }
+      }
+    },
+    {
+      "row_id": 74,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to grow"
+        }
+      }
+    },
+    {
+      "row_id": 74,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to leave behind; to forget"
+        }
+      }
+    },
+    {
+      "row_id": 74,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to let oneself go"
+        }
+      }
+    },
+    {
+      "row_id": 74,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to abandon"
+        }
+      }
+    },
+    {
+      "row_id": 74,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to allow"
+        }
+      }
+    },
+    {
+      "row_id": 74,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to cease, stop (doing something)"
+        }
+      }
+    },
+    {
+      "row_id": 74,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to leave"
+        }
+      }
+    },
+    {
+      "row_id": 74,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to let"
+        }
+      }
+    },
+    {
+      "row_id": 74,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to let go"
+        }
+      }
+    },
+    {
+      "row_id": 75,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "casi"
+        }
+      }
+    },
+    {
+      "row_id": 75,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "almost"
+        }
+      }
+    },
+    {
+      "row_id": 76,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "izar"
+        }
+      }
+    },
+    {
+      "row_id": 76,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to hoist"
+        }
+      }
+    },
+    {
+      "row_id": 77,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "bandera"
+        }
+      }
+    },
+    {
+      "row_id": 77,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "banner"
+        }
+      }
+    },
+    {
+      "row_id": 77,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "flag"
+        }
+      }
+    },
+    {
+      "row_id": 78,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "inicio"
+        }
+      }
+    },
+    {
+      "row_id": 78,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "start, initiation"
+        }
+      }
+    },
+    {
+      "row_id": 79,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "falta"
+        }
+      }
+    },
+    {
+      "row_id": 79,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "fault"
+        }
+      }
+    },
+    {
+      "row_id": 79,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "lack, shortage"
+        }
+      }
+    },
+    {
+      "row_id": 80,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "inestabilidad"
+        }
+      }
+    },
+    {
+      "row_id": 80,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "instability"
+        }
+      }
+    },
+    {
+      "row_id": 81,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "sol"
+        }
+      }
+    },
+    {
+      "row_id": 81,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "daylight (time between sunrise and sunset)"
+        }
+      }
+    },
+    {
+      "row_id": 81,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "sol (musical note)"
+        }
+      }
+    },
+    {
+      "row_id": 81,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "sun"
+        }
+      }
+    },
+    {
+      "row_id": 81,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "sunlight"
+        }
+      }
+    },
+    {
+      "row_id": 81,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "sunny side (of a place)"
+        }
+      }
+    },
+    {
+      "row_id": 82,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "gota"
+        }
+      }
+    },
+    {
+      "row_id": 82,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "a drop or small amount of"
+        }
+      }
+    },
+    {
+      "row_id": 82,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "gout"
+        }
+      }
+    },
+    {
+      "row_id": 83,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "lluvia"
+        }
+      }
+    },
+    {
+      "row_id": 83,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "rain"
+        }
+      }
+    },
+    {
+      "row_id": 84,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "afluencia"
+        }
+      }
+    },
+    {
+      "row_id": 84,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "inflow, influx"
+        }
+      }
+    },
+    {
+      "row_id": 85,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "puesto"
+        }
+      }
+    },
+    {
+      "row_id": 85,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "put on (cloth)"
+        }
+      }
+    },
+    {
+      "row_id": 85,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "standing"
+        }
+      }
+    },
+    {
+      "row_id": 85,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "because, as, since"
+        }
+      }
+    },
+    {
+      "row_id": 85,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "market stall, market stand"
+        }
+      }
+    },
+    {
+      "row_id": 85,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "professional position, employment, job"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "dar"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "+ por to assume"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to grow"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to hit oneself against"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to occur"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to realize or notice something"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to surrender"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to brag or boast about"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to consider"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to emit"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to encounter; to run into"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to give"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to give; to stretch"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to hand over"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to hit"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to hit upon"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to overlook"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to perform"
+        }
+      }
+    },
+    {
+      "row_id": 86,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to produce"
+        }
+      }
+    },
+    {
+      "row_id": 87,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cita"
+        }
+      }
+    },
+    {
+      "row_id": 87,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "A date"
+        }
+      }
+    },
+    {
+      "row_id": 87,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "An appointment"
+        }
+      }
+    },
+    {
+      "row_id": 87,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "A quote"
+        }
+      }
+    },
+    {
+      "row_id": 88,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ataviar"
+        }
+      }
+    },
+    {
+      "row_id": 88,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to adorn"
+        }
+      }
+    },
+    {
+      "row_id": 88,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to dress"
+        }
+      }
+    },
+    {
+      "row_id": 89,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "durar"
+        }
+      }
+    },
+    {
+      "row_id": 89,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to last"
+        }
+      }
+    },
+    {
+      "row_id": 90,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "adecuado"
+        }
+      }
+    },
+    {
+      "row_id": 90,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "appropriate, suitable"
+        }
+      }
+    },
+    {
+      "row_id": 90,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "right"
+        }
+      }
+    },
+    {
+      "row_id": 91,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "plata"
+        }
+      }
+    },
+    {
+      "row_id": 91,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "money"
+        }
+      }
+    },
+    {
+      "row_id": 91,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "silver"
+        }
+      }
+    },
+    {
+      "row_id": 92,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "conseguir"
+        }
+      }
+    },
+    {
+      "row_id": 92,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to achieve"
+        }
+      }
+    },
+    {
+      "row_id": 92,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to get or acquire"
+        }
+      }
+    },
+    {
+      "row_id": 93,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "destacado"
+        }
+      }
+    },
+    {
+      "row_id": 93,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "outstanding, notable"
+        }
+      }
+    },
+    {
+      "row_id": 94,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "podio"
+        }
+      }
+    },
+    {
+      "row_id": 94,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "podium"
+        }
+      }
+    },
+    {
+      "row_id": 95,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cosecha"
+        }
+      }
+    },
+    {
+      "row_id": 95,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "harvest"
+        }
+      }
+    },
+    {
+      "row_id": 95,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "vintage (of wine)"
+        }
+      }
+    },
+    {
+      "row_id": 96,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "embajada"
+        }
+      }
+    },
+    {
+      "row_id": 96,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "embassy"
+        }
+      }
+    },
+    {
+      "row_id": 97,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "carrera"
+        }
+      }
+    },
+    {
+      "row_id": 97,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "(academic) course of study"
+        }
+      }
+    },
+    {
+      "row_id": 97,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "(baseball) run"
+        }
+      }
+    },
+    {
+      "row_id": 97,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "career"
+        }
+      }
+    },
+    {
+      "row_id": 97,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "race"
+        }
+      }
+    },
+    {
+      "row_id": 97,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "run; line of knit stitches which have unravelled"
+        }
+      }
+    },
+    {
+      "row_id": 98,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "tener"
+        }
+      }
+    },
+    {
+      "row_id": 98,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "To be of a measure or age"
+        }
+      }
+    },
+    {
+      "row_id": 98,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "To contain"
+        }
+      }
+    },
+    {
+      "row_id": 98,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "To feel (internally)"
+        }
+      }
+    },
+    {
+      "row_id": 98,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "To have, possess an object"
+        }
+      }
+    },
+    {
+      "row_id": 98,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "To hold, grasp"
+        }
+      }
+    },
+    {
+      "row_id": 98,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "To make to feel"
+        }
+      }
+    },
+    {
+      "row_id": 98,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "To possess a condition or quality"
+        }
+      }
+    },
+    {
+      "row_id": 99,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "llegar"
+        }
+      }
+    },
+    {
+      "row_id": 99,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to arrive"
+        }
+      }
+    },
+    {
+      "row_id": 100,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "principiante"
+        }
+      }
+    },
+    {
+      "row_id": 100,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "novice (beginner)"
+        }
+      }
+    },
+    {
+      "row_id": 101,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cabe"
+        }
+      }
+    },
+    {
+      "row_id": 101,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "alongside, beside, next to. (Archaic; no longer used in spoken Spanish.)"
+        }
+      }
+    },
+    {
+      "row_id": 102,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cincuenta"
+        }
+      }
+    },
+    {
+      "row_id": 102,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "fifty"
+        }
+      }
+    },
+    {
+      "row_id": 103,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "sesenta"
+        }
+      }
+    },
+    {
+      "row_id": 103,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "sixty"
+        }
+      }
+    },
+    {
+      "row_id": 104,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "setenta"
+        }
+      }
+    },
+    {
+      "row_id": 104,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "seventy"
+        }
+      }
+    },
+    {
+      "row_id": 105,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ochenta"
+        }
+      }
+    },
+    {
+      "row_id": 105,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "eighty"
+        }
+      }
+    },
+    {
+      "row_id": 106,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "noventa"
+        }
+      }
+    },
+    {
+      "row_id": 106,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "ninety"
+        }
+      }
+    },
+    {
+      "row_id": 107,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "veinte"
+        }
+      }
+    },
+    {
+      "row_id": 107,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "twenty"
+        }
+      }
+    },
+    {
+      "row_id": 108,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "treinta"
+        }
+      }
+    },
+    {
+      "row_id": 108,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "thirty"
+        }
+      }
+    },
+    {
+      "row_id": 109,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cuarenta"
+        }
+      }
+    },
+    {
+      "row_id": 109,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "forty"
+        }
+      }
+    },
+    {
+      "row_id": 110,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "diez"
+        }
+      }
+    },
+    {
+      "row_id": 110,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "ten"
+        }
+      }
+    },
+    {
+      "row_id": 111,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "once"
+        }
+      }
+    },
+    {
+      "row_id": 111,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "eleven"
+        }
+      }
+    },
+    {
+      "row_id": 111,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "snack (bread with tea or coffee)"
+        }
+      }
+    },
+    {
+      "row_id": 112,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "doce"
+        }
+      }
+    },
+    {
+      "row_id": 112,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "twelve"
+        }
+      }
+    },
+    {
+      "row_id": 113,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "trece"
+        }
+      }
+    },
+    {
+      "row_id": 113,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "thirteen"
+        }
+      }
+    },
+    {
+      "row_id": 114,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "catorce"
+        }
+      }
+    },
+    {
+      "row_id": 114,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "fourteen"
         }
       }
     }

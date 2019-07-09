@@ -245,7 +245,7 @@ impl Db {
     /// Return reference to first entry found in a given row.
     pub fn find_first_row_id_by_value(&self, name: &str, value: &Data) -> Option<RowId> {
         for row in &self.rows {
-            if &row.entry.name == name && &row.entry.value == value {
+            if row.entry.name == name && &row.entry.value == value {
                 return Some(row.row_id);
             }
         }
