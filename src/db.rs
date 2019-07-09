@@ -33,7 +33,7 @@ impl Data {
     }
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Clone, Debug, Copy)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Clone, Debug, Copy, PartialOrd, Ord)]
 pub struct RowId(pub usize);
 
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
@@ -66,7 +66,7 @@ impl Entry {
     }
 
     /// Return `Entry` in a given list that matches `name`
-    pub fn get_by_name(entries: &[Entry], name: &str) -> Option<Entry> {
+    pub fn get_first_by_name(entries: &[Entry], name: &str) -> Option<Entry> {
         for entry in entries {
             if entry.name == name {
                 return Some(entry.clone());
@@ -213,13 +213,18 @@ impl Db {
     }
 
     /// Add a single entry to an existing row. An existing entry with the same name is overwritten.
-    pub fn add_entry(&mut self, row_id: RowId, entry: Entry) {
+    pub fn add_or_update_entry(&mut self, row_id: RowId, entry: Entry) {
         // check if entry exists
-        if let Some(ref mut db_entry) = self.get_entry_mut(row_id, &entry.name) {
+        if let Some(ref mut db_entry) = self.get_first_entry_mut(row_id, &entry.name) {
             db_entry.value = entry.value;
         } else {
             self.rows.push(Row { row_id, entry });
         }
+    }
+
+    /// Add a single entry to an existing row. Does not check if entry exists.
+    pub fn add_entry(&mut self, row_id: RowId, entry: Entry) {
+        self.rows.push(Row { row_id, entry });
     }
 
     /// Delete all entries with this name in the whole database.
@@ -227,8 +232,28 @@ impl Db {
         self.rows.retain(|x| x.entry.name != name);
     }
 
-    /// Return reference to a entry in a given row.
-    pub fn get_entry(&self, row_id: RowId, name: &str) -> Option<&Entry> {
+    /// Return reference to first entry found in a given row.
+    pub fn find_first_row_id_by_name(&self, name: &str) -> Option<RowId> {
+        for row in &self.rows {
+            if row.entry.name == name {
+                return Some(row.row_id);
+            }
+        }
+        None
+    }
+
+    /// Return reference to first entry found in a given row.
+    pub fn find_first_row_id_by_value(&self, name: &str, value: &Data) -> Option<RowId> {
+        for row in &self.rows {
+            if &row.entry.name == name && &row.entry.value == value {
+                return Some(row.row_id);
+            }
+        }
+        None
+    }
+
+    /// Return reference to first entry found in a given row.
+    pub fn get_first_entry(&self, row_id: RowId, name: &str) -> Option<&Entry> {
         for row in &self.rows {
             if row.row_id == row_id && row.entry.name == name {
                 return Some(&row.entry);
@@ -238,7 +263,7 @@ impl Db {
     }
 
     /// Return mutable reference to an entry in a given row.
-    fn get_entry_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry> {
+    fn get_first_entry_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry> {
         for row in &mut self.rows {
             if row.row_id == row_id && row.entry.name == name {
                 return Some(&mut row.entry);
@@ -267,38 +292,22 @@ impl Db {
         predicates: &[Predicate],
         max_results: Option<usize>,
     ) -> Vec<RowId> {
-        if let Some(max_results) = max_results {
-            if predicates.is_empty() {
-                self.rows
-                    .iter()
-                    .take(max_results)
-                    .map(|row| row.row_id)
-                    .collect::<Vec<RowId>>()
-            } else {
-                let predicate0 = &predicates[0];
-                let mut row_ids = self
-                    .rows
-                    .iter()
-                    .filter(|row| row.entry.compare(predicate0))
-                    .map(|row| row.row_id)
-                    .collect::<Vec<RowId>>();
+        let max_results = if let Some(max_results) = max_results {
+            max_results
+        } else {
+            self.rows.len()
+        };
 
-                for predicate in &predicates[1..] {
-                    let new_row_ids = row_ids
-                        .iter()
-                        .filter(|&row_id| self.match_row(*row_id, predicate))
-                        .take(max_results)
-                        .cloned()
-                        .collect::<Vec<RowId>>();
-                    row_ids = new_row_ids;
-                }
-                row_ids
-            }
-        } else if predicates.is_empty() {
-            self.rows
+        if predicates.is_empty() {
+            let mut row_ids = self
+                .rows
                 .iter()
+                .take(max_results)
                 .map(|row| row.row_id)
-                .collect::<Vec<RowId>>()
+                .collect::<Vec<RowId>>();
+            row_ids.sort();
+            row_ids.dedup();
+            row_ids
         } else {
             let predicate0 = &predicates[0];
             let mut row_ids = self
@@ -316,6 +325,11 @@ impl Db {
                     .collect::<Vec<RowId>>();
                 row_ids = new_row_ids;
             }
+            if max_results < row_ids.len() {
+                let _ = row_ids.drain(max_results..).collect::<Vec<RowId>>();
+            }
+            row_ids.sort();
+            row_ids.dedup();
             row_ids
         }
     }
@@ -341,13 +355,13 @@ impl Db {
     }
 
     /// Returns entries for given row_ids. The order of the entries in each row is not guaranteed.
-    pub fn entries_from_row_ids(&self, row_ids: &[RowId], entries: Vec<String>) -> Vec<Vec<Entry>> {
+    pub fn entries_from_row_ids(&self, row_ids: &[RowId], names: Vec<String>) -> Vec<Vec<Entry>> {
         let mut result: Vec<Vec<Entry>> = vec![];
         for row_id in row_ids {
             result.push(
                 self.rows
                     .iter()
-                    .filter(|row| row.row_id == *row_id && entries.contains(&(&row.entry.name)))
+                    .filter(|row| row.row_id == *row_id && names.contains(&(&row.entry.name)))
                     .map(|row| row.entry.clone())
                     .collect::<Vec<Entry>>(),
             );
@@ -391,7 +405,7 @@ impl Db {
     }
 
     #[cfg(test)]
-    fn debug_rows(&self, row_ids: &[RowId]) -> Vec<Vec<Entry>> {
+    pub fn debug_rows(&self, row_ids: &[RowId]) -> Vec<Vec<Entry>> {
         let mut result: Vec<Vec<Entry>> = vec![];
         for row_id in row_ids {
             result.push(
@@ -634,12 +648,12 @@ mod test {
         assert_eq!(Data::DbDateTime(dt), Db::db_datetime(t).unwrap());
     }
 
-    //fn get_entry_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry>
+    //fn get_first_entry_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry>
     #[test]
-    fn get_entry_mut() {
+    fn get_first_entry_mut() {
         let mut db = new_db_with_entries("testdb");
 
-        if let Some(ref mut entry) = db.get_entry_mut(RowId(2), "name") {
+        if let Some(ref mut entry) = db.get_first_entry_mut(RowId(2), "name") {
             entry.name = String::from("replaced_name");
             println!("{:?}", entry);
         }
@@ -650,13 +664,13 @@ mod test {
         assert_eq!(db.rows[4].entry.name, "replaced_name");
     }
 
-    // pub fn add_entry(&mut self, row_id: RowId, entry: Entry)
+    // pub fn add_or_update_entry(&mut self, row_id: RowId, entry: Entry)
     #[test]
     fn add_entry_add() {
         let mut db = new_db_with_entries("testdb");
 
         println!("{:?}", db.debug_rows(&vec![RowId(2)]));
-        db.add_entry(
+        db.add_or_update_entry(
             RowId(2),
             Entry {
                 name: String::from("new entry"),
@@ -671,20 +685,20 @@ mod test {
         assert_eq!(db.rows[6].entry.value, Db::db_string("new entry content"));
     }
 
-    // pub fn add_entry(&mut self, row_id: RowId, entry: Entry)
+    // pub fn add_or_update_entry(&mut self, row_id: RowId, entry: Entry)
     #[test]
     fn add_entry_update() {
         let mut db = new_db_with_entries("testdb");
 
         println!("{:?}", db.debug_rows(&vec![RowId(2)]));
-        db.add_entry(
+        db.add_or_update_entry(
             RowId(2),
             Entry {
                 name: String::from("new entry"),
                 value: Db::db_string("new entry content"),
             },
         );
-        db.add_entry(
+        db.add_or_update_entry(
             RowId(2),
             Entry {
                 name: String::from("new entry"),

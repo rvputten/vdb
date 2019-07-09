@@ -8,6 +8,33 @@ None.
 
 Ideas
 =====
+replace "name" and "value" with "word" and "translation" in main.rs where appropriate
+search English results if no Spanish results are found (or are very few)
+make naming of searches more consistent
+    find by <p> and return <r> where
+	<p> can be row_id, row_ids, name, name+value, single predicate or multiple predicates
+	<r> can be
+	    row_id (first entry)
+		use later for performance reasons. discard now.
+	    row_ids (all entries)
+	    data (single)
+	    data (multiple)
+	    entry (first entry)
+	    entries (all entries)
+	    bool (true/false - test for existance)
+		replace with Option<row_id>
+    proposed names
+	find_first_row_id_by_name
+	find_entries_by_name
+	find_entries_by_row_id
+	find_row_id_by_predicates
+	find_row_ids_by_predicates
+	find_entry_by_predicates
+	find_entries_by_predicates
+	check_by_name_value
+
+remove "set" = "en-es"
+check for existance before inserting
 store in hashmap by row\_id
     lookup of row\_ids is the slowest operation at the moment
 guess inflexions
@@ -20,6 +47,8 @@ guess inflexions
     pasaban -> pasar (vorübergehen)
     fue -> ir/ser/irse (gehen, sein, weggehen)
     contó -> contar (zählen)
+    tienden -> tender (to tend to)
+    predice -> predecir (to predict)
 make useful browsable documentation of source code
 
 Done

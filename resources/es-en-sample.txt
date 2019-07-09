@@ -12,6 +12,7 @@ cocer|to boil
 cochambroso|squalid, filthy
 cochayuyo|Edible alga (Durvillaea antarctica)
 coche|car
+coche|car
 cochecito|diminutive form of coche
 coche eléctrico|electric car
 cochero|charioteer
@@ -23,8 +24,6 @@ cochinilla de humedad|woodlouse
 cochino|dirty (as in an action done by a child like eating with dirty hands)
 cochino|pervert
 cochino|pig, hog
-cochón|coward
-cochón|homosexual
 cociente|quotient
 cociente de inteligencia|intelligence quotient
 cocina|cuisine

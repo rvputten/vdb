@@ -31,42 +31,81 @@ pub fn read_file_to_vec(filename: &str) -> Vec<String> {
     v
 }
 
-fn load(db_vocabulary_name: &str, db_personal_name: &str, vocabulary_filename: &str) -> (Db, Db) {
-    let db_vocabulary = if let Ok(db) = Db::load(db_vocabulary_name) {
-        println!("Using existing db for vocabulary.");
-        db
-    } else {
-        let mut db = Db::new(db_vocabulary_name);
-        println!(
-            "Creating new db for vocabulary and loading from {}.",
-            vocabulary_filename
-        );
-
-        let lines = read_file_to_vec(vocabulary_filename);
-        for line in &lines {
-            let mut split = line.split('|');
-            if let Some(e) = split.next() {
-                let mut entries: Vec<Entry> = vec![
+/// Adds a single word with translation to the database. Multiple translations for a word will be
+/// appended to the same row. Duplicates are filtered.
+fn add_word(db: &mut Db, word: &str, translations: &[String]) {
+    if let Some(row_id) = db.find_first_row_id_by_value("name", &Db::db_string(word)) {
+        let entries = db.entries_from_row_ids(&[row_id], vec![String::from("value")]);
+        for value in translations {
+            if let Some(_entry) = entries
+                .iter()
+                .flatten()
+                .find(|entry| entry.value == Db::db_string(value))
+            {
+            } else {
+                db.add_entry(
+                    row_id,
                     Entry {
-                        name: String::from("set"),
-                        value: Db::db_string("es-en"),
-                    },
-                    Entry {
-                        name: String::from("name"),
-                        value: Db::db_string(e),
-                    },
-                ];
-
-                for e in split {
-                    entries.push(Entry {
                         name: String::from("value"),
-                        value: Db::db_string(e),
-                    });
-                }
-                let _id = db.add(entries);
+                        value: Db::db_string(value),
+                    },
+                );
             }
         }
-        db
+    } else {
+        let mut entries: Vec<Entry> = vec![Entry {
+            name: String::from("name"),
+            value: Db::db_string(word),
+        }];
+
+        for value in translations {
+            entries.push(Entry {
+                name: String::from("value"),
+                value: Db::db_string(value),
+            });
+        }
+        let _id = db.add(entries);
+    }
+}
+
+/// Load vocabulary from file. The file format is (example)
+/// ```c
+/// nube|A cloud|A mutitude, or crowd, of people
+/// ```
+/// i. e. the word is in the first column, then multiple translations
+fn load(
+    db_vocabulary_name: &str,
+    db_personal_name: &str,
+    vocabulary_filename: &str,
+    reload: bool,
+) -> (Db, Db) {
+    let db_vocabulary = match (reload, Db::load(db_vocabulary_name)) {
+        (false, Ok(db)) => {
+            println!("Using existing db for vocabulary.");
+            db
+        }
+        _ => {
+            let mut db = Db::new(db_vocabulary_name);
+            println!(
+                "Creating new db for vocabulary and loading from {}.",
+                vocabulary_filename
+            );
+
+            let lines = read_file_to_vec(vocabulary_filename);
+            let n = lines.len();
+            for (i, line) in lines.iter().enumerate() {
+                print!("\r{}/{}", i, n);
+
+                let mut split = line.split('|');
+                if let Some(name) = split.next() {
+                    let values = split.map(|s| s.to_string()).collect::<Vec<String>>();
+                    add_word(&mut db, name, &values);
+                }
+            }
+            println!("\r{} lines loaded.", n);
+            save(&db, db_vocabulary_name);
+            db
+        }
     };
     let db_personal = if let Ok(db) = Db::load(db_personal_name) {
         println!("Using existing db for personal dictionary.");
@@ -80,7 +119,11 @@ fn load(db_vocabulary_name: &str, db_personal_name: &str, vocabulary_filename: &
 }
 
 #[cfg(test)]
-fn find(db: &mut Db, name: &str, predicate_type: PredicateType) -> Vec<(usize, String, String)> {
+fn find(
+    db: &mut Db,
+    name: &str,
+    predicate_type: PredicateType,
+) -> Vec<(usize, String, Vec<String>)> {
     let row_ids = find_row_ids(db, name, predicate_type, None);
     add_numbers(db, &row_ids, 0);
     find_row_ids_to_entries(db, &row_ids)
@@ -93,49 +136,45 @@ fn find_row_ids(
     max_results: Option<usize>,
 ) -> Vec<RowId> {
     // "set" needs to be at the end or search is very slow (needs high selectivity)
-    let predicates = vec![
-        Predicate {
-            predicate_type,
-            entry: Entry::new_string("name", name),
-        },
-        Predicate::new_equal_string("set", "es-en"),
-    ];
+    let predicates = vec![Predicate {
+        predicate_type,
+        entry: Entry::new_string("name", name),
+    }];
 
     db.select_row_ids(&predicates, max_results)
 }
 
-fn find_row_ids_to_entries(db: &Db, row_ids: &[RowId]) -> Vec<(usize, String, String)> {
-    let entries = vec![
+fn find_row_ids_to_entries(db: &Db, row_ids: &[RowId]) -> Vec<(usize, String, Vec<String>)> {
+    let mut result: Vec<(usize, String, Vec<String>)> = vec![];
+
+    let names = vec![
         String::from("search_index"),
         String::from("name"),
         String::from("value"),
     ];
-    let result = db.entries_from_row_ids(row_ids, entries);
-    result
-        .iter()
-        .map(|entries| {
-            (
-                Entry::get_by_name(entries, "search_index"),
-                Entry::get_by_name(entries, "name"),
-                Entry::get_by_name(entries, "value"),
-            )
-        })
-        .filter_map(|e| match e {
-            (Some(index), Some(name), Some(value)) => Some((index.value, name.value, value.value)),
-            _ => None,
-        })
-        .filter_map(|e| match e {
-            (Data::DbInt(index), Data::DbString(name), Data::DbString(value)) => {
-                Some((index as usize, name, value))
+    let rows = db.entries_from_row_ids(row_ids, names);
+    for row in rows {
+        let mut index: usize = 0;
+        let mut name: Option<String> = None;
+        let mut values: Vec<String> = vec![];
+        for entry in row {
+            match (entry.name.as_str(), &entry.value) {
+                ("search_index", Data::DbInt(n)) => index = *n as usize,
+                ("name", Data::DbString(s)) => name = Some(s.to_string()),
+                ("value", Data::DbString(s)) => values.push(s.to_string()),
+                _ => panic!("Unknown entry {:?}", entry),
             }
-            _ => None,
-        })
-        .collect::<Vec<(usize, String, String)>>()
+        }
+        if let Some(name) = name.clone() {
+            result.push((index, name, values));
+        }
+    }
+    result
 }
 
 fn present(db: &Db, row_ids: &[RowId], max_message: bool) {
     for line in &find_row_ids_to_entries(db, row_ids) {
-        println!("{}) {}: {}", line.0, line.1, line.2);
+        println!("{}) {}: {}", line.0, line.1, line.2.join("; "));
     }
     if max_message {
         println!();
@@ -154,7 +193,8 @@ fn main() {
     let db_personal_name = "personal";
     let filename = "resources/es-en.txt";
 
-    let (mut db_vocabulary, mut db_personal) = load(db_vocabulary_name, db_personal_name, filename);
+    let (mut db_vocabulary, mut db_personal) =
+        load(db_vocabulary_name, db_personal_name, filename, false);
 
     main_loop(&mut db_vocabulary, &mut db_personal);
 
@@ -165,7 +205,7 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
     let mut input = String::new();
     let max_results: usize = 100;
 
-    display_personal_db(db_personal, 100);
+    display_personal_db(db_personal, 100, true);
 
     print!("Enter search term: ");
     io::stdout().flush().unwrap();
@@ -177,39 +217,38 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
 
         if let Ok(number) = trimmed.parse::<usize>() {
             add_to_personal_db(db_vocabulary, db_personal, number);
-            display_personal_db(db_personal, 1);
         } else if trimmed == "p" {
-            display_personal_db(db_personal, 100);
+            display_personal_db(db_personal, 100, true);
         } else {
             db_vocabulary.delete_entry_all("search_index");
             find_and_display(db_vocabulary, trimmed, max_results);
-            display_personal_db(db_personal, 7);
+            display_personal_db(db_personal, 7, false);
         }
 
         input.clear();
 
+        println!(
+            "================================================================================"
+        );
+        println!();
         print!("Enter search term or enter number to save in personal dictionary: ");
         io::stdout().flush().unwrap();
     }
 }
 
-fn display_personal_db(db_personal: &mut Db, max_rows: usize) {
+fn display_personal_db(db_personal: &mut Db, max_rows: usize, sort: bool) {
     println!();
     println!("Personal dictionary:");
 
     let row_ids = db_personal.last_n_rows(max_rows);
-    for row_id in row_ids {
-        if let (Some(name), Some(value)) = (
-            db_personal.get_entry(row_id, "name"),
-            db_personal.get_entry(row_id, "value"),
-        ) {
-            match (&name.value, &value.value) {
-                (Data::DbString(name), Data::DbString(value)) => {
-                    println!("{}: {}", name, value);
-                }
-                _ => panic!("name, value not found"),
-            };
-        }
+    let mut results = find_row_ids_to_entries(db_personal, &row_ids);
+    if sort {
+        results.sort_by(
+            |(_index_a, name_a, _value_a), (_index_b, name_b, _value_b)| name_a.cmp(name_b),
+        );
+    }
+    for (_index, name, value) in results {
+        println!("{}: {}", name, value.join("; "));
     }
     println!();
 }
@@ -217,24 +256,9 @@ fn display_personal_db(db_personal: &mut Db, max_rows: usize) {
 fn add_to_personal_db(db_vocabulary: &mut Db, db_personal: &mut Db, number: usize) {
     let predicates = vec![Predicate::new_equal_int("search_index", number as i32)];
     let row_ids = db_vocabulary.select_row_ids(&predicates, Some(1));
-    if !row_ids.is_empty() {
-        let name = db_vocabulary.get_entry(row_ids[0], "name");
-        let value = db_vocabulary.get_entry(row_ids[0], "value");
-        match (name, value) {
-            (Some(name), Some(value)) => db_personal.add(vec![
-                Entry {
-                    name: String::from("name"),
-                    value: name.value.clone(),
-                },
-                Entry {
-                    name: String::from("value"),
-                    value: value.value.clone(),
-                },
-            ]),
-            _ => panic!("Couldn't find entries"),
-        };
-    } else {
-        println!("No search result number {} found.", number);
+    for (_index, name, value) in find_row_ids_to_entries(db_vocabulary, &row_ids) {
+        println!("Adding {}: {}", name, value.join("; "));
+        add_word(db_personal, &name, &value);
     }
 }
 
@@ -292,7 +316,7 @@ fn add_numbers(db: &mut Db, row_ids: &[RowId], offset: usize) {
     let reverse_numbers = (0..count).map(|n| count - n + offset);
     for (row_id, index) in row_ids.iter().zip(reverse_numbers) {
         let row_id: RowId = *row_id;
-        db.add_entry(
+        db.add_or_update_entry(
             row_id,
             Entry {
                 name: String::from("search_index"),
@@ -326,21 +350,23 @@ mod main {
     fn load_and_filter() {
         let dbname = "test-sample";
         let filename = "resources/es-en-sample.txt";
-        let (mut db, _) = load(dbname, "dummy", filename);
+        let (mut db, _) = load(dbname, "dummy", filename, true);
+
+        let row_ids = db.select_row_ids(&[], None);
 
         let values = find(&mut db, "coche", PredicateType::Equal);
         assert_eq!(values.len(), 1);
         assert_eq!(values[0].1, "coche");
-        assert_eq!(values[0].2, "car");
+        assert_eq!(values[0].2[0], "car");
 
         let values = find(&mut db, "coche", PredicateType::StartsWith);
-        assert_eq!(values.len(), 5);
+        assert_eq!(values.len(), 4);
         assert_eq!(values[2].1, "coche eléctrico");
-        assert_eq!(values[2].2, "electric car");
+        assert_eq!(values[2].2[0], "electric car");
 
         let values = find(&mut db, "coche", PredicateType::Contains);
-        assert_eq!(values.len(), 6);
-        assert_eq!(values[5].1, "lavacoches");
-        assert_eq!(values[5].2, "carwash");
+        assert_eq!(values.len(), 5);
+        assert_eq!(values[4].1, "lavacoches");
+        assert_eq!(values[4].2[0], "carwash");
     }
 }

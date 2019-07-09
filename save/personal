@@ -1,6 +1,6 @@
 {
   "full_filename": "save/personal",
-  "row_max": 30,
+  "row_max": 64,
   "rows": [
     {
       "row_id": 1,
@@ -539,6 +539,780 @@
         "name": "value",
         "value": {
           "DbString": "date (time)"
+        }
+      }
+    },
+    {
+      "row_id": 31,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "fondo"
+        }
+      }
+    },
+    {
+      "row_id": 31,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "bottom"
+        }
+      }
+    },
+    {
+      "row_id": 32,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "clave"
+        }
+      }
+    },
+    {
+      "row_id": 32,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "password"
+        }
+      }
+    },
+    {
+      "row_id": 33,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "clave"
+        }
+      }
+    },
+    {
+      "row_id": 33,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "key (to a problem or puzzle)"
+        }
+      }
+    },
+    {
+      "row_id": 34,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "bucear"
+        }
+      }
+    },
+    {
+      "row_id": 34,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to dive, to swim under water"
+        }
+      }
+    },
+    {
+      "row_id": 35,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ratón"
+        }
+      }
+    },
+    {
+      "row_id": 35,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "mouse (small rodent)"
+        }
+      }
+    },
+    {
+      "row_id": 36,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ratón"
+        }
+      }
+    },
+    {
+      "row_id": 36,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "mouse (input device)"
+        }
+      }
+    },
+    {
+      "row_id": 37,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "nadie"
+        }
+      }
+    },
+    {
+      "row_id": 37,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "no one, nobody; anyone, anybody"
+        }
+      }
+    },
+    {
+      "row_id": 38,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "tamaño"
+        }
+      }
+    },
+    {
+      "row_id": 38,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "size"
+        }
+      }
+    },
+    {
+      "row_id": 39,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ahora"
+        }
+      }
+    },
+    {
+      "row_id": 39,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "now"
+        }
+      }
+    },
+    {
+      "row_id": 40,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "corporal"
+        }
+      }
+    },
+    {
+      "row_id": 40,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "corporal, of or relating to the corpus or body, bodywide or systemic"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "tender"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to tend to, to have a tendency"
+        }
+      }
+    },
+    {
+      "row_id": 42,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "equipo"
+        }
+      }
+    },
+    {
+      "row_id": 42,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "team"
+        }
+      }
+    },
+    {
+      "row_id": 43,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "predecir"
+        }
+      }
+    },
+    {
+      "row_id": 43,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to predict"
+        }
+      }
+    },
+    {
+      "row_id": 44,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cada"
+        }
+      }
+    },
+    {
+      "row_id": 44,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "each; every"
+        }
+      }
+    },
+    {
+      "row_id": 45,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "sabiendas"
+        }
+      }
+    },
+    {
+      "row_id": 45,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "knowingly"
+        }
+      }
+    },
+    {
+      "row_id": 46,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "fiabilidad"
+        }
+      }
+    },
+    {
+      "row_id": 46,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "reliability, trustworthiness"
+        }
+      }
+    },
+    {
+      "row_id": 47,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "revista"
+        }
+      }
+    },
+    {
+      "row_id": 47,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "magazine"
+        }
+      }
+    },
+    {
+      "row_id": 48,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ciencia"
+        }
+      }
+    },
+    {
+      "row_id": 48,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "science"
+        }
+      }
+    },
+    {
+      "row_id": 49,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "almacenar"
+        }
+      }
+    },
+    {
+      "row_id": 49,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to store, stock"
+        }
+      }
+    },
+    {
+      "row_id": 50,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "hacer"
+        }
+      }
+    },
+    {
+      "row_id": 50,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "do, make"
+        }
+      }
+    },
+    {
+      "row_id": 51,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "hacer"
+        }
+      }
+    },
+    {
+      "row_id": 51,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to become"
+        }
+      }
+    },
+    {
+      "row_id": 52,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "hacer"
+        }
+      }
+    },
+    {
+      "row_id": 52,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to get"
+        }
+      }
+    },
+    {
+      "row_id": 53,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cinta"
+        }
+      }
+    },
+    {
+      "row_id": 53,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "ribbon, worn by girls in the hair"
+        }
+      }
+    },
+    {
+      "row_id": 54,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "enfermedad"
+        }
+      }
+    },
+    {
+      "row_id": 54,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "illness"
+        }
+      }
+    },
+    {
+      "row_id": 55,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "envejecimiento"
+        }
+      }
+    },
+    {
+      "row_id": 55,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "aging"
+        }
+      }
+    },
+    {
+      "row_id": 56,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cuadrar"
+        }
+      }
+    },
+    {
+      "row_id": 56,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to conform"
+        }
+      }
+    },
+    {
+      "row_id": 57,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "medir"
+        }
+      }
+    },
+    {
+      "row_id": 57,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "To measure"
+        }
+      }
+    },
+    {
+      "row_id": 58,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "mientras"
+        }
+      }
+    },
+    {
+      "row_id": 58,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "while"
+        }
+      }
+    },
+    {
+      "row_id": 59,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "apenas"
+        }
+      }
+    },
+    {
+      "row_id": 59,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "hardly, scarcely"
+        }
+      }
+    },
+    {
+      "row_id": 60,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "embargo"
+        }
+      }
+    },
+    {
+      "row_id": 60,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "distraint"
+        }
+      }
+    },
+    {
+      "row_id": 61,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "mamífero"
+        }
+      }
+    },
+    {
+      "row_id": 61,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "mammal"
+        }
+      }
+    },
+    {
+      "row_id": 62,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ave"
+        }
+      }
+    },
+    {
+      "row_id": 62,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "bird"
+        }
+      }
+    },
+    {
+      "row_id": 63,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "edad"
+        }
+      }
+    },
+    {
+      "row_id": 63,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "age"
+        }
+      }
+    },
+    {
+      "row_id": 64,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cocina"
+        }
+      }
+    },
+    {
+      "row_id": 64,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "cuisine"
+        }
+      }
+    },
+    {
+      "row_id": 64,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "back seats of a bus"
+        }
+      }
+    },
+    {
+      "row_id": 64,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "kitchen"
+        }
+      }
+    },
+    {
+      "row_id": 64,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "stove, oven, kiln"
+        }
+      }
+    },
+    {
+      "row_id": 2,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "A multitude, or crowd, of people"
+        }
+      }
+    },
+    {
+      "row_id": 60,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "embargo"
+        }
+      }
+    },
+    {
+      "row_id": 50,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to become"
+        }
+      }
+    },
+    {
+      "row_id": 50,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to get"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to lay oneself down"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to build (a bridge across an expanse)"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to cast (a net)"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to coat (with plaster)"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to extend (the hand)"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to floor (with a punch), to stretch out"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to hang up (clothes)"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to lay (cable)"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to make (a bed)"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to set (a trap)"
+        }
+      }
+    },
+    {
+      "row_id": 41,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to spread, to stretch out"
         }
       }
     }
