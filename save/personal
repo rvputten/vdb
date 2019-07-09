@@ -1,6 +1,6 @@
 {
   "full_filename": "save/personal",
-  "row_max": 114,
+  "row_max": 121,
   "rows": [
     {
       "row_id": 1,
@@ -2807,6 +2807,267 @@
         "name": "value",
         "value": {
           "DbString": "fourteen"
+        }
+      }
+    },
+    {
+      "row_id": 115,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "fracaso"
+        }
+      }
+    },
+    {
+      "row_id": 115,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "downfall, ruin, calamity, destruction"
+        }
+      }
+    },
+    {
+      "row_id": 115,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "failure, flop, abortiveness"
+        }
+      }
+    },
+    {
+      "row_id": 116,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "fracasar"
+        }
+      }
+    },
+    {
+      "row_id": 116,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to fail, flop, lose"
+        }
+      }
+    },
+    {
+      "row_id": 116,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to break into pieces"
+        }
+      }
+    },
+    {
+      "row_id": 117,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "seguir"
+        }
+      }
+    },
+    {
+      "row_id": 117,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to continue; to go on; to keep on, can be combined with a present participle (-ndo form) to indicate that someone or something continues doing something"
+        }
+      }
+    },
+    {
+      "row_id": 117,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to follow"
+        }
+      }
+    },
+    {
+      "row_id": 118,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "presionar"
+        }
+      }
+    },
+    {
+      "row_id": 118,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to pressure"
+        }
+      }
+    },
+    {
+      "row_id": 118,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to push, press"
+        }
+      }
+    },
+    {
+      "row_id": 118,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to urge"
+        }
+      }
+    },
+    {
+      "row_id": 119,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "exigir"
+        }
+      }
+    },
+    {
+      "row_id": 119,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to demand; to require"
+        }
+      }
+    },
+    {
+      "row_id": 119,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to exact"
+        }
+      }
+    },
+    {
+      "row_id": 120,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ceder"
+        }
+      }
+    },
+    {
+      "row_id": 120,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to cede, to hand over, to convey"
+        }
+      }
+    },
+    {
+      "row_id": 120,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to decrease, to lessen, to diminish"
+        }
+      }
+    },
+    {
+      "row_id": 120,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to relinquish, to abandon, to leave"
+        }
+      }
+    },
+    {
+      "row_id": 120,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to transfer, to yield"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "reclamar"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to hoist taut"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to resound"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to claim, to ask for, to demand"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to look for (a criminal), to summon (a witness)"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to lure (with a decoy or whistle while hunting)"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to protest, to complain, to object, to clamor, to reclaim"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to re-claim, to recover possession of"
         }
       }
     }
