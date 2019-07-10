@@ -1,6 +1,7 @@
 //use chrono::{DateTime, Duration, Utc};
-use chrono::NaiveDateTime;
+use chrono::{Local, NaiveDateTime};
 use std::error::Error;
+use std::fmt;
 use std::fs::File;
 use std::io::Read;
 use std::io::Write;
@@ -11,6 +12,17 @@ pub enum Data {
     DbString(String),
     DbInt(i32),
     DbDateTime(NaiveDateTime),
+}
+
+impl fmt::Display for Data {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let printable = match self {
+            Data::DbDateTime(date_time) => date_time.format("%Y-%m-%d").to_string(),
+            Data::DbInt(number) => format!("{}", number),
+            Data::DbString(string) => string.clone(),
+        };
+        write!(f, "{}", printable)
+    }
 }
 
 impl Data {
@@ -30,6 +42,10 @@ impl Data {
         } else {
             false
         }
+    }
+
+    pub fn now() -> Data {
+        Data::DbDateTime(Local::now().naive_local())
     }
 }
 
@@ -277,7 +293,7 @@ impl Db {
     }
 
     /// Return mutable reference to an entry in a given row.
-    fn get_first_entry_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry> {
+    pub fn get_first_entry_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry> {
         for row in &mut self.rows {
             if row.row_id == row_id && row.entry.name == name {
                 return Some(&mut row.entry);

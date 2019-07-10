@@ -8,14 +8,8 @@ None.
 
 Ideas
 =====
-if search unsuccessful, remove letters until a result is found
-    down to 4 characters with word.starts_with()
-	if unsuccessful, search also with word.contains()
-count how often a word has been added to the dictionary
-record last addition date to the dictionary
-count number of words in dictionary
-    in work, unfinished
-when limiting search results, count multiple translations
+search personal db
+    to list all words beginning with 'ca', enter: 'p ca'
 replace "name" and "value" with "word" and "translation" in main.rs where appropriate
 search English results if no Spanish results are found (or are very few)
 make naming of searches more consistent
@@ -68,3 +62,9 @@ show recent searches
 	every row shown gets a line number
 	line numbers are overwritten on subsequent searches
 	when the user types a line number, the word is saved in the dictionary
+if search unsuccessful, remove last letter until a result is found
+count number of words in dictionary
+when limiting search results, count multiple translations
+count how often a word has been added to the dictionary
+record last addition date to the dictionary
+    and sort by date addition
