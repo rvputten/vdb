@@ -1,6 +1,6 @@
 {
   "full_filename": "save/personal",
-  "row_max": 114,
+  "row_max": 143,
   "rows": [
     {
       "row_id": 1,
@@ -2807,6 +2807,951 @@
         "name": "value",
         "value": {
           "DbString": "fourteen"
+        }
+      }
+    },
+    {
+      "row_id": 115,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "investidura"
+        }
+      }
+    },
+    {
+      "row_id": 115,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "investiture"
+        }
+      }
+    },
+    {
+      "row_id": 116,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "comprobar"
+        }
+      }
+    },
+    {
+      "row_id": 116,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to check; to verify"
+        }
+      }
+    },
+    {
+      "row_id": 116,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to prove"
+        }
+      }
+    },
+    {
+      "row_id": 117,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "bloqueo"
+        }
+      }
+    },
+    {
+      "row_id": 117,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "blockade"
+        }
+      }
+    },
+    {
+      "row_id": 117,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "blockage"
+        }
+      }
+    },
+    {
+      "row_id": 117,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "freeze"
+        }
+      }
+    },
+    {
+      "row_id": 117,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "locking"
+        }
+      }
+    },
+    {
+      "row_id": 118,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "fallido"
+        }
+      }
+    },
+    {
+      "row_id": 118,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "failed, unsuccessful"
+        }
+      }
+    },
+    {
+      "row_id": 119,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "palabra"
+        }
+      }
+    },
+    {
+      "row_id": 119,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "word"
+        }
+      }
+    },
+    {
+      "row_id": 120,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "giro"
+        }
+      }
+    },
+    {
+      "row_id": 120,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "tour"
+        }
+      }
+    },
+    {
+      "row_id": 120,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "turn"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "encierro"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "bull run, bullfighting"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "confinement, enclosure"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "prison"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "reclusion"
+        }
+      }
+    },
+    {
+      "row_id": 121,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "sit-in (protest)"
+        }
+      }
+    },
+    {
+      "row_id": 122,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "contusión"
+        }
+      }
+    },
+    {
+      "row_id": 122,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "contusion"
+        }
+      }
+    },
+    {
+      "row_id": 123,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "mozo"
+        }
+      }
+    },
+    {
+      "row_id": 123,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "young; unmarried"
+        }
+      }
+    },
+    {
+      "row_id": 123,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "boy, lad"
+        }
+      }
+    },
+    {
+      "row_id": 123,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "cat"
+        }
+      }
+    },
+    {
+      "row_id": 123,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "servant, waiter, steward, manservant (in feminine: girl, maidservant)"
+        }
+      }
+    },
+    {
+      "row_id": 124,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cornada"
+        }
+      }
+    },
+    {
+      "row_id": 124,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "A wound inflicted by a horn, usually the horn of a bull in the context of bullfighting"
+        }
+      }
+    },
+    {
+      "row_id": 125,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cuello"
+        }
+      }
+    },
+    {
+      "row_id": 125,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "collar (part of a shirt fitting around the neck)"
+        }
+      }
+    },
+    {
+      "row_id": 125,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "neck"
+        }
+      }
+    },
+    {
+      "row_id": 126,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "sobre"
+        }
+      }
+    },
+    {
+      "row_id": 126,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "envelope"
+        }
+      }
+    },
+    {
+      "row_id": 126,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "about"
+        }
+      }
+    },
+    {
+      "row_id": 126,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "over, above, on, upon, atop"
+        }
+      }
+    },
+    {
+      "row_id": 127,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "trámite"
+        }
+      }
+    },
+    {
+      "row_id": 127,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "procedure, step"
+        }
+      }
+    },
+    {
+      "row_id": 128,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "sede"
+        }
+      }
+    },
+    {
+      "row_id": 128,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "venue"
+        }
+      }
+    },
+    {
+      "row_id": 128,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "seat, headquarters"
+        }
+      }
+    },
+    {
+      "row_id": 128,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "see (diocese)"
+        }
+      }
+    },
+    {
+      "row_id": 29,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to have available"
+        }
+      }
+    },
+    {
+      "row_id": 29,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to rely on"
+        }
+      }
+    },
+    {
+      "row_id": 29,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to tell (a story); narrate"
+        }
+      }
+    },
+    {
+      "row_id": 129,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ajeno"
+        }
+      }
+    },
+    {
+      "row_id": 129,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "distant; alien"
+        }
+      }
+    },
+    {
+      "row_id": 129,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "of others, belonging to someone else"
+        }
+      }
+    },
+    {
+      "row_id": 130,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "investigación"
+        }
+      }
+    },
+    {
+      "row_id": 130,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "investigation"
+        }
+      }
+    },
+    {
+      "row_id": 130,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "research"
+        }
+      }
+    },
+    {
+      "row_id": 131,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "regreso"
+        }
+      }
+    },
+    {
+      "row_id": 131,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "return"
+        }
+      }
+    },
+    {
+      "row_id": 132,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "arraigar"
+        }
+      }
+    },
+    {
+      "row_id": 132,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to establish"
+        }
+      }
+    },
+    {
+      "row_id": 132,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to settle"
+        }
+      }
+    },
+    {
+      "row_id": 132,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to take root"
+        }
+      }
+    },
+    {
+      "row_id": 133,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "alumno"
+        }
+      }
+    },
+    {
+      "row_id": 133,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "pupil or student"
+        }
+      }
+    },
+    {
+      "row_id": 134,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "estancia"
+        }
+      }
+    },
+    {
+      "row_id": 134,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "large farmstead"
+        }
+      }
+    },
+    {
+      "row_id": 134,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "room"
+        }
+      }
+    },
+    {
+      "row_id": 134,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "stanza"
+        }
+      }
+    },
+    {
+      "row_id": 134,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "stay, residence, sojourn"
+        }
+      }
+    },
+    {
+      "row_id": 135,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "recurso"
+        }
+      }
+    },
+    {
+      "row_id": 135,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "appeal"
+        }
+      }
+    },
+    {
+      "row_id": 135,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "option, choice"
+        }
+      }
+    },
+    {
+      "row_id": 135,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "resort, refuge (something or someone turned to for safety)"
+        }
+      }
+    },
+    {
+      "row_id": 135,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "resource, means"
+        }
+      }
+    },
+    {
+      "row_id": 135,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "writ"
+        }
+      }
+    },
+    {
+      "row_id": 136,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cédula"
+        }
+      }
+    },
+    {
+      "row_id": 136,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "warrant, option"
+        }
+      }
+    },
+    {
+      "row_id": 136,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "license"
+        }
+      }
+    },
+    {
+      "row_id": 137,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "hoja"
+        }
+      }
+    },
+    {
+      "row_id": 137,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "blade of knife or sword"
+        }
+      }
+    },
+    {
+      "row_id": 137,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "blank sheet of paper"
+        }
+      }
+    },
+    {
+      "row_id": 137,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "foil"
+        }
+      }
+    },
+    {
+      "row_id": 137,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "glass pane"
+        }
+      }
+    },
+    {
+      "row_id": 137,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "leaf"
+        }
+      }
+    },
+    {
+      "row_id": 137,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "pad"
+        }
+      }
+    },
+    {
+      "row_id": 137,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "side of bacon"
+        }
+      }
+    },
+    {
+      "row_id": 138,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "procedimiento"
+        }
+      }
+    },
+    {
+      "row_id": 138,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "method"
+        }
+      }
+    },
+    {
+      "row_id": 138,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "procedure"
+        }
+      }
+    },
+    {
+      "row_id": 138,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "proceedings"
+        }
+      }
+    },
+    {
+      "row_id": 139,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "previo"
+        }
+      }
+    },
+    {
+      "row_id": 139,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "previous"
+        }
+      }
+    },
+    {
+      "row_id": 140,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "solicitud"
+        }
+      }
+    },
+    {
+      "row_id": 140,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "application"
+        }
+      }
+    },
+    {
+      "row_id": 140,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "solicitation"
+        }
+      }
+    },
+    {
+      "row_id": 140,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "survey"
+        }
+      }
+    },
+    {
+      "row_id": 141,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "visado"
+        }
+      }
+    },
+    {
+      "row_id": 141,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "visa; a permit to enter and leave a country"
+        }
+      }
+    },
+    {
+      "row_id": 142,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "formación"
+        }
+      }
+    },
+    {
+      "row_id": 142,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "alignment (ordered group of people)"
+        }
+      }
+    },
+    {
+      "row_id": 142,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "formation"
+        }
+      }
+    },
+    {
+      "row_id": 142,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "training, education"
+        }
+      }
+    },
+    {
+      "row_id": 143,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "anexo"
+        }
+      }
+    },
+    {
+      "row_id": 143,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "attached"
+        }
+      }
+    },
+    {
+      "row_id": 143,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "enclosed"
+        }
+      }
+    },
+    {
+      "row_id": 143,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "annex, appendix"
+        }
+      }
+    },
+    {
+      "row_id": 143,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "contiguous building, extension of a building"
         }
       }
     }

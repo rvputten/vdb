@@ -16,7 +16,12 @@ function d {
     rust-gdb target/debug/$exe
 }
 
-function v { gvim *md src/* *.toml run.sh aliases.inc; }
+function v {
+    local v=vim
+    [[ -e /usr/bin/gvim ]] && v=gvim
+    $v *md src/* *.toml run.sh
+}
+
 function killrun {
     local psout=`ps -u $USER -o comm,pid`
     local runsh=`echo "$psout"|grep ^run.sh`

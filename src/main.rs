@@ -309,7 +309,18 @@ fn find_and_display(db: &mut Db, search_term: &str, max_results: usize) {
         let number_matches_contains = rows_contains_full.len();
 
         if number_matches_contains == 0 {
-            println!("\nSearch result empty.");
+            let mut new_search_term = search_term.to_string();
+            new_search_term.pop();
+            if new_search_term.len() >= 4 {
+                println!(
+                    "{} not found. Searching for {} instead.",
+                    search_term, new_search_term
+                );
+                find_and_display(db, &new_search_term, max_results);
+                return;
+            } else {
+                println!("\n{} not found.", search_term);
+            }
         } else {
             let rows_contains = minus(&rows_contains_full, &rows_starts_with_full);
             if !rows_contains.is_empty() {
@@ -357,7 +368,13 @@ fn add_numbers(db: &mut Db, row_ids: &[RowId], offset: usize) {
 fn save(db: &Db, db_name: &str) {
     println!("Saving database {}.", db_name);
     if let Ok(_result) = db.save() {
-        println!("{} records saved.", db.rows.len());
+        let predicates = vec![Predicate::new_any_string("value")];
+        let entries = vec![String::from("value")];
+        let row_ids = db.select_row_ids(&predicates, None);
+        let words = row_ids.len();
+        let result = db.entries_from_row_ids(&row_ids, entries);
+        let translations = result.iter().map(|entry| entry.len()).sum::<usize>();
+        println!("Saved {} words and {} translations.", words, translations);
     } else {
         println!("Error saving database {}!", db_name);
     }

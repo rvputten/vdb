@@ -8,6 +8,13 @@ None.
 
 Ideas
 =====
+if search unsuccessful, remove letters until a result is found
+    down to 4 characters with word.starts_with()
+	if unsuccessful, search also with word.contains()
+count how often a word has been added to the dictionary
+record last addition date to the dictionary
+count number of words in dictionary
+    in work, unfinished
 when limiting search results, count multiple translations
 replace "name" and "value" with "word" and "translation" in main.rs where appropriate
 search English results if no Spanish results are found (or are very few)
@@ -40,7 +47,7 @@ store in hashmap by row\_id
     lookup of row\_ids is the slowest operation at the moment
 guess inflexions
     cubren -> cubrir
-    volver -> vuelve (come back)
+    vuelve -> volver (come back)
     empieza -> empezar (begin, start)
     consiguen -> consegir (etwas erlangen)
     cierran -> cerrar (abschließen, sperren)

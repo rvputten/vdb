@@ -8,7 +8,6 @@ lines=${LINES:-89}
 # test, release, debug
 mode=test
 
-inotifywait -e close_write src resources run.sh 2> /dev/null || { echo "Error running inotifywait"; exit 1; }
 sleep 0.1
 
 function rqline {
@@ -33,45 +32,43 @@ function rqline {
 function run_cargo {
     local cmd=$1; shift
     rqline $cmd
-
     out="`cargo $cmd $* --color=always 2>&1`"
     local r=$?
     echo "$out" | head -$((lines-5))
     return $r
-
-#    cargo $cmd $* --color=always
-#    local r=$?
-#    return $r
 }
 
 rqline
 
-case $mode in
-    clippy)
-	run_cargo clippy
-	;;
-    test)
-	cargo fmt
-	run_cargo clippy &&
-	    run_cargo test &&
-	    cargo build > /dev/null 2>&1 &&
-	    false &&
-	    rqline run &&
-	    cargo run | head -48
-	;;
-    release)
-	cargo build --release && (
-	    killall $progname
-	    target/release/$progname ~/out.csv &
-	)
-	;;
-    debug)
-	cargo build && (
-	    killall $progname
-	    target/debug/$progname ~/out.csv &
-	)
-	;;
-esac
-
-sleep 0.5
-./run.sh &
+while true; do
+    case $mode in
+	clippy)
+	    run_cargo clippy
+	    ;;
+	test)
+	    cargo fmt
+	    run_cargo clippy &&
+		run_cargo test &&
+		cargo build > /dev/null 2>&1 &&
+		false &&
+		rqline run &&
+		cargo run | head -48
+	    ;;
+	release)
+	    cargo fmt
+	    run_cargo build --release && (
+		killall -q $progname
+		printf ""
+	    )
+	    ;;
+	debug)
+	    cargo fmt
+	    cargo build && (
+		killall -q $progname
+		printf ""
+	    )
+	    ;;
+    esac
+    inotifywait -e close_write src 2> /dev/null || { echo "Error running inotifywait"; exit 1; }
+    sleep 0.1
+done

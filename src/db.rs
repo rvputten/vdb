@@ -53,6 +53,7 @@ impl Entry {
 
     pub fn compare(&self, predicate: &Predicate) -> bool {
         match &predicate.predicate_type {
+            PredicateType::Any => predicate.entry.name == self.name,
             PredicateType::Equal => {
                 predicate.entry.name == self.name && predicate.entry.value == self.value
             }
@@ -81,6 +82,7 @@ pub enum PredicateType {
     Equal,
     StartsWith,
     Contains,
+    Any,
 }
 
 #[derive(Debug)]
@@ -97,6 +99,18 @@ impl Predicate {
             entry: Entry {
                 name: String::from(name),
                 value: Db::db_int(value),
+            },
+        }
+    }
+
+    /// Shortcut for creating a new `Predicate` that searches database for `DbString`s equal to
+    /// `value`
+    pub fn new_any_string(name: &str) -> Predicate {
+        Predicate {
+            predicate_type: PredicateType::Any,
+            entry: Entry {
+                name: String::from(name),
+                value: Db::db_string(""),
             },
         }
     }

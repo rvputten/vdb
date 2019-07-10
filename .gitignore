@@ -2,3 +2,4 @@
 **/*.rs.bk
 Cargo.lock
 save/vocabulary
+save/test-sample
