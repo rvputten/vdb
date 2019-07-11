@@ -4465,6 +4465,42 @@
           "DbDateTime": "2019-07-10T21:33:17.436189701"
         }
       }
+    },
+    {
+      "row_id": 115,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 2
+        }
+      }
+    },
+    {
+      "row_id": 115,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T15:16:22.163575357"
+        }
+      }
+    },
+    {
+      "row_id": 119,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 119,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T15:22:21.441864142"
+        }
+      }
     }
   ]
 }

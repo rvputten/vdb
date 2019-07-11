@@ -17,7 +17,7 @@ pub enum Data {
 impl fmt::Display for Data {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let printable = match self {
-            Data::DbDateTime(date_time) => date_time.format("%Y-%m-%d").to_string(),
+            Data::DbDateTime(date_time) => date_time.format("%Y-%m-%d %H:%M").to_string(),
             Data::DbInt(number) => format!("{}", number),
             Data::DbString(string) => string.clone(),
         };
@@ -364,6 +364,17 @@ impl Db {
         }
     }
 
+    pub fn enumerate_row_ids(&self) -> Vec<RowId> {
+        let mut row_ids = self
+            .rows
+            .iter()
+            .map(|row| row.row_id)
+            .collect::<Vec<RowId>>();
+        row_ids.sort();
+        row_ids.dedup();
+        row_ids
+    }
+
     /// Returns the most recently added `top_n` row_ids in the database.
     pub fn last_n_rows(&self, top_n: usize) -> Vec<RowId> {
         let min_row = if self.row_max.0 > top_n {
@@ -371,11 +382,14 @@ impl Db {
         } else {
             1
         };
-        (min_row..=self.row_max.0)
+        let mut row_ids = (min_row..=self.row_max.0)
             .map(RowId)
             .filter_map(|row_id| self.rows.iter().find(|row| row.row_id == row_id))
             .map(|row| row.row_id)
-            .collect::<Vec<RowId>>()
+            .collect::<Vec<RowId>>();
+        row_ids.sort();
+        row_ids.dedup();
+        row_ids
     }
 
     #[cfg(test)]
@@ -778,5 +792,19 @@ mod test {
         assert_eq!(db.rows.len(), 6);
         assert_eq!(db.rows[0].entry.name, "set");
         assert_eq!(db.rows[4].entry.name, "name");
+    }
+
+    // pub fn last_n_rows(&self, top_n: usize) -> Vec<RowId> {
+    #[test]
+    fn last_n_rows() {
+        let db = new_db_with_entries("testdb");
+        assert_eq!(db.last_n_rows(1), vec![RowId(2)]);
+        assert_eq!(db.last_n_rows(2), vec![RowId(1), RowId(2)]);
+    }
+
+    #[test]
+    fn enumerate_row_ids() {
+        let db = new_db_with_entries("testdb");
+        assert_eq!(db.enumerate_row_ids(), vec![RowId(1), RowId(2)]);
     }
 }

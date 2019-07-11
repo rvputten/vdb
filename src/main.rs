@@ -309,9 +309,10 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
 
 fn display_personal_db(db_personal: &mut Db, max_rows: usize, sort: bool, compact: bool) {
     println!();
-    println!("Personal dictionary:");
+    println!("Personal dictionary (last {} entries):", max_rows);
 
-    let row_ids = db_personal.last_n_rows(max_rows);
+    //let row_ids = db_personal.last_n_rows(max_rows);
+    let row_ids = db_personal.enumerate_row_ids();
     let mut results = find_row_ids_to_entries(db_personal, &row_ids);
     if sort {
         results.sort_by(
@@ -319,6 +320,8 @@ fn display_personal_db(db_personal: &mut Db, max_rows: usize, sort: bool, compac
                 (Some(Data::DbDateTime(date_a)), Some(Data::DbDateTime(date_b))) => {
                     date_a.cmp(&date_b)
                 }
+                (Some(Data::DbDateTime(_date_a)), _) => std::cmp::Ordering::Greater,
+                (_, Some(Data::DbDateTime(_date_b))) => std::cmp::Ordering::Less,
                 _ => entry_a.word.cmp(&entry_b.word),
             },
         );
@@ -355,7 +358,7 @@ fn display_personal_db(db_personal: &mut Db, max_rows: usize, sort: bool, compac
                 let add_date_str = if let Some(add_date) = entry.add_date {
                     format!("{}", add_date)
                 } else {
-                    "          ".to_string()
+                    "                ".to_string()
                 };
 
                 let add_counter_str = if let Some(add_counter) = entry.add_counter {

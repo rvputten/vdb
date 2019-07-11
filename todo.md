@@ -8,6 +8,8 @@ None.
 
 Ideas
 =====
+monitor clipboard and search for words in personal or vocabulary dictionary
+    present a list of words found in the clipboard
 search personal db
     to list all words beginning with 'ca', enter: 'p ca'
 replace "name" and "value" with "word" and "translation" in main.rs where appropriate
