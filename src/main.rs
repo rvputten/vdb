@@ -275,7 +275,7 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
     let mut input = String::new();
     let max_results: usize = 100;
 
-    display_personal_db(db_personal, 100, false);
+    display_personal_db(db_personal, 100, false, None);
 
     print!("Enter search term: ");
     io::stdout().flush().unwrap();
@@ -287,13 +287,16 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
 
         if let Ok(number) = trimmed.parse::<usize>() {
             add_to_personal_db(db_vocabulary, db_personal, number);
-            display_personal_db(db_personal, 1, true);
-        } else if trimmed == "p" {
-            display_personal_db(db_personal, 100, false);
+            display_personal_db(db_personal, 1, true, None);
         } else {
-            db_vocabulary.delete_entry_all("search_index");
-            find_and_display(db_vocabulary, trimmed, max_results);
-            display_personal_db(db_personal, 9, true);
+            let mut words = trimmed.split_whitespace();
+            if words.next() == Some("p") {
+                display_personal_db(db_personal, 100, false, words.next());
+            } else {
+                db_vocabulary.delete_entry_all("search_index");
+                find_and_display(db_vocabulary, trimmed, max_results);
+                display_personal_db(db_personal, 9, true, None);
+            }
         }
 
         input.clear();
@@ -318,12 +321,21 @@ fn sort_db(entries: &mut Vec<DictEntry>) {
     );
 }
 
-fn display_personal_db(db_personal: &mut Db, max_rows: usize, compact: bool) {
+fn display_personal_db(
+    db_personal: &mut Db,
+    max_rows: usize,
+    compact: bool,
+    starts_with: Option<&str>,
+) {
     println!();
     println!("Personal dictionary (last {} entries):", max_rows);
 
     //let row_ids = db_personal.last_n_rows(max_rows);
-    let row_ids = db_personal.enumerate_row_ids();
+    let row_ids = if let Some(starts_with) = starts_with {
+        db_personal.select_row_ids(&[Predicate::new_starts_with("name", starts_with)], None)
+    } else {
+        db_personal.enumerate_row_ids()
+    };
     let mut results = find_row_ids_to_entries(db_personal, &row_ids);
     sort_db(&mut results);
 

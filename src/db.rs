@@ -145,7 +145,6 @@ impl Predicate {
 
     /// Shortcut for creating a new `Predicate` that searches database for `DbString`s starting
     /// with `value`
-    #[cfg(test)]
     pub fn new_starts_with(name: &str, value: &str) -> Predicate {
         Predicate {
             predicate_type: PredicateType::StartsWith,
