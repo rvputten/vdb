@@ -1,6 +1,6 @@
 {
   "full_filename": "save/personal",
-  "row_max": 155,
+  "row_max": 189,
   "rows": [
     {
       "row_id": 1,
@@ -4327,7 +4327,7 @@
       "entry": {
         "name": "add_counter",
         "value": {
-          "DbInt": 1
+          "DbInt": 2
         }
       }
     },
@@ -4336,7 +4336,7 @@
       "entry": {
         "name": "add_date",
         "value": {
-          "DbDateTime": "2019-07-10T21:30:57.741399701"
+          "DbDateTime": "2019-07-11T17:41:11.057548196"
         }
       }
     },
@@ -4499,6 +4499,1779 @@
         "name": "add_date",
         "value": {
           "DbDateTime": "2019-07-11T15:22:21.441864142"
+        }
+      }
+    },
+    {
+      "row_id": 156,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "retomar"
+        }
+      }
+    },
+    {
+      "row_id": 156,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to retake"
+        }
+      }
+    },
+    {
+      "row_id": 156,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 156,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T15:37:17.152912251"
+        }
+      }
+    },
+    {
+      "row_id": 157,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ejército"
+        }
+      }
+    },
+    {
+      "row_id": 157,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "army"
+        }
+      }
+    },
+    {
+      "row_id": 157,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 157,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T15:42:05.510001429"
+        }
+      }
+    },
+    {
+      "row_id": 31,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "back"
+        }
+      }
+    },
+    {
+      "row_id": 31,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "fund, funding"
+        }
+      }
+    },
+    {
+      "row_id": 31,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "opposite side or extreme (of a house, store, room, corridor, street, tubing, piping, etc.), respect to the talker, the entrance or beginning"
+        }
+      }
+    },
+    {
+      "row_id": 31,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 31,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:07:28.434048506"
+        }
+      }
+    },
+    {
+      "row_id": 158,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "asunto"
+        }
+      }
+    },
+    {
+      "row_id": 158,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "affair"
+        }
+      }
+    },
+    {
+      "row_id": 158,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "business"
+        }
+      }
+    },
+    {
+      "row_id": 158,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "issue"
+        }
+      }
+    },
+    {
+      "row_id": 158,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "matter"
+        }
+      }
+    },
+    {
+      "row_id": 158,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 158,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:11:28.864638818"
+        }
+      }
+    },
+    {
+      "row_id": 159,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "impedir"
+        }
+      }
+    },
+    {
+      "row_id": 159,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to impede, hinder"
+        }
+      }
+    },
+    {
+      "row_id": 159,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 159,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:12:42.496378544"
+        }
+      }
+    },
+    {
+      "row_id": 160,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "encallar"
+        }
+      }
+    },
+    {
+      "row_id": 160,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to run aground"
+        }
+      }
+    },
+    {
+      "row_id": 160,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 2
+        }
+      }
+    },
+    {
+      "row_id": 160,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:18:14.406188537"
+        }
+      }
+    },
+    {
+      "row_id": 161,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "subrayar"
+        }
+      }
+    },
+    {
+      "row_id": 161,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to emphasize, stress"
+        }
+      }
+    },
+    {
+      "row_id": 161,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to underline, underscore"
+        }
+      }
+    },
+    {
+      "row_id": 161,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 161,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:15:09.630348670"
+        }
+      }
+    },
+    {
+      "row_id": 162,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "integral"
+        }
+      }
+    },
+    {
+      "row_id": 162,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "brown (rice)"
+        }
+      }
+    },
+    {
+      "row_id": 162,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "integral"
+        }
+      }
+    },
+    {
+      "row_id": 162,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "whole"
+        }
+      }
+    },
+    {
+      "row_id": 162,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "whole-grain"
+        }
+      }
+    },
+    {
+      "row_id": 162,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 162,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:15:46.927030706"
+        }
+      }
+    },
+    {
+      "row_id": 42,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "equipment"
+        }
+      }
+    },
+    {
+      "row_id": 42,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 42,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:16:02.711141510"
+        }
+      }
+    },
+    {
+      "row_id": 163,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ejecutivo"
+        }
+      }
+    },
+    {
+      "row_id": 163,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "executive"
+        }
+      }
+    },
+    {
+      "row_id": 163,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 163,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:16:38.550868993"
+        }
+      }
+    },
+    {
+      "row_id": 164,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "pasado"
+        }
+      }
+    },
+    {
+      "row_id": 164,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "former"
+        }
+      }
+    },
+    {
+      "row_id": 164,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "last"
+        }
+      }
+    },
+    {
+      "row_id": 164,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "past"
+        }
+      }
+    },
+    {
+      "row_id": 164,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 164,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:17:01.806680958"
+        }
+      }
+    },
+    {
+      "row_id": 165,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ánimo"
+        }
+      }
+    },
+    {
+      "row_id": 165,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "courage! keep your head up! good luck!"
+        }
+      }
+    },
+    {
+      "row_id": 165,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "soul, spirit, mood"
+        }
+      }
+    },
+    {
+      "row_id": 165,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "vigor"
+        }
+      }
+    },
+    {
+      "row_id": 165,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 165,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:17:27.238456738"
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "poner"
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to play"
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "(of a heavenly body) to sink beneath the horizon"
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to get"
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to name, to give a nickname"
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to put on (clothing, shoes)"
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to contribute; to bring"
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to put"
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "To turn on, make horny"
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to choose, to designate (for a job, charge or responsibility)"
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to set"
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 166,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:17:43.262371829"
+        }
+      }
+    },
+    {
+      "row_id": 167,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "atado"
+        }
+      }
+    },
+    {
+      "row_id": 167,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "biased"
+        }
+      }
+    },
+    {
+      "row_id": 167,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "confused"
+        }
+      }
+    },
+    {
+      "row_id": 167,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "tied"
+        }
+      }
+    },
+    {
+      "row_id": 167,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "timid"
+        }
+      }
+    },
+    {
+      "row_id": 167,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "coward"
+        }
+      }
+    },
+    {
+      "row_id": 167,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 167,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:21:01.828669130"
+        }
+      }
+    },
+    {
+      "row_id": 168,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "atadura"
+        }
+      }
+    },
+    {
+      "row_id": 168,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "attachment, tying up"
+        }
+      }
+    },
+    {
+      "row_id": 168,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "tie"
+        }
+      }
+    },
+    {
+      "row_id": 168,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 168,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:21:24.228645657"
+        }
+      }
+    },
+    {
+      "row_id": 169,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "buque"
+        }
+      }
+    },
+    {
+      "row_id": 169,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "ship, vessel"
+        }
+      }
+    },
+    {
+      "row_id": 169,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 169,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:22:34.204161321"
+        }
+      }
+    },
+    {
+      "row_id": 170,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "guerra"
+        }
+      }
+    },
+    {
+      "row_id": 170,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "war, warfare"
+        }
+      }
+    },
+    {
+      "row_id": 170,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 170,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:22:39.708043029"
+        }
+      }
+    },
+    {
+      "row_id": 171,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "ahuyentar"
+        }
+      }
+    },
+    {
+      "row_id": 171,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to run away"
+        }
+      }
+    },
+    {
+      "row_id": 171,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to chase away, drive away"
+        }
+      }
+    },
+    {
+      "row_id": 171,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 171,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:22:46.516080464"
+        }
+      }
+    },
+    {
+      "row_id": 172,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "embarcación"
+        }
+      }
+    },
+    {
+      "row_id": 172,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "embarkation"
+        }
+      }
+    },
+    {
+      "row_id": 172,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "ship"
+        }
+      }
+    },
+    {
+      "row_id": 172,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 2
+        }
+      }
+    },
+    {
+      "row_id": 172,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:42:01.824814804"
+        }
+      }
+    },
+    {
+      "row_id": 173,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "estrecho"
+        }
+      }
+    },
+    {
+      "row_id": 173,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "narrow"
+        }
+      }
+    },
+    {
+      "row_id": 173,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "[of a relationship] close, intimate, strong"
+        }
+      }
+    },
+    {
+      "row_id": 173,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "[of a relative] close, kin"
+        }
+      }
+    },
+    {
+      "row_id": 173,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "tight"
+        }
+      }
+    },
+    {
+      "row_id": 173,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "strait"
+        }
+      }
+    },
+    {
+      "row_id": 173,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 173,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:23:04.931839756"
+        }
+      }
+    },
+    {
+      "row_id": 174,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "según"
+        }
+      }
+    },
+    {
+      "row_id": 174,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "according to"
+        }
+      }
+    },
+    {
+      "row_id": 174,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "as, just as, the same way"
+        }
+      }
+    },
+    {
+      "row_id": 174,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "depending on"
+        }
+      }
+    },
+    {
+      "row_id": 174,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 174,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:23:15.235958934"
+        }
+      }
+    },
+    {
+      "row_id": 175,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "fragata"
+        }
+      }
+    },
+    {
+      "row_id": 175,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "frigate"
+        }
+      }
+    },
+    {
+      "row_id": 175,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 175,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:25:07.035078459"
+        }
+      }
+    },
+    {
+      "row_id": 176,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "evitar"
+        }
+      }
+    },
+    {
+      "row_id": 176,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to avoid"
+        }
+      }
+    },
+    {
+      "row_id": 176,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 176,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:25:16.450992781"
+        }
+      }
+    },
+    {
+      "row_id": 177,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "paso"
+        }
+      }
+    },
+    {
+      "row_id": 177,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "dry (said of fruit)"
+        }
+      }
+    },
+    {
+      "row_id": 177,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "A step in a set of instructions"
+        }
+      }
+    },
+    {
+      "row_id": 177,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "A step or pace walking"
+        }
+      }
+    },
+    {
+      "row_id": 177,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "A way"
+        }
+      }
+    },
+    {
+      "row_id": 177,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "The pitch of a helix or screw thread"
+        }
+      }
+    },
+    {
+      "row_id": 177,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 177,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:25:27.698932309"
+        }
+      }
+    },
+    {
+      "row_id": 178,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "señalar"
+        }
+      }
+    },
+    {
+      "row_id": 178,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to show, indicate"
+        }
+      }
+    },
+    {
+      "row_id": 178,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to signal"
+        }
+      }
+    },
+    {
+      "row_id": 178,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 178,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:26:25.290466893"
+        }
+      }
+    },
+    {
+      "row_id": 179,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "portavoz"
+        }
+      }
+    },
+    {
+      "row_id": 179,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "megaphone"
+        }
+      }
+    },
+    {
+      "row_id": 179,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "spokesperson"
+        }
+      }
+    },
+    {
+      "row_id": 179,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 179,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:26:39.130174282"
+        }
+      }
+    },
+    {
+      "row_id": 180,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "obligado"
+        }
+      }
+    },
+    {
+      "row_id": 180,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "coerced, forced"
+        }
+      }
+    },
+    {
+      "row_id": 180,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "committed"
+        }
+      }
+    },
+    {
+      "row_id": 180,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 180,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:26:58.538186532"
+        }
+      }
+    },
+    {
+      "row_id": 50,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 50,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:27:16.585736094"
+        }
+      }
+    },
+    {
+      "row_id": 181,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "apartar"
+        }
+      }
+    },
+    {
+      "row_id": 181,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to separate or divide"
+        }
+      }
+    },
+    {
+      "row_id": 181,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to set aside"
+        }
+      }
+    },
+    {
+      "row_id": 181,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 181,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:28:25.361330407"
+        }
+      }
+    },
+    {
+      "row_id": 182,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "añadidura"
+        }
+      }
+    },
+    {
+      "row_id": 182,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "addition"
+        }
+      }
+    },
+    {
+      "row_id": 182,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "Something that is added, especially something that a merchant gives to a buyer to complete the amount requested, or something extra given as a bonus; a gratuity, lagniappe"
+        }
+      }
+    },
+    {
+      "row_id": 182,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 182,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:28:42.369222919"
+        }
+      }
+    },
+    {
+      "row_id": 183,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "frente"
+        }
+      }
+    },
+    {
+      "row_id": 183,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "forehead"
+        }
+      }
+    },
+    {
+      "row_id": 183,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "front"
+        }
+      }
+    },
+    {
+      "row_id": 183,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 183,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:32:20.047665205"
+        }
+      }
+    },
+    {
+      "row_id": 184,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "retener"
+        }
+      }
+    },
+    {
+      "row_id": 184,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to catch"
+        }
+      }
+    },
+    {
+      "row_id": 184,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to hold"
+        }
+      }
+    },
+    {
+      "row_id": 184,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to hold back"
+        }
+      }
+    },
+    {
+      "row_id": 184,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to retain, keep"
+        }
+      }
+    },
+    {
+      "row_id": 184,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 2
+        }
+      }
+    },
+    {
+      "row_id": 184,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:36:28.501594894"
+        }
+      }
+    },
+    {
+      "row_id": 185,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "cerca"
+        }
+      }
+    },
+    {
+      "row_id": 185,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "close; near; around"
+        }
+      }
+    },
+    {
+      "row_id": 185,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "fence, wall"
+        }
+      }
+    },
+    {
+      "row_id": 185,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 185,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:33:22.175079973"
+        }
+      }
+    },
+    {
+      "row_id": 186,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "sospechar"
+        }
+      }
+    },
+    {
+      "row_id": 186,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to suspect"
+        }
+      }
+    },
+    {
+      "row_id": 186,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 186,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:34:29.774576221"
+        }
+      }
+    },
+    {
+      "row_id": 187,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "maniobra"
+        }
+      }
+    },
+    {
+      "row_id": 187,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "maneuver"
+        }
+      }
+    },
+    {
+      "row_id": 187,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 187,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:41:49.152829491"
+        }
+      }
+    },
+    {
+      "row_id": 58,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "meanwhile"
+        }
+      }
+    },
+    {
+      "row_id": 58,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 58,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:42:14.960542645"
+        }
+      }
+    },
+    {
+      "row_id": 188,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "escoltar"
+        }
+      }
+    },
+    {
+      "row_id": 188,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "to escort"
+        }
+      }
+    },
+    {
+      "row_id": 188,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 188,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:42:33.913305625"
+        }
+      }
+    },
+    {
+      "row_id": 189,
+      "entry": {
+        "name": "name",
+        "value": {
+          "DbString": "fuente"
+        }
+      }
+    },
+    {
+      "row_id": 189,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "source"
+        }
+      }
+    },
+    {
+      "row_id": 189,
+      "entry": {
+        "name": "value",
+        "value": {
+          "DbString": "spring (water), fountain"
+        }
+      }
+    },
+    {
+      "row_id": 189,
+      "entry": {
+        "name": "add_counter",
+        "value": {
+          "DbInt": 1
+        }
+      }
+    },
+    {
+      "row_id": 189,
+      "entry": {
+        "name": "add_date",
+        "value": {
+          "DbDateTime": "2019-07-11T17:43:06.872746712"
         }
       }
     }

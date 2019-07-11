@@ -275,7 +275,7 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
     let mut input = String::new();
     let max_results: usize = 100;
 
-    display_personal_db(db_personal, 100, true, false);
+    display_personal_db(db_personal, 100, false);
 
     print!("Enter search term: ");
     io::stdout().flush().unwrap();
@@ -287,13 +287,13 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
 
         if let Ok(number) = trimmed.parse::<usize>() {
             add_to_personal_db(db_vocabulary, db_personal, number);
-            display_personal_db(db_personal, 1, false, true);
+            display_personal_db(db_personal, 1, true);
         } else if trimmed == "p" {
-            display_personal_db(db_personal, 100, true, false);
+            display_personal_db(db_personal, 100, false);
         } else {
             db_vocabulary.delete_entry_all("search_index");
             find_and_display(db_vocabulary, trimmed, max_results);
-            display_personal_db(db_personal, 9, false, true);
+            display_personal_db(db_personal, 9, true);
         }
 
         input.clear();
@@ -307,39 +307,53 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
     }
 }
 
-fn display_personal_db(db_personal: &mut Db, max_rows: usize, sort: bool, compact: bool) {
+fn sort_db(entries: &mut Vec<DictEntry>) {
+    entries.sort_by(
+        |entry_a, entry_b| match (&entry_a.add_date, &entry_b.add_date) {
+            (Some(Data::DbDateTime(date_a)), Some(Data::DbDateTime(date_b))) => date_a.cmp(&date_b),
+            (Some(Data::DbDateTime(_date_a)), _) => std::cmp::Ordering::Greater,
+            (_, Some(Data::DbDateTime(_date_b))) => std::cmp::Ordering::Less,
+            _ => entry_a.word.cmp(&entry_b.word),
+        },
+    );
+}
+
+fn display_personal_db(db_personal: &mut Db, max_rows: usize, compact: bool) {
     println!();
     println!("Personal dictionary (last {} entries):", max_rows);
 
     //let row_ids = db_personal.last_n_rows(max_rows);
     let row_ids = db_personal.enumerate_row_ids();
     let mut results = find_row_ids_to_entries(db_personal, &row_ids);
-    if sort {
-        results.sort_by(
-            |entry_a, entry_b| match (&entry_a.add_date, &entry_b.add_date) {
-                (Some(Data::DbDateTime(date_a)), Some(Data::DbDateTime(date_b))) => {
-                    date_a.cmp(&date_b)
-                }
-                (Some(Data::DbDateTime(_date_a)), _) => std::cmp::Ordering::Greater,
-                (_, Some(Data::DbDateTime(_date_b))) => std::cmp::Ordering::Less,
-                _ => entry_a.word.cmp(&entry_b.word),
-            },
-        );
-    }
+    sort_db(&mut results);
 
     if compact {
-        for (add_counter, _add_date, word, translations) in results.iter().filter_map(|entry| {
-            if let (Some(add_counter), Some(add_date), Some(word)) = (
-                entry.add_counter,
-                entry.add_date.clone(),
-                entry.word.clone(),
-            ) {
-                Some((add_counter, add_date, word, entry.translations.clone()))
-            } else {
-                None
-            }
-        }) {
-            println!("{}: {} ({})", word, translations.join("; "), add_counter);
+        let row_count = results.len();
+        let start_row = if row_count > max_rows {
+            row_count - max_rows
+        } else {
+            0
+        };
+        for (add_counter, add_date, word, translations) in
+            results.iter().skip(start_row).filter_map(|entry| {
+                if let (Some(add_counter), Some(add_date), Some(word)) = (
+                    entry.add_counter,
+                    entry.add_date.clone(),
+                    entry.word.clone(),
+                ) {
+                    Some((add_counter, add_date, word, entry.translations.clone()))
+                } else {
+                    None
+                }
+            })
+        {
+            println!(
+                "{} {}: {} ({})",
+                add_date,
+                word,
+                translations.join("; "),
+                add_counter
+            );
         }
     } else {
         let row_count = results

@@ -8,6 +8,7 @@ None.
 
 Ideas
 =====
+make db own project
 monitor clipboard and search for words in personal or vocabulary dictionary
     present a list of words found in the clipboard
 search personal db
@@ -53,6 +54,8 @@ guess inflexions
     contó -> contar (zählen)
     tienden -> tender (to tend to)
     predice -> predecir (to predict)
+    haría -> hacer
+    retuvieron -> retener (to retain)
 make useful browsable documentation of source code
 
 Done
