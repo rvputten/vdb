@@ -6,23 +6,27 @@ Source for vocabulary
 =====================
 https://github.com/mananoreboton/en-es-en-Dic.git
 
-Ideas
-=====
-flat file to store vocabulary
-  might implement basics of a database engine
-    separate module for database engine
-flexible number of columns
-  general aspect of file storage
-    could be used for all kinds of data
-      might end up being a database editor instead of a vocabulary trainer, with extensions for vocabulary training
-has several date columns
-  create date
-  history of "remembered" and "don't know" answers
-    rerun after one day
-    another rerun after 5 days
-    another rerun after 30 days
-automatically detect inflections
-  pollito -> pollo
+Source for irregular verbs
+==========================
+https://github.com/voldmar/conjugation.git
+
+Ideas for database
+==================
+store hierarchies (see above)
+    extend enum Data to include RowId
+	enum Data {
+	    DbRowId(RowId),
+	    ..
+	}
+speed up searches
+    store everything in hashmaps
+	HashMap<
+	    name,
+	    HashMap<ByRowId>
+	    HashMap<ByEntryName>
+	>
+    reverse lookup
+	needs two hashmaps (name, row_id) per entry for quick lookup
 
 Actions
 =======

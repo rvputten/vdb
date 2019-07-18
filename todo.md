@@ -6,15 +6,28 @@ None.
     Db::add_entry()
     Db::add_or_modify_entry()
 
-Ideas
-=====
+Ideas for vocabulary
+====================
+show conjugations for a verb
+    c tener
+shorter prompt with more functionality
+    "press <h> for help"
+has several date columns
+  create date
+  history of "remembered" and "don't know" answers
+    rerun after one day
+    another rerun after 5 days
+    another rerun after 30 days
+automatically detect inflections
+  pollito -> pollo
+add search term to every word and show all previous search terms
+create lock file to prevent running multiple instances
 make db own project
 monitor clipboard and search for words in personal or vocabulary dictionary
     present a list of words found in the clipboard
-search personal db
-    to list all words beginning with 'ca', enter: 'p ca'
 replace "name" and "value" with "word" and "translation" in main.rs where appropriate
 search English results if no Spanish results are found (or are very few)
+    with 'e search_term'
 make naming of searches more consistent
     find by <p> and return <r> where
 	<p> can be row_id, row_ids, name, name+value, single predicate or multiple predicates
@@ -73,3 +86,6 @@ when limiting search results, count multiple translations
 count how often a word has been added to the dictionary
 record last addition date to the dictionary
     and sort by date addition
+search personal db
+    to list all words beginning with 'ca', enter: 'p ca'
+add conjugations to personal db

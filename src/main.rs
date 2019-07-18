@@ -13,9 +13,11 @@ use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Write;
 
+#[derive(Debug)]
 struct DictEntry {
     word: Option<String>,
     translations: Vec<String>,
+    conjugations: Vec<String>,
     index: Option<usize>,
     add_date: Option<Data>,
     add_counter: Option<usize>,
@@ -26,17 +28,15 @@ struct DictEntry {
 pub fn read_file_to_vec(filename: &str) -> Vec<String> {
     let f = File::open(filename).unwrap();
     let file = BufReader::new(&f);
-    let mut v: Vec<String> = vec![];
-    for line in file.lines().skip(1) {
-        if let Ok(line) = line {
-            if let Some(c) = line.chars().nth(0) {
-                if c != '#' {
-                    v.push(line);
-                }
+    file.lines()
+        .filter_map(|line| {
+            if let Ok(line) = line {
+                Some(line)
+            } else {
+                None
             }
-        }
-    }
-    v
+        })
+        .collect::<Vec<String>>()
 }
 
 /// The usage counter lets the user track how many times the word was added to the database
@@ -120,12 +120,65 @@ fn add_word(db: &mut Db, word: &str, translations: &[String], add_time: bool, up
     }
 }
 
+/// Load irregular verbs from file.
+/// Parsing is adapted to the given source file "resources/irregular_verbs/irregular_verbs.txt".
+/// Of the 1321 verbs in the file, 603 do not have a corresponding entry in the vocabulary file
+/// "es-en.txt". However, they seem to all be very rare words, so we ignore them.
+fn load_irregular_verbs(db_vocabulary: &mut Db, db_vocabulary_name: &str, filename: &str) {
+    if let Some(_row_id) = db_vocabulary.find_first_row_id_by_name("conjugation") {
+        println!("Conjugations already loaded, skipping load.");
+    } else {
+        let lines = read_file_to_vec(filename);
+        let mut existing = 0;
+        let mut not_existing = 0;
+
+        println!("Mapping conjugations (may take a while in debug mode)...");
+
+        for line in lines.iter() {
+            let mut split_line = line.split(':');
+            // The source file always has two entries per line
+            let infinitive = split_line.next().unwrap();
+
+            // This operation is currently slow (~5 secs in debug mode, < 1 sec in release mode) and needs to be sped up
+            if let Some(row_id) =
+                db_vocabulary.find_first_row_id_by_value("name", &Db::db_string(infinitive))
+            {
+                existing += 1;
+
+                let conjugations = split_line.next().unwrap();
+                for s in conjugations.split(',') {
+                    let t = s.split('|').collect::<Vec<&str>>();
+                    // There are a few lines without form indicator in the source file. len() is always either 1 or 2.
+                    let (_form_indicator, conjugation) = if t.len() == 2 {
+                        (t[0], t[1])
+                    } else {
+                        ("none", t[0])
+                    };
+                    db_vocabulary.add_entry(row_id, Entry::new_string("conjugation", conjugation));
+                    //println!("{}|{}|{}", infinitive, form_indicator, conjugation);
+                }
+            } else {
+                not_existing += 1;
+            }
+            print!(
+                "\rAdded {} and rejected {} out of {}",
+                existing,
+                not_existing,
+                existing + not_existing
+            );
+        }
+        println!();
+        println!("Saving with conjugations...");
+        save(&db_vocabulary, db_vocabulary_name);
+    }
+}
+
 /// Load vocabulary from file. The file format is (example)
 /// ```c
 /// nube|A cloud|A mutitude, or crowd, of people
 /// ```
 /// i. e. the word is in the first column, then multiple translations
-fn load(
+fn load_dictionary(
     db_vocabulary_name: &str,
     db_personal_name: &str,
     vocabulary_filename: &str,
@@ -172,13 +225,14 @@ fn load(
 
 #[cfg(test)]
 fn find(db: &mut Db, name: &str, predicate_type: PredicateType) -> Vec<DictEntry> {
-    let row_ids = find_row_ids(db, name, predicate_type, None);
+    let row_ids = find_row_ids(db, "name", name, predicate_type, None);
     add_numbers(db, &row_ids, 0);
     find_row_ids_to_entries(db, &row_ids)
 }
 
 fn find_row_ids(
     db: &Db,
+    column: &str,
     name: &str,
     predicate_type: PredicateType,
     max_results: Option<usize>,
@@ -186,7 +240,7 @@ fn find_row_ids(
     // "set" needs to be at the end or search is very slow (needs high selectivity)
     let predicates = vec![Predicate {
         predicate_type,
-        entry: Entry::new_string("name", name),
+        entry: Entry::new_string(column, name),
     }];
 
     db.select_row_ids(&predicates, max_results)
@@ -199,6 +253,7 @@ fn find_row_ids_to_entries(db: &Db, row_ids: &[RowId]) -> Vec<DictEntry> {
         String::from("search_index"),
         String::from("name"),
         String::from("value"),
+        String::from("conjugation"),
         String::from("add_date"),
         String::from("add_counter"),
     ];
@@ -208,6 +263,7 @@ fn find_row_ids_to_entries(db: &Db, row_ids: &[RowId]) -> Vec<DictEntry> {
             index: None,
             word: None,
             translations: vec![],
+            conjugations: vec![],
             add_date: None,
             add_counter: None,
         };
@@ -216,6 +272,7 @@ fn find_row_ids_to_entries(db: &Db, row_ids: &[RowId]) -> Vec<DictEntry> {
                 ("search_index", Data::DbInt(n)) => dict_entry.index = Some(*n as usize),
                 ("name", Data::DbString(s)) => dict_entry.word = Some(s.to_string()),
                 ("value", Data::DbString(s)) => dict_entry.translations.push(s.to_string()),
+                ("conjugation", Data::DbString(s)) => dict_entry.conjugations.push(s.to_string()),
                 ("add_date", date) => dict_entry.add_date = Some(date.clone()),
                 ("add_counter", Data::DbInt(counter)) => {
                     dict_entry.add_counter = Some(*counter as usize)
@@ -261,10 +318,15 @@ fn minus(left: &[RowId], right: &[RowId]) -> Vec<RowId> {
 fn main() {
     let db_vocabulary_name = "vocabulary";
     let db_personal_name = "personal";
-    let filename = "resources/es-en.txt";
+    let filename = "resources/es-en/es-en.txt";
 
     let (mut db_vocabulary, mut db_personal) =
-        load(db_vocabulary_name, db_personal_name, filename, false);
+        load_dictionary(db_vocabulary_name, db_personal_name, filename, false);
+    load_irregular_verbs(
+        &mut db_vocabulary,
+        db_vocabulary_name,
+        "resources/irregular_verbs/irregular_verbs.txt",
+    );
 
     main_loop(&mut db_vocabulary, &mut db_personal);
 
@@ -294,8 +356,8 @@ fn main_loop(db_vocabulary: &mut Db, db_personal: &mut Db) {
                 display_personal_db(db_personal, 100, false, words.next());
             } else {
                 db_vocabulary.delete_entry_all("search_index");
+                display_personal_db(db_personal, 30, true, None);
                 find_and_display(db_vocabulary, trimmed, max_results);
-                display_personal_db(db_personal, 9, true, None);
             }
         }
 
@@ -419,61 +481,92 @@ fn add_to_personal_db(db_vocabulary: &mut Db, db_personal: &mut Db, number: usiz
     }
 }
 
+/// Searches for a search term. Will try the following:
+/// - Exact search
+/// - Exact search in conjugations ("tiene" -> "tener")
+/// - Search with String::starts_with()
+/// - Search with String::contains()
 fn find_and_display(db: &mut Db, search_term: &str, max_results: usize) {
-    let rows_equal = find_row_ids(&db, search_term, PredicateType::Equal, Some(max_results));
-    let number_matches_equal = rows_equal.len();
-
-    let rows_starts_with_full = find_row_ids(
+    let rows_equal = find_row_ids(
         &db,
+        "name",
         search_term,
-        PredicateType::StartsWith,
+        PredicateType::Equal,
         Some(max_results),
     );
-    let rows_starts_with = minus(&rows_starts_with_full, &rows_equal);
-    let number_matches_starts_with = rows_starts_with_full.len();
+    let rows_conjugation = find_row_ids(
+        &db,
+        "conjugation",
+        search_term,
+        PredicateType::Equal,
+        Some(max_results),
+    );
 
-    if number_matches_starts_with < max_results {
-        let rows_contains_full =
-            find_row_ids(&db, search_term, PredicateType::Contains, Some(max_results));
-        let number_matches_contains = rows_contains_full.len();
+    let number_matches_equal = rows_equal.len();
+    let number_conjugations = rows_conjugation.len();
+    if number_matches_equal == 0 && number_conjugations > 0 {
+        println!("\nMatch in conjugations:");
+        add_numbers(db, &rows_conjugation, number_conjugations);
+        present(&db, &rows_conjugation, number_conjugations == max_results);
+    } else {
+        let rows_starts_with_full = find_row_ids(
+            &db,
+            "name",
+            search_term,
+            PredicateType::StartsWith,
+            Some(max_results),
+        );
+        let rows_starts_with = minus(&rows_starts_with_full, &rows_equal);
+        let number_matches_starts_with = rows_starts_with_full.len();
 
-        if number_matches_contains == 0 {
-            let mut new_search_term = search_term.to_string();
-            new_search_term.pop();
-            if new_search_term.len() > 3 {
-                println!(
-                    "{} not found. Searching for {} instead.",
-                    search_term, new_search_term
-                );
-                find_and_display(db, &new_search_term, max_results);
-                return;
+        if number_matches_starts_with < max_results {
+            let rows_contains_full = find_row_ids(
+                &db,
+                "name",
+                search_term,
+                PredicateType::Contains,
+                Some(max_results),
+            );
+            let number_matches_contains = rows_contains_full.len();
+
+            if number_matches_contains == 0 {
+                let mut new_search_term = search_term.to_string();
+                new_search_term.pop();
+                if new_search_term.len() >= 3 {
+                    println!(
+                        "{} not found. Searching for {} instead.",
+                        search_term, new_search_term
+                    );
+                    find_and_display(db, &new_search_term, max_results);
+                    return;
+                } else {
+                    println!("\n{} not found.", search_term);
+                }
             } else {
-                println!("\n{} not found.", search_term);
-            }
-        } else {
-            let rows_contains = minus(&rows_contains_full, &rows_starts_with_full);
-            if !rows_contains.is_empty() {
-                println!("\nFull matches:");
-                add_numbers(db, &rows_contains, number_matches_starts_with);
-                present(&db, &rows_contains, number_matches_contains == max_results);
+                let rows_contains = minus(&rows_contains_full, &rows_starts_with_full);
+                if !rows_contains.is_empty() {
+                    println!("\nFull matches:");
+                    add_numbers(db, &rows_contains, number_matches_starts_with);
+                    present(&db, &rows_contains, number_matches_contains == max_results);
+                }
             }
         }
-    }
 
-    if number_matches_starts_with > 0 && !rows_starts_with.is_empty() {
-        println!("\nStarting with:");
-        add_numbers(db, &rows_starts_with, number_matches_equal);
-        present(
-            &db,
-            &rows_starts_with,
-            number_matches_starts_with == max_results,
-        );
-    }
+        if number_matches_starts_with > 0 && !rows_starts_with.is_empty() {
+            println!("\nStarting with:");
+            add_numbers(db, &rows_starts_with, number_matches_equal);
+            present(
+                &db,
+                &rows_starts_with,
+                number_matches_starts_with == max_results,
+            );
+        }
 
-    if number_matches_equal > 0 {
-        println!("\nEquals:");
-        add_numbers(db, &rows_equal, 0);
-        present(&db, &rows_equal, number_matches_equal == max_results);
+        if number_matches_equal > 0 {
+            println!("\nEquals:");
+            add_numbers(db, &rows_equal, 0);
+            present(&db, &rows_equal, number_matches_equal == max_results);
+        }
     }
 
     println!("----------------------------");
@@ -524,8 +617,8 @@ mod main {
     #[test]
     fn load_and_filter() {
         let dbname = "test-sample";
-        let filename = "resources/es-en-sample.txt";
-        let (mut db, _) = load(dbname, "dummy", filename, true);
+        let filename = "resources/es-en/es-en-sample.txt";
+        let (mut db, _) = load_dictionary(dbname, "dummy", filename, true);
 
         let values = find(&mut db, "coche", PredicateType::Equal);
         assert_eq!(values.len(), 1);
@@ -541,5 +634,33 @@ mod main {
         assert_eq!(values.len(), 5);
         assert_eq!(values[4].word, Some("lavacoches".to_string()));
         assert_eq!(values[4].translations[0], "carwash");
+    }
+
+    #[test]
+    fn conjugations() {
+        let dbname = "test-sample";
+        let filename = "resources/es-en/es-en-sample.txt";
+        let conjugations_filename = "resources/irregular_verbs/irregular_verbs_sample.txt";
+        let (mut db, _) = load_dictionary(dbname, "dummy", filename, true);
+        load_irregular_verbs(&mut db, filename, conjugations_filename);
+
+        // "cueces" is a conjugation of "cocer" which is RowId(8)
+        let row_ids = find_row_ids(&db, "conjugation", "cueces", PredicateType::Equal, None);
+        println!("row_ids: {:?}", row_ids);
+        assert_eq!(row_ids, [RowId(8)]);
+    }
+
+    #[test]
+    fn find_row_ids_to_entries() {
+        let dbname = "test-sample";
+        let filename = "resources/es-en/es-en-sample.txt";
+        let conjugations_filename = "resources/irregular_verbs/irregular_verbs_sample.txt";
+        let (mut db, _) = load_dictionary(dbname, "dummy", filename, true);
+        load_irregular_verbs(&mut db, filename, conjugations_filename);
+        let row_ids = find_row_ids(&db, "conjugation", "cueces", PredicateType::Equal, None);
+        let entries = super::find_row_ids_to_entries(&db, &row_ids);
+        println!("{:?}", entries);
+        assert_eq!(entries[0].translations.len(), 2);
+        assert_eq!(entries[0].conjugations.len(), 15);
     }
 }

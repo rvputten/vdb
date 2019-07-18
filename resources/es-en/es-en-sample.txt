@@ -33,3 +33,10 @@ cocina|stove, oven, kiln
 cocinado|cooked
 cocinar|To cook
 lavacoches|carwash
+tener|To be of a measure or age
+tener|To contain
+tener|To feel (internally)
+tener|To have, possess an object
+tener|To hold, grasp
+tener|To make to feel
+tener|To possess a condition or quality
