@@ -1,92 +1,87 @@
-Complete tests
-==============
-None.
-    Entry::get_by_name()
-    main::add_numbers()
-    Db::add_entry()
-    Db::add_or_modify_entry()
+Short-term ideas for database
+=============================
+make own crate and publish on crates.io
+example code in examples/
+use enum instead of &str for column names
+    enum Columns {
+	Word,
+	Translation
+    }
+    db.add([db::entry(Word, Db::db_string("P100D")), db::entry(Translation, Db::db_string("ludicrous"))]);
+store hierarchies (see above)
+    extend enum Data to include RowId
+	enum Data {
+	    DbRowId(RowId),
+	    ..
+	}
+speed up searches
+    store everything in hashmaps
+	HashMap<
+	    name,
+	    HashMap<ByRowId>
+	    HashMap<ByEntryName>
+	>
+    reverse lookup
+	needs two hashmaps (name, row_id) per entry for quick lookup
 
-Ideas for vocabulary
-====================
-add regular conjugations
-show conjugations for a verb
-    c tener
-shorter prompt with more functionality
-    "press <h> for help"
-have several date columns
-  create date
-  history of "remembered" and "don't know" answers
-    rerun after one day
-    another rerun after 5 days
-    another rerun after 30 days
-automatically detect more inflections
-  pollito -> pollo
-add search term to every word and show all previous search terms
-create lock file to prevent running multiple instances
-make db own project
-monitor clipboard and search for words in personal or vocabulary dictionary
-    present a list of words found in the clipboard
-search English results if no Spanish results are found (or are very few)
-    with 'e search_term'
-make naming of searches more consistent
-    find by <p> and return <r> where
-	<p> can be row_id, row_ids, name, name+value, single predicate or multiple predicates
-	<r> can be
-	    row_id (first entry)
-		use later for performance reasons. discard now.
-	    row_ids (all entries)
-	    data (single)
-	    data (multiple)
-	    entry (first entry)
-	    entries (all entries)
-	    bool (true/false - test for existance)
-		replace with Option<row_id>
-    proposed names
-	find_first_row_id_by_name
-	find_entries_by_name
-	find_entries_by_row_id
-	find_row_id_by_predicates
-	find_row_ids_by_predicates
-	find_entry_by_predicates
-	find_entries_by_predicates
-	check_by_name_value
+Long-term ideas for database
+============================
+immediately store all changes
+    upon load, first load the old database, then the changes
+migration of databases
+    no solution yet, is it possible with serde?
+    possibly needs an external program to load & save different versions
+	like diesel
+diesel integration
 
-remove "set" = "en-es"
-check for existance before inserting
-store in hashmap by row\_id
-    lookup of row\_ids is the slowest operation at the moment
-guess inflexions
-    cubren -> cubrir
-    vuelve -> volver (come back)
-    empieza -> empezar (begin, start)
-    consiguen -> consegir (etwas erlangen)
-    cierran -> cerrar (abschließen, sperren)
-    pide -> pedir (jmd. um etw. bitten)
-    pasaban -> pasar (vorübergehen)
-    fue -> ir/ser/irse (gehen, sein, weggehen)
-    contó -> contar (zählen)
-    tienden -> tender (to tend to)
-    predice -> predecir (to predict)
-    haría -> hacer
-    retuvieron -> retener (to retain)
-make useful browsable documentation of source code
+Actions
+=======
+create new entry
+query+take entry from dictionary
+query entries
+modify entry
+delete entry
+start drill
+  all
+  new words only
+  old words only
 
-Done
-====
-exclude more granular results from broader results
-show recent searches
-    hand pick search results and store in personal dictionary
-    implementation
-	every row shown gets a line number
-	line numbers are overwritten on subsequent searches
-	when the user types a line number, the word is saved in the dictionary
-if search unsuccessful, remove last letter until a result is found
-count number of words in dictionary
-when limiting search results, count multiple translations
-count how often a word has been added to the dictionary
-record last addition date to the dictionary
-    and sort by date addition
-search personal db
-    to list all words beginning with 'ca', enter: 'p ca'
-add conjugations to personal db
-replace "name" and "value" with "word" and "translation" in main.rs where appropriate
+Table layout
+============
+    set		    - name of the set this answer belongs to
+    source	    - the word in the source language
+    translation	    - multiple fields possible; translations
+    create_date	    - date the entry was created
+    answer_date/[yes|no] - date an answer was given; multiple fields possible
+
+Database capabilities
+=====================
+entity component system
+  not a relational database
+all values are always encoded
+operations:
+    add([
+	    ["set", "spa-eng"],
+	    ["source", "galleta"],
+	    ["translation", ["biscuit", "cookie"]],
+	    ["create_date", "2019-07-04-17:14:02"],
+	    ["answer_date", [["2019-07-04-17:15:15", "no"], ["2019-07-04-17:17:28", "no"], ["2019-07-04-18:01:40", "yes"]],
+	])
+
+    query() could be implemented as an iterator; is <> filter, fields <> map
+    query()
+	.is("set", "spa-eng")
+	.begins("source", "gall")
+	.fields(["source", "translation"])
+    query/filter operations:
+	.is(attribute, value)
+	.begins(attribute, value)
+	.fields()
+	.contains(attribute, value)
+	.distinct()
+	.sort()
+	.uniq()
+	.reverse()
+	.take()
+
+    import(filename, field1, field2, ..., fieldn) - load from a file

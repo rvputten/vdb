@@ -1,3 +1,9 @@
+extern crate chrono;
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
+extern crate serde_json;
+
 //use chrono::{DateTime, Duration, Utc};
 use chrono::{Local, NaiveDateTime};
 use std::error::Error;
@@ -309,11 +315,27 @@ impl Db {
     ///
     /// ```
     /// // Like SQL "select name, value from testdb where name='coche' limit 15"
-    /// let mut db = new_db_with_entries("testdb");
+    /// use vdb::{Data, Db, Entry, Predicate, RowId};
+    /// let mut db = Db::new("test-db");
+    /// let _id = db.add(vec![
+    ///     Entry {
+    ///         name: String::from("set"),
+    ///         value: Db::db_string("es-en"),
+    ///     },
+    ///     Entry {
+    ///         name: String::from("name"),
+    ///         value: Db::db_string("coche"),
+    ///     },
+    ///     Entry {
+    ///         name: String::from("value"),
+    ///         value: Db::db_string("car"),
+    ///     },
+    /// ]);
     /// let predicates = vec![Predicate::new_equal_string("name", "coche")];
     /// let entries = vec![String::from("name"), String::from("value")];
-    /// let row_ids = db.select_row_ids(predicates, Some(15));
-    /// println!("{:?}", db.entries_from_row_ids(&row_ids, entries)
+    /// let row_ids = db.select_row_ids(&predicates, Some(15));
+    /// assert_eq!(row_ids, [RowId(1)]);
+    /// assert_eq!(db.entries_from_row_ids(&row_ids, entries)[0][0], Entry::new_string("name", "coche"));
     /// ```
     /// See also select()
     pub fn select_row_ids(
@@ -463,7 +485,7 @@ impl Db {
     }
 }
 
-mod test {
+mod tests {
     #[cfg(test)]
     use super::{Data, Db, Entry, Predicate, RowId};
     #[cfg(test)]
@@ -691,7 +713,6 @@ mod test {
         assert_eq!(Data::DbDateTime(dt), Db::db_datetime(t).unwrap());
     }
 
-    //fn get_first_entry_mut(&mut self, row_id: RowId, name: &str) -> Option<&mut Entry>
     #[test]
     fn get_first_entry_mut() {
         let mut db = new_db_with_entries("testdb");
@@ -707,7 +728,6 @@ mod test {
         assert_eq!(db.rows[4].entry.name, "replaced_name");
     }
 
-    // pub fn add_or_update_entry(&mut self, row_id: RowId, entry: Entry)
     #[test]
     fn add_entry_add() {
         let mut db = new_db_with_entries("testdb");
@@ -728,7 +748,6 @@ mod test {
         assert_eq!(db.rows[6].entry.value, Db::db_string("new entry content"));
     }
 
-    // pub fn add_or_update_entry(&mut self, row_id: RowId, entry: Entry)
     #[test]
     fn add_entry_update() {
         let mut db = new_db_with_entries("testdb");
@@ -759,8 +778,6 @@ mod test {
         );
     }
 
-    // Delete all entries in all rows with the given name
-    // pub fn delete_entry_all(&mut self, name: &str)
     #[test]
     fn delete_entry_all() {
         let mut db = new_db_with_entries("testdb");
@@ -793,7 +810,6 @@ mod test {
         assert_eq!(db.rows[4].entry.name, "name");
     }
 
-    // pub fn last_n_rows(&self, top_n: usize) -> Vec<RowId> {
     #[test]
     fn last_n_rows() {
         let db = new_db_with_entries("testdb");

@@ -1,8 +1,10 @@
 [package]
-name = "voca"
+name = "vdb"
 version = "0.1.0"
-authors = ["Willem <willem@hyrican>"]
+authors = ["Raoul van Putten"]
 edition = "2018"
+description = "A database system implemented in pure rust that takes ideas from Entity Component Systems and relational databases."
+license = "MIT OR Apache-2.0"
 
 [dependencies]
 serde_derive = "*"
