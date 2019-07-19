@@ -10,8 +10,14 @@ Source for irregular verbs
 ==========================
 https://github.com/voldmar/conjugation.git
 
-Ideas for database
-==================
+Short-term ideas for database
+=============================
+use enum instead of &str for column names
+    enum Columns {
+	Word,
+	Translation
+    }
+    db.add([db::entry(Word, Db::db_string("P100D")), db::entry(Translation, Db::db_string("ludicrous"))]);
 store hierarchies (see above)
     extend enum Data to include RowId
 	enum Data {
@@ -27,6 +33,16 @@ speed up searches
 	>
     reverse lookup
 	needs two hashmaps (name, row_id) per entry for quick lookup
+
+Long-term ideas for database
+============================
+immediately store all changes
+    upon load, first load the old database, then the changes
+migration of databases
+    no solution yet, is it possible with serde?
+    possibly needs an external program to load & save different versions
+	like diesel
+diesel integration
 
 Actions
 =======

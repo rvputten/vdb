@@ -484,9 +484,12 @@ fn add_to_personal_db(db_vocabulary: &mut Db, db_personal: &mut Db, number: usiz
 /// Searches for a search term. Will try the following:
 /// - Exact search
 /// - Exact search in conjugations ("tiene" -> "tener")
+/// - Exact search in translations
 /// - Search with String::starts_with()
 /// - Search with String::contains()
 fn find_and_display(db: &mut Db, search_term: &str, max_results: usize) {
+    println!("\nSearch term: {}", search_term);
+
     let rows_equal = find_row_ids(
         &db,
         "name",
@@ -502,9 +505,9 @@ fn find_and_display(db: &mut Db, search_term: &str, max_results: usize) {
         Some(max_results),
     );
 
-    let number_matches_equal = rows_equal.len();
+    let number_equal = rows_equal.len();
     let number_conjugations = rows_conjugation.len();
-    if number_matches_equal == 0 && number_conjugations > 0 {
+    if number_equal == 0 && number_conjugations > 0 {
         println!("\nMatch in conjugations:");
         add_numbers(db, &rows_conjugation, number_conjugations);
         present(&db, &rows_conjugation, number_conjugations == max_results);
@@ -517,9 +520,9 @@ fn find_and_display(db: &mut Db, search_term: &str, max_results: usize) {
             Some(max_results),
         );
         let rows_starts_with = minus(&rows_starts_with_full, &rows_equal);
-        let number_matches_starts_with = rows_starts_with_full.len();
+        let number_starts_with = rows_starts_with_full.len();
 
-        if number_matches_starts_with < max_results {
+        if number_starts_with < max_results {
             let rows_contains_full = find_row_ids(
                 &db,
                 "name",
@@ -527,9 +530,9 @@ fn find_and_display(db: &mut Db, search_term: &str, max_results: usize) {
                 PredicateType::Contains,
                 Some(max_results),
             );
-            let number_matches_contains = rows_contains_full.len();
+            let number_contains = rows_contains_full.len();
 
-            if number_matches_contains == 0 {
+            if number_contains == 0 {
                 let mut new_search_term = search_term.to_string();
                 new_search_term.pop();
                 if new_search_term.len() >= 3 {
@@ -546,30 +549,24 @@ fn find_and_display(db: &mut Db, search_term: &str, max_results: usize) {
                 let rows_contains = minus(&rows_contains_full, &rows_starts_with_full);
                 if !rows_contains.is_empty() {
                     println!("\nFull matches:");
-                    add_numbers(db, &rows_contains, number_matches_starts_with);
-                    present(&db, &rows_contains, number_matches_contains == max_results);
+                    add_numbers(db, &rows_contains, number_starts_with);
+                    present(&db, &rows_contains, number_contains == max_results);
                 }
             }
         }
 
-        if number_matches_starts_with > 0 && !rows_starts_with.is_empty() {
+        if number_starts_with > 0 && !rows_starts_with.is_empty() {
             println!("\nStarting with:");
-            add_numbers(db, &rows_starts_with, number_matches_equal);
-            present(
-                &db,
-                &rows_starts_with,
-                number_matches_starts_with == max_results,
-            );
+            add_numbers(db, &rows_starts_with, number_equal);
+            present(&db, &rows_starts_with, number_starts_with == max_results);
         }
 
-        if number_matches_equal > 0 {
+        if number_equal > 0 {
             println!("\nEquals:");
             add_numbers(db, &rows_equal, 0);
-            present(&db, &rows_equal, number_matches_equal == max_results);
+            present(&db, &rows_equal, number_equal == max_results);
         }
     }
-
-    println!("----------------------------");
 }
 
 fn add_numbers(db: &mut Db, row_ids: &[RowId], offset: usize) {
