@@ -207,6 +207,15 @@ struct Row {
     pub entry: Entry,
 }
 
+/// Container for the database. Usually only one is used per application.
+///
+/// Example:
+///
+/// ```
+/// use vdb::{Db, Entry};
+/// let mut db = Db::new("test-db");
+/// let _row_id = db.add(vec![Entry::new_string("mundo", "world")]);
+/// ```
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
 pub struct Db {
     full_filename: String,
@@ -337,7 +346,8 @@ impl Db {
 
     /// Returns all rows if no predicates are given.
     /// The first predicate is evaluated first and should have high selectivity, i. e. evaluate to a
-    /// small number of rows, to improve runtime.
+    /// small number of rows, to improve execution time. The number of results can be limited with
+    /// `Some(max_results)`
     ///
     /// # Examples
     ///
