@@ -299,9 +299,35 @@ impl Db {
         self.rows.push(Row { row_id, entry });
     }
 
+    /// Delete rows in the database
+    ///
+    /// Example:
+    ///
+    /// ```
+    /// use vdb::{Db, Entry};
+    /// let mut db = Db::new("test-db");
+    /// let row_1 = db.add(vec![
+    ///         Entry::new_string("word", "cocina"),
+    ///         Entry::new_string("translation", "cuisine"),
+    ///         Entry::new_string("translation", "kitchen"),
+    /// ]);
+    /// let row_2 = db.add(vec![
+    ///         Entry::new_string("word", "coche"),
+    ///         Entry::new_string("translation", "car"),
+    /// ]);
+    /// let coche = db.find_first_row_id_by_value("word", &Db::db_string("coche"));
+    /// assert_eq!(coche, Some(row_2));
+    /// db.delete_rows(&[row_1, row_2]);
+    /// let no_coche = db.find_first_row_id_by_value("word", &Db::db_string("coche"));
+    /// assert_eq!(no_coche, None);
+    /// ```
+    pub fn delete_rows(&mut self, row_ids: &[RowId]) {
+        self.rows.retain(|row| !row_ids.contains(&row.row_id));
+    }
+
     /// Delete all entries with this name in the whole database.
     pub fn delete_entry_all(&mut self, name: &str) {
-        self.rows.retain(|x| x.entry.name != name);
+        self.rows.retain(|row| row.entry.name != name);
     }
 
     /// Return reference to first entry found in a given row.

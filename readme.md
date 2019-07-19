@@ -7,12 +7,11 @@ State of the project
 --------------------
 *   no dependencies except for serde and chrono
 *   loads and saves
-*   add/update key/value pairs
+*   add/update/delete key/value pairs
 *   search for keys/values
 
 Planned
 -------
-*   delete
 *   incremental updates to the save files
     *   not calling Vdb::save() will not lose data
 *   model relationships between stored keys, like foreign keys
