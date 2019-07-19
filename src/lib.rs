@@ -522,18 +522,26 @@ impl Db {
         self.entries_from_row_ids(&row_ids, entries)
     }
 
-    /// Returns entries for given row_ids. The order of the entries in each row is not guaranteed.
+    /// Returns entries for given row_ids.
     pub fn entries_from_row_ids(&self, row_ids: &[RowId], names: &[&str]) -> Vec<Vec<Entry>> {
         let names = names.iter().map(|s| s.to_string()).collect::<Vec<String>>();
         let mut result: Vec<Vec<Entry>> = vec![];
         for row_id in row_ids {
-            result.push(
-                self.rows
-                    .iter()
-                    .filter(|row| row.row_id == *row_id && names.contains(&(&row.entry.name)))
-                    .map(|row| row.entry.clone())
-                    .collect::<Vec<Entry>>(),
-            );
+            let row = self
+                .rows
+                .iter()
+                .filter(|row| row.row_id == *row_id && names.contains(&(&row.entry.name)))
+                .map(|row| row.entry.clone())
+                .collect::<Vec<Entry>>();
+
+            let mut ordered: Vec<Entry> = vec![];
+            for name in &names {
+                for entry in row.iter().filter(|entry| &entry.name == name) {
+                    ordered.push(entry.clone());
+                }
+            }
+
+            result.push(ordered);
         }
         result
     }

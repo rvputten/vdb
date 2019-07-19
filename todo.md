@@ -1,8 +1,6 @@
 To do
 =====
 
-Return [Entry] in the order given in `fn entries_from_row_ids()`
-
 model relationships
 -------------------
 extend enum Data to include RowId
