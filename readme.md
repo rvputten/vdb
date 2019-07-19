@@ -1,7 +1,12 @@
 vdb - a database system implemented in rust
 ===========================================
 
-A database system that takes ideas from Entity Component Systems and relational databases.
+A basic database system that takes ideas from Entity Component Systems and relational databases.
+
+Run example with
+```
+cargo run --example notebook
+```
 
 State of the project
 --------------------

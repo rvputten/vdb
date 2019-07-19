@@ -13,6 +13,43 @@ use std::io::Read;
 use std::io::Write;
 use std::path::Path;
 
+/// A basic database system to store key/value pairs with few dependencies.
+///
+/// # Examples
+///
+/// ```
+/// use vdb::{Db, Entry, Predicate};
+/// let mut db = Db::new("test-db");
+/// let row_1 = db.add(vec![
+///         Entry::new_string("word", "cocina"),
+///         Entry::new_string("translation", "cuisine"),
+///         Entry::new_string("translation", "kitchen"),
+/// ]);
+/// let row_2 = db.add(vec![
+///         Entry::new_string("word", "coche"),
+///         Entry::new_string("translation", "car"),
+/// ]);
+///
+/// // Load and save
+/// db.save();
+/// let mut new_db = Db::load("test-db").unwrap();
+/// let row_ids = new_db.find_all_row_ids();
+/// assert_eq!(row_ids.len(), 2);
+///
+/// // Find rows
+/// let row_ids = db.select_row_ids(&vec![Predicate::new_equal_string("word", "coche")], None);
+/// assert_eq!(row_ids, [row_2]);
+/// let entries = db.entries_from_row_ids(&row_ids, vec![String::from("translation")]);
+/// assert_eq!(entries[0][0], Entry::new_string("translation", "car"));
+///
+/// // Delete
+/// let coche = db.find_first_row_id_by_value("word", &Db::db_string("coche"));
+/// assert_eq!(coche, Some(row_2));
+/// db.delete_rows(&[row_1, row_2]);
+/// let no_coche = db.find_first_row_id_by_value("word", &Db::db_string("coche"));
+/// assert_eq!(no_coche, None);
+/// ```
+
 /// Data types currently implemented in the database
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
 pub enum Data {
@@ -78,7 +115,7 @@ impl Entry {
         }
     }
 
-    /// Example:
+    /// # Examples
     ///
     /// ```
     /// use vdb::{Entry,Predicate};
@@ -124,7 +161,7 @@ pub enum PredicateType {
 
 /// Used to compare database entries, e. g. in queries (fn find_*)
 ///
-/// Example:
+/// # Examples
 ///
 /// ```
 /// use vdb::{Entry,Predicate};
@@ -209,7 +246,7 @@ struct Row {
 
 /// Container for the database. Usually only one is used per application.
 ///
-/// Example:
+/// # Examples
 ///
 /// ```
 /// use vdb::{Db, Entry};
@@ -301,7 +338,7 @@ impl Db {
 
     /// Delete rows in the database
     ///
-    /// Example:
+    /// # Examples
     ///
     /// ```
     /// use vdb::{Db, Entry};
@@ -328,6 +365,25 @@ impl Db {
     /// Delete all entries with this name in the whole database.
     pub fn delete_entry_all(&mut self, name: &str) {
         self.rows.retain(|row| row.entry.name != name);
+    }
+
+    /// Return row_ids of entries where an entry with name "name" exists.
+    pub fn find_by_name(&self, name: &str) -> Vec<RowId> {
+        self.rows
+            .iter()
+            .filter(|row| row.entry.name == name)
+            .map(|row| row.row_id)
+            .collect::<Vec<RowId>>()
+    }
+
+    /// Return row_ids of entries that are exactly "value". For partial string matches, use
+    /// Predicates.
+    pub fn find_by_value(&self, name: &str, value: &Data) -> Vec<RowId> {
+        self.rows
+            .iter()
+            .filter(|row| row.entry.name == name && &row.entry.value == value)
+            .map(|row| row.row_id)
+            .collect::<Vec<RowId>>()
     }
 
     /// Return reference to first entry found in a given row.
@@ -449,27 +505,11 @@ impl Db {
         }
     }
 
-    pub fn enumerate_row_ids(&self) -> Vec<RowId> {
+    /// Returns all rows in the database
+    pub fn find_all_row_ids(&self) -> Vec<RowId> {
         let mut row_ids = self
             .rows
             .iter()
-            .map(|row| row.row_id)
-            .collect::<Vec<RowId>>();
-        row_ids.sort();
-        row_ids.dedup();
-        row_ids
-    }
-
-    /// Returns the most recently added `top_n` row_ids in the database.
-    pub fn last_n_rows(&self, top_n: usize) -> Vec<RowId> {
-        let min_row = if self.row_max.0 > top_n {
-            self.row_max.0 - top_n + 1
-        } else {
-            1
-        };
-        let mut row_ids = (min_row..=self.row_max.0)
-            .map(RowId)
-            .filter_map(|row_id| self.rows.iter().find(|row| row.row_id == row_id))
             .map(|row| row.row_id)
             .collect::<Vec<RowId>>();
         row_ids.sort();
@@ -875,15 +915,8 @@ mod tests {
     }
 
     #[test]
-    fn last_n_rows() {
+    fn find_all_row_ids() {
         let db = new_db_with_entries("testdb");
-        assert_eq!(db.last_n_rows(1), vec![RowId(2)]);
-        assert_eq!(db.last_n_rows(2), vec![RowId(1), RowId(2)]);
-    }
-
-    #[test]
-    fn enumerate_row_ids() {
-        let db = new_db_with_entries("testdb");
-        assert_eq!(db.enumerate_row_ids(), vec![RowId(1), RowId(2)]);
+        assert_eq!(db.find_all_row_ids(), vec![RowId(1), RowId(2)]);
     }
 }
