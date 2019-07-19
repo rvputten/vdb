@@ -15,7 +15,7 @@ Planned
 *   delete
 *   incremental updates to the save files
     *   not calling Vdb::save() will not lose data
-*   model dependencies between stored keys
+*   model relationships between stored keys, like foreign keys
 *   speed improvements
     *	use of hashmaps
     *	reverse lookup (search for key or RowId)
@@ -25,6 +25,7 @@ Planned
 *   use of enums instead of &str for keys
 *   use builder pattern to query database
 *   bigger & smaller comparisons (a > b)
+*   create examples
 
 Further in the future
 ---------------------
@@ -32,3 +33,4 @@ Further in the future
 *   client-server architecture
 *   binary data storage (with or without serde)
 *   tooling for schema upgrades
+*   diesel integration

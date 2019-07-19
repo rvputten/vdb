@@ -13,6 +13,7 @@ use std::io::Read;
 use std::io::Write;
 use std::path::Path;
 
+/// Data types currently implemented in the database
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
 pub enum Data {
     DbString(String),
@@ -50,14 +51,18 @@ impl Data {
         }
     }
 
+    /// Returns new DbDateTime with current time as timestamp
     pub fn now() -> Data {
         Data::DbDateTime(Local::now().naive_local())
     }
 }
 
+/// The Row Identifier is used to reference each data set and is used by many methods where the
+/// actual data is not used directly.
 #[derive(Serialize, Deserialize, PartialEq, Eq, Clone, Debug, Copy, PartialOrd, Ord)]
 pub struct RowId(pub usize);
 
+/// Each RowId has many entries. Comparable to column name+data in relational databases.
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
 pub struct Entry {
     pub name: String,
@@ -73,6 +78,16 @@ impl Entry {
         }
     }
 
+    /// Example:
+    ///
+    /// ```
+    /// use vdb::{Entry,Predicate};
+    /// let a = Entry::new_string("mundo", "world");
+    ///
+    /// assert_eq!(a.compare(&Predicate::new_equal_string("mundo", "world")), true);
+    /// assert_eq!(a.compare(&Predicate::new_contains("mundo", "orl")), true);
+    /// assert_eq!(a.compare(&Predicate::new_equal_string("mundo", "World")), false);
+    /// ```
     pub fn compare(&self, predicate: &Predicate) -> bool {
         match &predicate.predicate_type {
             PredicateType::Any => predicate.entry.name == self.name,
@@ -88,7 +103,7 @@ impl Entry {
         }
     }
 
-    /// Return `Entry` in a given list that matches `name`
+    /// Return first `Entry` in a given list that matches `name`
     pub fn get_first_by_name(entries: &[Entry], name: &str) -> Option<Entry> {
         for entry in entries {
             if entry.name == name {
@@ -107,6 +122,19 @@ pub enum PredicateType {
     Any,
 }
 
+/// Used to compare database entries, e. g. in queries (fn find_*)
+///
+/// Example:
+///
+/// ```
+/// use vdb::{Entry,Predicate};
+/// let a = Entry::new_string("mundo", "world");
+///
+/// assert_eq!(a.compare(&Predicate::new_equal_string("mundo", "world")), true);
+/// assert_eq!(a.compare(&Predicate::new_starts_with("mundo", "worl")), true);
+/// assert_eq!(a.compare(&Predicate::new_contains("mundo", "orl")), true);
+/// assert_eq!(a.compare(&Predicate::new_equal_string("mundo", "planet")), false);
+/// ```
 #[derive(Debug)]
 pub struct Predicate {
     pub predicate_type: PredicateType,
@@ -162,7 +190,6 @@ impl Predicate {
     }
     /// Shortcut for creating a new `Predicate` that searches database for `DbString`s that contain
     /// `value`
-    #[cfg(test)]
     pub fn new_contains(name: &str, value: &str) -> Predicate {
         Predicate {
             predicate_type: PredicateType::Contains,
@@ -175,7 +202,7 @@ impl Predicate {
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
-pub struct Row {
+struct Row {
     pub row_id: RowId,
     pub entry: Entry,
 }
@@ -184,7 +211,7 @@ pub struct Row {
 pub struct Db {
     full_filename: String,
     row_max: RowId,
-    pub rows: Vec<Row>,
+    rows: Vec<Row>,
 }
 
 impl Db {
@@ -198,7 +225,9 @@ impl Db {
     }
 
     /// Load a database file from the filesystem under the subdirectory `save/`.
+    ///
     /// # Errors
+    ///
     /// May return errors from external modules while opening the file or parsing the contents.
     pub fn load(filename: &str) -> Result<Db, Box<Error>> {
         let full_filename = Db::build_filename(filename);
@@ -228,14 +257,13 @@ impl Db {
     }
 
     /// Parse `&str` into a `DbDateTime`. The format string is `%Y-%m-%d %H:%M:%S`.
-    #[cfg(test)]
     pub fn db_datetime(v: &str) -> Result<Data, Box<Error>> {
         let fmt = "%Y-%m-%d %H:%M:%S";
         let r = NaiveDateTime::parse_from_str(v, fmt)?;
         Ok(Data::DbDateTime(r))
     }
 
-    /// Add a row with multiple entries.
+    /// Add a new row with multiple entries.
     pub fn add(&mut self, entries: Vec<Entry>) -> RowId {
         let id = self.next();
         for e in entries {
