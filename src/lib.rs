@@ -92,6 +92,14 @@ impl Data {
     pub fn now() -> Data {
         Data::DbDateTime(Local::now().naive_local())
     }
+
+    pub fn date(&self) -> Option<String> {
+        if let Data::DbDateTime(d) = self {
+            Some(d.format("%Y-%m-%d").to_string())
+        } else {
+            None
+        }
+    }
 }
 
 /// The Row Identifier is used to reference each data set and is used by many methods where the
@@ -369,21 +377,29 @@ impl Db {
 
     /// Return row_ids of entries where an entry with name "name" exists.
     pub fn find_by_name(&self, name: &str) -> Vec<RowId> {
-        self.rows
+        let mut row_ids = self
+            .rows
             .iter()
             .filter(|row| row.entry.name == name)
             .map(|row| row.row_id)
-            .collect::<Vec<RowId>>()
+            .collect::<Vec<RowId>>();
+        row_ids.sort();
+        row_ids.dedup();
+        row_ids
     }
 
     /// Return row_ids of entries that are exactly "value". For partial string matches, use
     /// Predicates.
     pub fn find_by_value(&self, name: &str, value: &Data) -> Vec<RowId> {
-        self.rows
+        let mut row_ids = self
+            .rows
             .iter()
             .filter(|row| row.entry.name == name && &row.entry.value == value)
             .map(|row| row.row_id)
-            .collect::<Vec<RowId>>()
+            .collect::<Vec<RowId>>();
+        row_ids.sort();
+        row_ids.dedup();
+        row_ids
     }
 
     /// Return reference to first entry found in a given row.
