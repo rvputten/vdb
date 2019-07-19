@@ -1,26 +1,34 @@
 To do
 =====
 
+Return [Entry] in the order given in `fn entries_from_row_ids()`
+
 model relationships
 -------------------
 extend enum Data to include RowId
-    enum Data {
-	DbRowId(RowId),
-	..
-    }
+```
+enum Data {
+    DbRowId(RowId),
+    ..
+}
+```
 
 speed up searches
 -----------------
 store everything in hashmaps
-    HashMap<
-	name,
-	HashMap<name, RowId, value>
-	HashMap<value, RowId, name>
-	HashMap<RowId, name, value>
-    >
+```
+HashMap<
+    name,
+    HashMap<name, RowId, value>
+    HashMap<value, RowId, name>
+    HashMap<RowId, name, value>
+>
+```
+
 
 use builder pattern to query database
 -------------------------------------
+```
 query()
     .is("set", "spa-eng")
     .begins("source", "gall")
@@ -35,5 +43,6 @@ query/filter operations:
     .uniq()
     .reverse()
     .take()
+```
 
 import(filename, field1, field2, ..., fieldn) - load from a file

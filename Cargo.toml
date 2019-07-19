@@ -1,6 +1,6 @@
 [package]
 name = "vdb"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Raoul van Putten"]
 edition = "2018"
 description = "A database system implemented in rust that takes ideas from Entity Component Systems and relational databases."

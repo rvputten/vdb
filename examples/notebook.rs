@@ -10,8 +10,7 @@ use vdb::{Db, Entry, Predicate};
 
 fn list_entries(db: &mut Db) {
     let row_ids = db.find_by_name("title");
-    let columns = vec![String::from("title"), String::from("text")];
-    let entries = db.entries_from_row_ids(&row_ids, columns);
+    let entries = db.entries_from_row_ids(&row_ids, &["title", "text"]);
     if entries.is_empty() {
         println!();
         println!("No entries.");

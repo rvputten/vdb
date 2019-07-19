@@ -39,7 +39,7 @@ use std::path::Path;
 /// // Find rows
 /// let row_ids = db.select_row_ids(&vec![Predicate::new_equal_string("word", "coche")], None);
 /// assert_eq!(row_ids, [row_2]);
-/// let entries = db.entries_from_row_ids(&row_ids, vec![String::from("translation")]);
+/// let entries = db.entries_from_row_ids(&row_ids, &["translation"]);
 /// assert_eq!(entries[0][0], Entry::new_string("translation", "car"));
 ///
 /// // Delete
@@ -452,10 +452,9 @@ impl Db {
     ///     },
     /// ]);
     /// let predicates = vec![Predicate::new_equal_string("name", "coche")];
-    /// let entries = vec![String::from("name"), String::from("value")];
     /// let row_ids = db.select_row_ids(&predicates, Some(15));
     /// assert_eq!(row_ids, [RowId(1)]);
-    /// assert_eq!(db.entries_from_row_ids(&row_ids, entries)[0][0], Entry::new_string("name", "coche"));
+    /// assert_eq!(db.entries_from_row_ids(&row_ids, &["name", "value"])[0][0], Entry::new_string("name", "coche"));
     /// ```
     /// See also select()
     pub fn select_row_ids(
@@ -518,13 +517,14 @@ impl Db {
     }
 
     #[cfg(test)]
-    pub fn select(&self, predicates: &[Predicate], entries: Vec<String>) -> Vec<Vec<Entry>> {
+    pub fn select(&self, predicates: &[Predicate], entries: &[&str]) -> Vec<Vec<Entry>> {
         let row_ids = self.select_row_ids(predicates, None);
         self.entries_from_row_ids(&row_ids, entries)
     }
 
     /// Returns entries for given row_ids. The order of the entries in each row is not guaranteed.
-    pub fn entries_from_row_ids(&self, row_ids: &[RowId], names: Vec<String>) -> Vec<Vec<Entry>> {
+    pub fn entries_from_row_ids(&self, row_ids: &[RowId], names: &[&str]) -> Vec<Vec<Entry>> {
+        let names = names.iter().map(|s| s.to_string()).collect::<Vec<String>>();
         let mut result: Vec<Vec<Entry>> = vec![];
         for row_id in row_ids {
             result.push(
@@ -780,13 +780,10 @@ mod tests {
             ],
         ];
 
-        let result = db.select(&predicates, vec![String::from("name")]);
+        let result = db.select(&predicates, &vec!["name"]);
         assert_eq!(result, result1);
 
-        let result = db.select(
-            &predicates,
-            vec![String::from("name"), String::from("value")],
-        );
+        let result = db.select(&predicates, &vec!["name", "value"]);
         assert_eq!(result, result2);
     }
 
