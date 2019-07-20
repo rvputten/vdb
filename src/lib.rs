@@ -6,7 +6,7 @@ extern crate serde_json;
 
 //use chrono::{DateTime, Duration, Utc};
 use chrono::{Local, NaiveDateTime};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::error::Error;
 use std::fmt;
 use std::fs::File;
@@ -52,7 +52,7 @@ use std::path::Path;
 /// ```
 
 /// Data types currently implemented in the database
-#[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Hash, Clone, Debug)]
 pub enum Data {
     DbString(String),
     DbInt(i32),
@@ -109,7 +109,7 @@ impl Data {
 pub struct RowId(pub usize);
 
 /// Each RowId has many entries. Comparable to column name+data in relational databases.
-#[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Hash, Clone, Debug)]
 pub struct Entry {
     pub name: String,
     pub value: Data,
@@ -308,7 +308,9 @@ struct Row {
 pub struct Db {
     full_filename: String,
     row_max: RowId,
-    rows: HashMap<RowId, Vec<Entry>>,
+    by_row_id: HashMap<RowId, Vec<Entry>>,
+    by_name: HashMap<String, HashSet<RowId>>,
+    by_value: HashMap<Entry, HashSet<RowId>>,
 }
 
 impl Db {
@@ -317,7 +319,9 @@ impl Db {
         Db {
             full_filename: Db::build_filename(filename),
             row_max: RowId(0),
-            rows: HashMap::new(),
+            by_row_id: HashMap::new(),
+            by_name: HashMap::new(),
+            by_value: HashMap::new(),
         }
     }
 
@@ -331,8 +335,12 @@ impl Db {
         let mut file = File::open(full_filename)?;
         let mut contents = String::new();
         file.read_to_string(&mut contents)?;
-        let result = serde_json::from_str(&contents)?;
-        Ok(result)
+        let mut db = Db::new(filename);
+        let row_id_map: HashMap<RowId, Vec<Entry>> = serde_json::from_str(&contents)?;
+        for (_row_id, entries) in row_id_map {
+            db.add(entries);
+        }
+        Ok(db)
     }
 
     /// Save database under the subdirectory `save/` with the same name it was `open`ed or `create`d
@@ -340,7 +348,13 @@ impl Db {
     pub fn save(&self) -> Result<(), Box<Error>> {
         let path = Path::new(&self.full_filename);
         let mut file = File::create(&path)?;
-        let serialized = serde_json::to_string_pretty(self)?;
+        let serialized = match serde_json::to_string_pretty(&self.by_row_id) {
+            Ok(s) => s,
+            Err(ref e) => {
+                println!("{}|{}", e.description(), e);
+                panic!()
+            }
+        };
         file.write_all(serialized.as_bytes())?;
         Ok(())
     }
@@ -360,29 +374,94 @@ impl Db {
         Ok(Data::DbDateTime(r))
     }
 
+    fn add_name(&mut self, name: String, row_id: RowId) {
+        let row_ids = self.by_name.entry(name).or_insert_with(HashSet::new);
+        row_ids.insert(row_id);
+    }
+
+    fn add_value(&mut self, value: Entry, row_id: RowId) {
+        let row_ids = self.by_value.entry(value).or_insert_with(HashSet::new);
+        row_ids.insert(row_id);
+    }
+
     /// Add a new row with multiple entries.
     pub fn add(&mut self, entries: Vec<Entry>) -> RowId {
         let row_id = self.next();
-        self.rows.insert(row_id, entries);
+        for entry in &entries {
+            self.add_name(entry.name.clone(), row_id);
+            self.add_value(entry.clone(), row_id);
+        }
+        self.by_row_id.insert(row_id, entries);
         row_id
     }
 
     /// Add a single entry to an existing row. An existing entry with the same name is overwritten.
-    pub fn add_or_update_entry(&mut self, row_id: RowId, entry: Entry) {
-        if let Some(mut entries) = self.rows.get_mut(&row_id) {
-            if let Some(mut rows_entry) = Entry::get_first_by_name_mut(&mut entries, &entry.name) {
-                rows_entry.value = entry.value;
-            } else {
-                entries.push(entry);
+    /// If multiple entries with the same name exist, they will be overwritten.
+    pub fn add_or_update_entry(&mut self, row_id: RowId, new_entry: Entry) {
+        self.remove_by_name(row_id, &new_entry.name);
+        self.add_entry(row_id, new_entry);
+    }
+
+    /// Removes all entries with name 'name' and row 'row_id'. Does not delete the whole row and
+    /// leaves entries with other names.
+    pub fn remove_by_name(&mut self, row_id: RowId, name: &str) {
+        if let Some(entries) = self.by_row_id.get(&row_id) {
+            for entry in entries.iter() {
+                if let Some(row_ids) = self.by_name.get_mut(&entry.name) {
+                    row_ids.remove(&row_id);
+                }
+                if let Some(row_ids) = self.by_value.get_mut(&entry) {
+                    row_ids.remove(&row_id);
+                }
             }
-        } else {
-            self.rows.entry(row_id).or_insert_with(Vec::new).push(entry);
         }
+
+        if let Some(entries) = self.by_row_id.get_mut(&row_id) {
+            entries.retain(|entry| entry.name != name);
+        }
+
+        if let Some(entries) = self.by_row_id.get(&row_id) {
+            for entry in entries.iter() {
+                if let Some(row_ids) = self.by_name.get_mut(&entry.name) {
+                    row_ids.insert(row_id);
+                }
+                if let Some(row_ids) = self.by_value.get_mut(&entry) {
+                    row_ids.insert(row_id);
+                }
+            }
+        }
+    }
+
+    /// Removes all entries with row 'row_id'
+    pub fn remove_by_row_id(&mut self, row_id: RowId) {
+        if let Some(entries) = self.by_row_id.get(&row_id) {
+            for entry in entries.iter() {
+                if let Some(row_ids) = self.by_name.get_mut(&entry.name) {
+                    row_ids.remove(&row_id);
+                }
+                if let Some(row_ids) = self.by_value.get_mut(&entry) {
+                    row_ids.remove(&row_id);
+                }
+            }
+        }
+
+        self.by_row_id.remove(&row_id);
     }
 
     /// Add a single entry to an existing row. Does not check if entry exists.
     pub fn add_entry(&mut self, row_id: RowId, entry: Entry) {
-        self.rows.entry(row_id).or_insert_with(Vec::new).push(entry);
+        self.by_row_id
+            .entry(row_id)
+            .or_insert_with(Vec::new)
+            .push(entry.clone());
+        self.by_name
+            .entry(entry.name.clone())
+            .or_insert_with(HashSet::new)
+            .insert(row_id);
+        self.by_value
+            .entry(entry)
+            .or_insert_with(HashSet::new)
+            .insert(row_id);
     }
 
     /// Delete rows in the database
@@ -408,68 +487,85 @@ impl Db {
     /// assert_eq!(no_coche, None);
     /// ```
     pub fn delete_rows(&mut self, row_ids: &[RowId]) {
-        self.rows
-            .retain(|row_id, _value| !row_ids.contains(&row_id));
+        for row_id in row_ids {
+            self.remove_by_row_id(*row_id);
+        }
     }
 
     /// Delete all entries with this name in the whole database.
     /// Does not delete all rows. Deletes matching entries in the row. The row will be kept if
     /// there are entries left, otherwise deleted.
     pub fn delete_entry_all(&mut self, name: &str) {
-        let mut rows_to_delete: Vec<RowId> = vec![];
-        for (row_id, entries) in self.rows.iter_mut() {
-            entries.retain(|entry| entry.name != name);
-            if entries.is_empty() {
-                rows_to_delete.push(*row_id);
-            }
-        }
-        for row_id in rows_to_delete {
-            let _ = self.rows.remove(&row_id);
+        let row_ids = self.find_by_name(name);
+        for row_id in row_ids {
+            self.remove_by_name(row_id, name);
         }
     }
 
     /// Return row_ids of entries where an entry with name "name" exists.
     pub fn find_by_name(&self, name: &str) -> Vec<RowId> {
-        self.rows
-            .iter()
-            .filter(|(_row_id, entries)| Entry::check_by_name(entries, name))
-            .map(|(row_id, _entries)| *row_id)
-            .collect::<Vec<RowId>>()
+        if let Some(rows) = self.by_name.get(name) {
+            rows.iter().cloned().collect::<Vec<RowId>>()
+        } else {
+            vec![]
+        }
     }
 
     /// Return row_ids of entries that are exactly "value". For partial string matches, use
     /// Predicates.
     pub fn find_by_value(&self, name: &str, value: &Data) -> Vec<RowId> {
-        let mut row_ids = self
-            .rows
-            .iter()
-            .filter(|(_row_id, entries)| Entry::check_by_value(entries, name, value))
-            .map(|(row_id, _entries)| *row_id)
-            .collect::<Vec<RowId>>();
-        row_ids.sort();
-        row_ids.dedup();
-        row_ids
+        let entry = Entry {
+            name: name.to_string(),
+            value: value.clone(),
+        };
+        if let Some(rows) = self.by_value.get(&entry) {
+            rows.iter().cloned().collect::<Vec<RowId>>()
+        } else {
+            vec![]
+        }
     }
 
     /// Return reference to first entry found in a given row.
     pub fn find_first_row_id_by_name(&self, name: &str) -> Option<RowId> {
-        self.rows
-            .iter()
-            .find(|(_row_id, entries)| Entry::check_by_name(entries, name))
-            .map(|(row_id, _entries)| *row_id)
+        if let Some(rows) = self.by_name.get(name) {
+            rows.iter().cloned().next()
+        } else {
+            None
+        }
     }
 
     /// Return reference to first entry found in a given row.
     pub fn find_first_row_id_by_value(&self, name: &str, value: &Data) -> Option<RowId> {
-        self.rows
-            .iter()
-            .find(|(_row_id, entries)| Entry::check_by_value(entries, name, value))
-            .map(|(row_id, _entries)| *row_id)
+        let entry = Entry {
+            name: name.to_string(),
+            value: value.clone(),
+        };
+        if let Some(rows) = self.by_value.get(&entry) {
+            rows.iter().cloned().next()
+        } else {
+            None
+        }
     }
 
     /// Return reference to first entry found in a given row.
     pub fn get_first_entry(&self, row_id: RowId, name: &str) -> Option<Entry> {
-        Entry::get_first_by_name(&self.rows[&row_id], name)
+        Entry::get_first_by_name(&self.by_row_id[&row_id], name)
+    }
+
+    pub fn find_by_predicate(&self, predicate: &Predicate) -> Vec<RowId> {
+        if predicate.predicate_type == PredicateType::Equal {
+            if let Some(row_ids) = self.by_value.get(&predicate.entry) {
+                row_ids.iter().cloned().collect::<Vec<RowId>>()
+            } else {
+                vec![]
+            }
+        } else {
+            self.by_row_id
+                .iter()
+                .filter(|(_row_id, entries)| Entry::compare_all(entries, predicate))
+                .map(|(row_id, _entries)| *row_id)
+                .collect::<Vec<RowId>>()
+        }
     }
 
     /// Returns all rows if no predicates are given.
@@ -511,27 +607,14 @@ impl Db {
         let max_results = if let Some(max_results) = max_results {
             max_results
         } else {
-            self.rows.len()
+            self.by_row_id.len()
         };
 
         if predicates.is_empty() {
-            let mut row_ids = self
-                .rows
-                .iter()
-                .take(max_results)
-                .map(|(row_id, _entries)| *row_id)
-                .collect::<Vec<RowId>>();
-            row_ids.sort();
-            row_ids.dedup();
-            row_ids
+            self.find_all_row_ids()
         } else {
             let predicate0 = &predicates[0];
-            let mut row_ids = self
-                .rows
-                .iter()
-                .filter(|(_row_id, entries)| Entry::compare_all(entries, predicate0))
-                .map(|(row_id, _entries)| *row_id)
-                .collect::<Vec<RowId>>();
+            let mut row_ids = self.find_by_predicate(predicate0);
 
             for predicate in &predicates[1..] {
                 let new_row_ids = row_ids
@@ -552,7 +635,7 @@ impl Db {
 
     /// Returns all rows in the database
     pub fn find_all_row_ids(&self) -> Vec<RowId> {
-        self.rows.keys().cloned().collect::<Vec<RowId>>()
+        self.by_row_id.keys().cloned().collect::<Vec<RowId>>()
     }
 
     #[cfg(test)]
@@ -566,7 +649,7 @@ impl Db {
         let names = names.iter().map(|s| s.to_string()).collect::<Vec<String>>();
         let mut result: Vec<Vec<Entry>> = vec![];
         for row_id in row_ids {
-            let entries = &self.rows[&row_id];
+            let entries = &self.by_row_id[&row_id];
 
             let mut ordered: Vec<Entry> = vec![];
             for name in &names {
@@ -582,7 +665,7 @@ impl Db {
 
     /// Check if a predicate is true for a given row_id.
     fn match_row(&self, row_id: RowId, predicate: &Predicate) -> bool {
-        let entries = &self.rows[&row_id];
+        let entries = &self.by_row_id[&row_id];
         Entry::compare_all(&entries, predicate)
     }
 
@@ -599,7 +682,7 @@ impl Db {
     pub fn debug_rows(&self, row_ids: &[RowId]) -> Vec<Vec<Entry>> {
         let mut result: Vec<Vec<Entry>> = vec![];
         for row_id in row_ids {
-            let entries = &self.rows[&row_id];
+            let entries = &self.by_row_id[&row_id];
             result.push(entries.clone());
         }
         result
@@ -705,22 +788,17 @@ mod tests {
 
     #[cfg(test)]
     fn check_single_entries(db: &Db) {
-        assert_eq!(db.rows.len(), 2);
+        assert_eq!(db.by_row_id.len(), 2);
 
-        if let Some(entries) = db.rows.get(&RowId(1)) {
-            assert_eq!(entries[0].name, "set");
-            assert_eq!(entries[0].value, Db::db_string("es-en"));
-        } else {
-            panic!();
+        for value in &db.by_value {
+            println!("{:?}", value);
         }
+        let row_ids = db.find_by_value("set", &Db::db_string("es-en"));
+        assert_eq!(row_ids.len(), 2);
 
-        if let Some(entries) = db.rows.get(&RowId(2)) {
-            println!("{:?}", db.debug_rows(&vec![RowId(2)]));
-            assert_eq!(entries[2].name, "value");
-            assert_eq!(entries[2].value, Db::db_string("car"));
-        } else {
-            panic!();
-        }
+        let row_ids = db.find_by_value("value", &Db::db_string("car"));
+        println!("find_by_value(): {:?}", row_ids);
+        assert_eq!(row_ids.len(), 1);
     }
 
     #[test]
@@ -793,7 +871,7 @@ mod tests {
     fn load_and_save() {
         let name = "testdb";
         let db = new_db_with_entries(name);
-        let _result = db.save();
+        db.save().unwrap();
         let db = Db::load(name).unwrap();
         check_single_entries(&db);
     }
@@ -830,7 +908,7 @@ mod tests {
         );
         println!("After update/add: {:?}", db.debug_rows(&vec![RowId(2)]));
 
-        for (i, row) in db.rows.iter().enumerate() {
+        for (i, row) in db.by_row_id.iter().enumerate() {
             println!("row: {} {:?}", i, row);
         }
         assert_eq!(db.find_first_row_id_by_name("new entry"), Some(RowId(2)));
@@ -860,7 +938,7 @@ mod tests {
             },
         );
         println!("{:?}", db.debug_rows(&vec![RowId(2)]));
-        for (row_id, entries) in db.rows.iter() {
+        for (row_id, entries) in db.by_row_id.iter() {
             println!("{:?}", row_id);
             for entry in entries {
                 println!("    {:?}", entry);
@@ -877,7 +955,7 @@ mod tests {
         let mut db = new_db_with_entries("testdb");
 
         let mut add_row = |n| {
-            if let Some(_entry) = db.rows.get(&RowId(n)) {
+            if let Some(_entry) = db.by_row_id.get(&RowId(n)) {
                 println!("{:?}", db.debug_rows(&vec![RowId(n)]));
             }
             db.add_entry(
@@ -891,7 +969,7 @@ mod tests {
         add_row(1);
         add_row(2);
         add_row(3);
-        for (row_id, entries) in db.rows.iter() {
+        for (row_id, entries) in db.by_row_id.iter() {
             println!("{:?}", row_id);
             for entry in entries {
                 println!("    {:?}", entry);
@@ -907,7 +985,7 @@ mod tests {
         println!("Deleting entries...");
         db.delete_entry_all("new entry");
 
-        for (row_id, entries) in db.rows.iter() {
+        for (row_id, entries) in db.by_row_id.iter() {
             println!("{:?}", row_id);
             for entry in entries {
                 println!("    {:?}", entry);
@@ -937,5 +1015,18 @@ mod tests {
         assert_eq!(row_ids.len(), 2);
         assert!(row_ids.contains(&RowId(1)));
         assert!(row_ids.contains(&RowId(2)));
+    }
+
+    #[test]
+    fn find_by_value() {
+        let db = new_db_with_entries("testdb");
+        let entry = Entry::new_string("name", "coche");
+        let row_id = db.by_value[&entry].iter().next().unwrap();
+        let entry_new = db.by_row_id[row_id]
+            .iter()
+            .filter(|entry| &entry.name == "name")
+            .next()
+            .unwrap();
+        assert_eq!(&entry, entry_new);
     }
 }
