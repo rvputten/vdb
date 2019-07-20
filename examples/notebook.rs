@@ -1,12 +1,9 @@
 extern crate vdb;
 
-use std::fs::File;
 use std::io;
-use std::io::BufRead;
-use std::io::BufReader;
 use std::io::Write;
 
-use vdb::{Db, Entry, Predicate};
+use vdb::{Db, Entry};
 
 fn list_entries(db: &mut Db) {
     let row_ids = db.find_by_name("title");
@@ -90,7 +87,7 @@ fn main_loop(db: &mut Db) {
             "e" => new_entry(db),
             "d" => delete_entry(db),
             "" | "q" => {
-                db.save();
+                let _ = db.save();
                 break;
             }
             _ => (),
