@@ -21,8 +21,6 @@ Planned
     *   not calling Vdb::save() will not lose data
 *   model relationships between stored keys, like foreign keys
 *   speed improvements
-    *	use of hashmaps
-    *	reverse lookup (search for key or RowId)
     *	separate store for each key
     *	indexes
     *	partitions

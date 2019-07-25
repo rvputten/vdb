@@ -359,6 +359,14 @@ impl Db {
         Ok(())
     }
 
+    pub fn get_name(&self) -> String {
+        // TODO: This assumes that the save prefix is "save/"
+        if self.full_filename.len() < 6 {
+            panic!("Could not Db::get_name()");
+        }
+        self.full_filename[5..].to_string()
+    }
+
     pub fn db_string(v: &str) -> Data {
         Data::DbString(String::from(v))
     }
