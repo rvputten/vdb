@@ -27,7 +27,12 @@ Planned
 *   use of enums instead of &str for keys
 *   use builder pattern to query database
 *   bigger & smaller comparisons (a > b)
-*   create examples
+*   create more examples
+*   remove dependency on serde
+    *	custom more compact text format
+*   configuration of storage
+    *	~/.config, /var/, custom
+*   cleanup api
 
 Further in the future
 ---------------------

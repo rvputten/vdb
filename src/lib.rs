@@ -21,12 +21,12 @@ use std::path::Path;
 /// ```
 /// use vdb::{Db, Entry, Predicate};
 /// let mut db = Db::new("test-db");
-/// let row_1 = db.add(vec![
+/// let row_1 = db.add_row(vec![
 ///         Entry::new_string("word", "cocina"),
 ///         Entry::new_string("translation", "cuisine"),
 ///         Entry::new_string("translation", "kitchen"),
 /// ]);
-/// let row_2 = db.add(vec![
+/// let row_2 = db.add_row(vec![
 ///         Entry::new_string("word", "coche"),
 ///         Entry::new_string("translation", "car"),
 /// ]);
@@ -38,7 +38,7 @@ use std::path::Path;
 /// assert_eq!(row_ids.len(), 2);
 ///
 /// // Find rows
-/// let row_ids = db.select_row_ids(&vec![Predicate::new_equal_string("word", "coche")], None);
+/// let row_ids = db.find_row_ids_by_predicate(&vec![Predicate::new_equal_string("word", "coche")], None);
 /// assert_eq!(row_ids, [row_2]);
 /// let entries = db.entries_from_row_ids(&row_ids, &["translation"]);
 /// assert_eq!(entries[0][0], Entry::new_string("translation", "car"));
@@ -55,7 +55,7 @@ use std::path::Path;
 #[derive(Serialize, Deserialize, PartialEq, Eq, Hash, Clone, Debug)]
 pub enum Data {
     DbString(String),
-    DbInt(i32),
+    DbI32(i32),
     DbDateTime(NaiveDateTime),
 }
 
@@ -63,7 +63,7 @@ impl fmt::Display for Data {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let printable = match self {
             Data::DbDateTime(date_time) => date_time.format("%Y-%m-%d %H:%M").to_string(),
-            Data::DbInt(number) => format!("{}", number),
+            Data::DbI32(number) => format!("{}", number),
             Data::DbString(string) => string.clone(),
         };
         write!(f, "{}", printable)
@@ -121,6 +121,14 @@ impl Entry {
         Entry {
             name: String::from(name),
             value: Db::db_string(value),
+        }
+    }
+
+    /// Shortcut for creating a new `Entry` with a `DbI32`
+    pub fn new_i32(name: &str, value: i32) -> Entry {
+        Entry {
+            name: String::from(name),
+            value: Db::db_i32(value),
         }
     }
 
@@ -230,13 +238,13 @@ pub struct Predicate {
 }
 
 impl Predicate {
-    /// Shortcut for creating a new `Predicate` that tests for equality with a `DbInt`
-    pub fn new_equal_int(name: &str, value: i32) -> Predicate {
+    /// Shortcut for creating a new `Predicate` that tests for equality with a `DbI32`
+    pub fn new_equal_i32(name: &str, value: i32) -> Predicate {
         Predicate {
             predicate_type: PredicateType::Equal,
             entry: Entry {
                 name: String::from(name),
-                value: Db::db_int(value),
+                value: Db::db_i32(value),
             },
         }
     }
@@ -302,7 +310,7 @@ struct Row {
 /// ```
 /// use vdb::{Db, Entry};
 /// let mut db = Db::new("test-db");
-/// let _row_id = db.add(vec![Entry::new_string("mundo", "world")]);
+/// let _row_id = db.add_row(vec![Entry::new_string("mundo", "world")]);
 /// ```
 #[derive(Serialize, Deserialize, PartialEq, Clone, Debug)]
 pub struct Db {
@@ -338,14 +346,15 @@ impl Db {
         let mut db = Db::new(filename);
         let row_id_map: HashMap<RowId, Vec<Entry>> = serde_json::from_str(&contents)?;
         for (_row_id, entries) in row_id_map {
-            db.add(entries);
+            db.add_row(entries);
         }
         Ok(db)
     }
 
     /// Save database under the subdirectory `save/` with the same name it was `open`ed or `create`d
     /// with. The subdirectory `save/` must exist.
-    pub fn save(&self) -> Result<(), Box<Error>> {
+    pub fn save(&mut self) -> Result<(), Box<Error>> {
+        self.by_row_id.retain(|_key, value| !value.is_empty());
         let path = Path::new(&self.full_filename);
         let mut file = File::create(&path)?;
         let serialized = match serde_json::to_string_pretty(&self.by_row_id) {
@@ -359,6 +368,7 @@ impl Db {
         Ok(())
     }
 
+    /// Returns the filename of the database
     pub fn get_name(&self) -> String {
         // TODO: This assumes that the save prefix is "save/"
         if self.full_filename.len() < 6 {
@@ -367,12 +377,58 @@ impl Db {
         self.full_filename[5..].to_string()
     }
 
+    /// Returns a new Data::DbString
     pub fn db_string(v: &str) -> Data {
         Data::DbString(String::from(v))
     }
 
-    pub fn db_int(v: i32) -> Data {
-        Data::DbInt(v)
+    /// Returns a new Data::DbI32
+    pub fn db_i32(v: i32) -> Data {
+        Data::DbI32(v)
+    }
+
+    /// Find a i32 by name
+    /// ```
+    /// use vdb::{Db, Entry};
+    /// let mut db = Db::new("test-db");
+    /// let name = "yoyo";
+    /// let value = 7;
+    /// let _row_id = db.add_row(vec![Entry::new_i32(name, value)]);
+    /// assert_eq!(db.find_first_i32(name), Some(value));
+    /// ```
+    pub fn find_first_i32(&self, name: &str) -> Option<i32> {
+        if let Some(row_id) = self.find_first_row_id_by_name(name) {
+            if let Some(entries) = self.by_row_id.get(&row_id) {
+                if let Some(entry) = Entry::get_first_by_name(entries, name) {
+                    if let Data::DbI32(value) = entry.value {
+                        return Some(value);
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Find a string by name
+    /// ```
+    /// use vdb::{Db, Entry};
+    /// let mut db = Db::new("test-db");
+    /// let name = "yoyo";
+    /// let value = "lila";
+    /// let _row_id = db.add_row(vec![Entry::new_string(name, value)]);
+    /// assert_eq!(db.find_first_string(name), Some(value.to_string()));
+    /// ```
+    pub fn find_first_string(&self, name: &str) -> Option<String> {
+        if let Some(row_id) = self.find_first_row_id_by_name(name) {
+            if let Some(entries) = self.by_row_id.get(&row_id) {
+                if let Some(entry) = Entry::get_first_by_name(entries, name) {
+                    if let Data::DbString(value) = entry.value {
+                        return Some(value);
+                    }
+                }
+            }
+        }
+        None
     }
 
     /// Parse `&str` into a `DbDateTime`. The format string is `%Y-%m-%d %H:%M:%S`.
@@ -392,8 +448,18 @@ impl Db {
         row_ids.insert(row_id);
     }
 
+    /// Add a new row with one i32
+    pub fn add_i32(&mut self, name: &str, value: i32) -> RowId {
+        self.add_row(vec![Entry::new_i32(name, value)])
+    }
+
+    /// Add a new row with one string
+    pub fn add_string(&mut self, name: &str, value: &str) -> RowId {
+        self.add_row(vec![Entry::new_string(name, value)])
+    }
+
     /// Add a new row with multiple entries.
-    pub fn add(&mut self, entries: Vec<Entry>) -> RowId {
+    pub fn add_row(&mut self, entries: Vec<Entry>) -> RowId {
         let row_id = self.next();
         for entry in &entries {
             self.add_name(entry.name.clone(), row_id);
@@ -407,7 +473,7 @@ impl Db {
     /// If multiple entries with the same name exist, they will be overwritten.
     pub fn add_or_update_entry(&mut self, row_id: RowId, new_entry: Entry) {
         self.remove_by_name(row_id, &new_entry.name);
-        self.add_entry(row_id, new_entry);
+        self.add_row_id_entry(row_id, new_entry);
     }
 
     /// Removes all entries with name 'name' and row 'row_id'. Does not delete the whole row and
@@ -457,7 +523,7 @@ impl Db {
     }
 
     /// Add a single entry to an existing row. Does not check if entry exists.
-    pub fn add_entry(&mut self, row_id: RowId, entry: Entry) {
+    pub fn add_row_id_entry(&mut self, row_id: RowId, entry: Entry) {
         self.by_row_id
             .entry(row_id)
             .or_insert_with(Vec::new)
@@ -479,12 +545,12 @@ impl Db {
     /// ```
     /// use vdb::{Db, Entry};
     /// let mut db = Db::new("test-db");
-    /// let row_1 = db.add(vec![
+    /// let row_1 = db.add_row(vec![
     ///         Entry::new_string("word", "cocina"),
     ///         Entry::new_string("translation", "cuisine"),
     ///         Entry::new_string("translation", "kitchen"),
     /// ]);
-    /// let row_2 = db.add(vec![
+    /// let row_2 = db.add_row(vec![
     ///         Entry::new_string("word", "coche"),
     ///         Entry::new_string("translation", "car"),
     /// ]);
@@ -504,14 +570,14 @@ impl Db {
     /// Does not delete all rows. Deletes matching entries in the row. The row will be kept if
     /// there are entries left, otherwise deleted.
     pub fn delete_entry_all(&mut self, name: &str) {
-        let row_ids = self.find_by_name(name);
+        let row_ids = self.find_row_ids_by_name(name);
         for row_id in row_ids {
             self.remove_by_name(row_id, name);
         }
     }
 
     /// Return row_ids of entries where an entry with name "name" exists.
-    pub fn find_by_name(&self, name: &str) -> Vec<RowId> {
+    pub fn find_row_ids_by_name(&self, name: &str) -> Vec<RowId> {
         if let Some(rows) = self.by_name.get(name) {
             rows.iter().cloned().collect::<Vec<RowId>>()
         } else {
@@ -521,7 +587,7 @@ impl Db {
 
     /// Return row_ids of entries that are exactly "value". For partial string matches, use
     /// Predicates.
-    pub fn find_by_value(&self, name: &str, value: &Data) -> Vec<RowId> {
+    pub fn find_row_ids_by_value(&self, name: &str, value: &Data) -> Vec<RowId> {
         let entry = Entry {
             name: name.to_string(),
             value: value.clone(),
@@ -556,7 +622,7 @@ impl Db {
     }
 
     /// Return reference to first entry found in a given row.
-    pub fn get_first_entry(&self, row_id: RowId, name: &str) -> Option<Entry> {
+    pub fn find_first_entry_by_name(&self, row_id: RowId, name: &str) -> Option<Entry> {
         Entry::get_first_by_name(&self.by_row_id[&row_id], name)
     }
 
@@ -587,7 +653,7 @@ impl Db {
     /// // Like SQL "select name, value from testdb where name='coche' limit 15"
     /// use vdb::{Data, Db, Entry, Predicate, RowId};
     /// let mut db = Db::new("test-db");
-    /// let _id = db.add(vec![
+    /// let _id = db.add_row(vec![
     ///     Entry {
     ///         name: String::from("set"),
     ///         value: Db::db_string("es-en"),
@@ -602,12 +668,12 @@ impl Db {
     ///     },
     /// ]);
     /// let predicates = vec![Predicate::new_equal_string("name", "coche")];
-    /// let row_ids = db.select_row_ids(&predicates, Some(15));
+    /// let row_ids = db.find_row_ids_by_predicate(&predicates, Some(15));
     /// assert_eq!(row_ids, [RowId(1)]);
     /// assert_eq!(db.entries_from_row_ids(&row_ids, &["name", "value"])[0][0], Entry::new_string("name", "coche"));
     /// ```
-    /// See also select()
-    pub fn select_row_ids(
+    /// See also find_entries_by_predicate()
+    pub fn find_row_ids_by_predicate(
         &self,
         predicates: &[Predicate],
         max_results: Option<usize>,
@@ -647,8 +713,12 @@ impl Db {
     }
 
     #[cfg(test)]
-    pub fn select(&self, predicates: &[Predicate], entries: &[&str]) -> Vec<Vec<Entry>> {
-        let row_ids = self.select_row_ids(predicates, None);
+    pub fn find_entries_by_predicate(
+        &self,
+        predicates: &[Predicate],
+        entries: &[&str],
+    ) -> Vec<Vec<Entry>> {
+        let row_ids = self.find_row_ids_by_predicate(predicates, None);
         self.entries_from_row_ids(&row_ids, entries)
     }
 
@@ -763,7 +833,7 @@ mod tests {
     #[cfg(test)]
     fn new_db_with_entries(name: &str) -> Db {
         let mut db = Db::new(name);
-        let _id = db.add(vec![
+        let _id = db.add_row(vec![
             Entry {
                 name: String::from("set"),
                 value: Db::db_string("es-en"),
@@ -777,7 +847,7 @@ mod tests {
                 value: Db::db_string("to enjoy"),
             },
         ]);
-        let _id = db.add(vec![
+        let _id = db.add_row(vec![
             Entry {
                 name: String::from("set"),
                 value: Db::db_string("es-en"),
@@ -801,16 +871,16 @@ mod tests {
         for value in &db.by_value {
             println!("{:?}", value);
         }
-        let row_ids = db.find_by_value("set", &Db::db_string("es-en"));
+        let row_ids = db.find_row_ids_by_value("set", &Db::db_string("es-en"));
         assert_eq!(row_ids.len(), 2);
 
-        let row_ids = db.find_by_value("value", &Db::db_string("car"));
-        println!("find_by_value(): {:?}", row_ids);
+        let row_ids = db.find_row_ids_by_value("value", &Db::db_string("car"));
+        println!("find_row_ids_by_value(): {:?}", row_ids);
         assert_eq!(row_ids.len(), 1);
     }
 
     #[test]
-    fn select_row_ids() {
+    fn find_row_ids_by_predicate() {
         let name = "testdb";
         let db = new_db_with_entries(name);
 
@@ -820,15 +890,15 @@ mod tests {
             Predicate::new_equal_string("name", "disfrutar"),
         ];
 
-        let row_ids = db.select_row_ids(&predicates1, None);
+        let row_ids = db.find_row_ids_by_predicate(&predicates1, None);
         assert_eq!(row_ids, vec![RowId(1), RowId(2)]);
 
-        let row_ids = db.select_row_ids(&predicates2, None);
+        let row_ids = db.find_row_ids_by_predicate(&predicates2, None);
         assert_eq!(row_ids, vec![RowId(1)]);
     }
 
     #[test]
-    fn select() {
+    fn find_entries_by_predicate() {
         let name = "testdb";
         let db = new_db_with_entries(name);
 
@@ -868,24 +938,24 @@ mod tests {
             ],
         ];
 
-        let result = db.select(&predicates, &vec!["name"]);
+        let result = db.find_entries_by_predicate(&predicates, &vec!["name"]);
         assert_eq!(result, result1);
 
-        let result = db.select(&predicates, &vec!["name", "value"]);
+        let result = db.find_entries_by_predicate(&predicates, &vec!["name", "value"]);
         assert_eq!(result, result2);
     }
 
     #[test]
     fn load_and_save() {
         let name = "testdb";
-        let db = new_db_with_entries(name);
+        let mut db = new_db_with_entries(name);
         db.save().unwrap();
         let db = Db::load(name).unwrap();
         check_single_entries(&db);
     }
 
     #[test]
-    fn add() {
+    fn add_row() {
         let db = new_db_with_entries("testdb");
         check_single_entries(&db);
     }
@@ -895,7 +965,7 @@ mod tests {
         let t = "Test";
         assert_eq!(Data::DbString(String::from(t)), Db::db_string(t));
         let t = 42;
-        assert_eq!(Data::DbInt(t), Db::db_int(t));
+        assert_eq!(Data::DbI32(t), Db::db_i32(t));
         let fmt = "%Y-%m-%d %H:%M:%S";
         let t = "2013-11-22 12:00:00";
         let dt = NaiveDateTime::parse_from_str(t, fmt).unwrap();
@@ -966,7 +1036,7 @@ mod tests {
             if let Some(_entry) = db.by_row_id.get(&RowId(n)) {
                 println!("{:?}", db.debug_rows(&vec![RowId(n)]));
             }
-            db.add_entry(
+            db.add_row_id_entry(
                 RowId(n),
                 Entry {
                     name: String::from("new entry"),
@@ -984,7 +1054,7 @@ mod tests {
             }
         }
 
-        let row_ids = db.find_by_name("new entry");
+        let row_ids = db.find_row_ids_by_name("new entry");
         assert_eq!(row_ids.len(), 3);
         assert!(row_ids.contains(&RowId(1)));
         assert!(row_ids.contains(&RowId(2)));
@@ -1000,16 +1070,16 @@ mod tests {
             }
         }
 
-        let row_ids = db.find_by_name("new entry");
+        let row_ids = db.find_row_ids_by_name("new entry");
         assert_eq!(row_ids.len(), 0);
 
-        let row_ids = db.find_by_name("set");
+        let row_ids = db.find_row_ids_by_name("set");
         assert_eq!(row_ids.len(), 2);
         assert!(row_ids.contains(&RowId(1)));
         assert!(row_ids.contains(&RowId(2)));
         assert!(!row_ids.contains(&RowId(3)));
 
-        let row_ids = db.find_by_name("name");
+        let row_ids = db.find_row_ids_by_name("name");
         assert_eq!(row_ids.len(), 2);
         assert!(row_ids.contains(&RowId(1)));
         assert!(row_ids.contains(&RowId(2)));
@@ -1026,7 +1096,7 @@ mod tests {
     }
 
     #[test]
-    fn find_by_value() {
+    fn find_row_ids_by_value() {
         let db = new_db_with_entries("testdb");
         let entry = Entry::new_string("name", "coche");
         let row_id = db.by_value[&entry].iter().next().unwrap();

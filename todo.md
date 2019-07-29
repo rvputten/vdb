@@ -44,3 +44,15 @@ query/filter operations:
 ```
 
 import(filename, field1, field2, ..., fieldn) - load from a file
+
+cleanup api
+-----------
+```
+    add_int()
+    add_or_update_int()
+    update_int()
+    add_string()
+    find_first_int()
+    find_ints()
+    etc.
+```

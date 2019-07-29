@@ -6,7 +6,7 @@ use std::io::Write;
 use vdb::{Db, Entry};
 
 fn list_entries(db: &mut Db) {
-    let row_ids = db.find_by_name("title");
+    let row_ids = db.find_row_ids_by_name("title");
     let entries = db.entries_from_row_ids(&row_ids, &["title", "text"]);
     if entries.is_empty() {
         println!();
@@ -37,7 +37,7 @@ fn new_entry(db: &mut Db) {
         let mut input = "".to_string();
         let _bytes_read = io::stdin().read_line(&mut input).unwrap();
         let text = input.trim();
-        db.add(vec![
+        db.add_row(vec![
             Entry::new_string("title", title),
             Entry::new_string("text", text),
         ]);
@@ -57,7 +57,7 @@ fn delete_entry(db: &mut Db) {
         input.trim()
     };
     if !title.is_empty() {
-        let row_ids = db.find_by_value("title", &Db::db_string(title));
+        let row_ids = db.find_row_ids_by_value("title", &Db::db_string(title));
         db.delete_rows(&row_ids);
     } else {
         println!("Abort.");
